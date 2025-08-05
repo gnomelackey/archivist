@@ -1,26 +1,27 @@
 {
-  "name": "@repo/ui",
+  "name": "@repo/graphql-server",
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./*": "./src/*.tsx"
+    "./*": "./src/*.ts"
   },
   "scripts": {
+    "dev": "ts-node-dev --respawn src/index.ts",
     "lint": "eslint . --max-warnings 0",
-    "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@types/node": "^22.15.3",
-    "@types/react": "19.1.0",
-    "@types/react-dom": "19.1.1",
     "eslint": "^9.31.0",
+    "ts-node-dev": "^2.0.0",
     "typescript": "5.8.2"
   },
   "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "@prisma/client": "^6.13.0",
+    "@supabase/supabase-js": "^2",
+    "apollo-server": "^3.13.0",
+    "graphql": "^16.11.0"
   }
 }

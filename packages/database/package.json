@@ -11,6 +11,11 @@
     "build:schema": "ts-node ./scripts/generate-schema.ts",
     "build": "npm run build:schema && npm run prisma:generate && npm run prisma:push"
   },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "5.8.3"
+  },
   "dependencies": {
     "@prisma/client": "^6.13.0",
     "prisma": "^6.13.0"

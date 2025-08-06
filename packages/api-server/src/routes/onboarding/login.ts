@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import express from "express";
 import jwt from "jsonwebtoken";
 
-export const authRouter = express.Router();
+import { authRouter } from "./router";
 
 const EXPIRATION_DEFAULT = "7d";
 const LOGIN_ERROR = `There was an issue logging in. Please check your email or password, and try again.`;
@@ -50,3 +50,4 @@ authRouter.post("/login", requestValidation, async (req, res) => {
 
   res.json({ token });
 });
+

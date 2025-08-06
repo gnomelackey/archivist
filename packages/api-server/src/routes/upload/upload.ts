@@ -1,3 +1,4 @@
+import { jwtValidation } from "@api/middleware/jwtValidation";
 import { prisma } from "@repo/db/client";
 import express from "express";
 import multer from "multer";
@@ -5,9 +6,7 @@ import path from "path";
 import fs from "fs";
 import { v4 as uuid } from "uuid";
 
-import { jwtValidation } from "@api/middleware/jwtValidation";
-
-export const uploadRouter = express.Router();
+import { uploadRouter } from "./router";
 
 const storage = multer.diskStorage({
   destination: function (_, __, cb) {

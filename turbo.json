@@ -4,6 +4,7 @@
   "globalEnv": [
     "PORT",
     "JWT_SECRET",
+    "BASE_ROUTE",
     "NODE_ENV",
     "NEXT_PUBLIC_API_URL",
     "NEXT_PUBLIC_GRAPHQL_URL",
@@ -13,7 +14,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": ["generated/**", "dist/**", ".next/**", "!.next/cache/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]

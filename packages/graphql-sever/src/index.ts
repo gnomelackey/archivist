@@ -10,6 +10,6 @@ const server = new ApolloServer({
   context: createContext,
 });
 
-server.listen({ port: 4000 }).then(({ url }) => {
+server.listen({ port: 4002 }).then(({ url }) => {
   console.log(`🚀 GraphQL Server ready at ${url}`);
 });

@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./apps/web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - graphql-server
+      - api-server
+    networks:
+      - internal
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+
+  graphql-server:
+    build:
+      context: ./packages/graphql-server
+    ports:
+      - "4001:4001"
+    networks:
+      - internal
+    volumes:
+      - ./packages/graphql-server:/app
+      - ./packages/database:/app/packages/database
+      - /app/node_modules
+
+  api-server:
+    build:
+      context: ./packages/api-server
+    ports:
+      - "4002:4002"
+    networks:
+      - internal
+    volumes:
+      - ./packages/api-server:/app
+      - ./packages/database:/app/packages/database
+      - /app/node_modules
+
+  nginx:
+    build:
+      context: ./packages/nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - web
+      - graphql-server
+      - api-server
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge

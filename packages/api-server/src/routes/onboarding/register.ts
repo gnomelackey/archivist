@@ -2,7 +2,7 @@ import { prisma } from "@repo/db/client";
 import bcrypt from "bcrypt";
 import express from "express";
 
-import { authRouter } from "./router";
+import { onboardingRouter } from "./router";
 
 const requestValidation = (
   req: express.Request,
@@ -21,7 +21,7 @@ const requestValidation = (
   else next();
 };
 
-authRouter.post("/register", requestValidation, async (req, res) => {
+onboardingRouter.post("/register", requestValidation, async (req, res) => {
   const { email, password } = req.body;
 
   const user = await prisma.user.create({

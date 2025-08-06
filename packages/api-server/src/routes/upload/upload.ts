@@ -6,7 +6,7 @@ import path from "path";
 import fs from "fs";
 import { v4 as uuid } from "uuid";
 
-import { uploadRouter } from "./router";
+import { staticRouter } from "./router";
 
 const storage = multer.diskStorage({
   destination: function (_, __, cb) {
@@ -35,8 +35,8 @@ const requestValidation = (
   else next();
 };
 
-uploadRouter.post(
-  "/",
+staticRouter.post(
+  "/upload",
   jwtValidation,
   requestValidation,
   upload.single("file"),

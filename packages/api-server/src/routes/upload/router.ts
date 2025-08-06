@@ -1,3 +1,3 @@
 import express from "express";
 
-export const uploadRouter = express.Router();
+export const staticRouter = express.Router();

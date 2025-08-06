@@ -1,3 +1,3 @@
 import express from "express";
 
-export const authRouter = express.Router();
+export const onboardingRouter = express.Router();

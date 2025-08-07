@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 import fs from 'fs';
 import path from 'path';
 
-import { onboardingRouter } from "./routes/onboarding/router";
-import { staticRouter } from "./routes/upload/router";
+import { onboardingRouter } from "./routers/onboarding/router";
+import { staticRouter } from "./routers/static/router";
 
 dotenv.config();
 
@@ -27,5 +27,5 @@ app.use(`${baseRoute}/static`, staticRouter);
 const server = https.createServer({ key, cert }, app);
 
 server.listen(port, () => {
-  console.log(`API server running at http://localhost:${port}`);
+  console.log(`API server running at https://localhost:${port}`);
 });

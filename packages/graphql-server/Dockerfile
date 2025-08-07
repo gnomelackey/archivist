@@ -4,10 +4,10 @@ WORKDIR /app
 
 COPY . .
 
-WORKDIR /app/packages/api-server
+WORKDIR /app/packages/graphql-server
 
 RUN npm install
 RUN npm run build
 
-EXPOSE 4001
+EXPOSE 4002
 CMD ["npm", "run", "dev"]

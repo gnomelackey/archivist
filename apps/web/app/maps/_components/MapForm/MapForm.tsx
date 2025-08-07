@@ -39,7 +39,7 @@ export const UploadForm = () => {
     formData.append("name", fileName);
     formData.append("description", description);
 
-    const res = await fetch("http://localhost:4001/upload", {
+    const res = await fetch("https://localhost:4001/api/static/upload", {
       method: "POST",
       body: formData,
     });

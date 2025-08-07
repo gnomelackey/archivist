@@ -1,12 +1,9 @@
-import { jwtValidation } from "@api/middleware/jwtValidation";
 import { prisma } from "@repo/db/client";
-import express from "express";
+import type { Request, Response, NextFunction } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { v4 as uuid } from "uuid";
-
-import { staticRouter } from "./router";
 
 const storage = multer.diskStorage({
   destination: function (_, __, cb) {
@@ -22,10 +19,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-const requestValidation = (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+const uploadRequestValidation = (
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   const errors: string[] = [];
 
@@ -35,23 +32,23 @@ const requestValidation = (
   else next();
 };
 
-staticRouter.post(
-  "/upload",
-  jwtValidation,
-  requestValidation,
+const uploadHandler = async (req: Request, res: Response) => {
+  const file = req.file as Express.Multer.File;
+  const body = req.body as { name: string; description: string };
+
+  const map = await prisma.map.create({
+    data: {
+      name: body.name,
+      description: body.description,
+      imageUrl: `/uploads/${file.filename}`,
+    },
+  });
+
+  res.status(201).json({ data: map });
+};
+
+export const uploadRoute = [
+  uploadRequestValidation,
   upload.single("file"),
-  async (req, res) => {
-    const file = req.file as Express.Multer.File;
-    const body = req.body as { name: string; description: string };
-
-    const map = await prisma.map.create({
-      data: {
-        name: body.name,
-        description: body.description,
-        imageUrl: `/uploads/${file.filename}`,
-      },
-    });
-
-    res.status(201).json({ data: map });
-  }
-);
+  uploadHandler,
+];

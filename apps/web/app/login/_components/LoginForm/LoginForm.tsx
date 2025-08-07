@@ -19,7 +19,7 @@ export const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch("https://localhost:4001/onboarding/login", {
+    const res = await fetch("https://localhost:4001/api/onboarding/login", {
       method: "POST",
       body: JSON.stringify({
         email,

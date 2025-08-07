@@ -1,17 +1,16 @@
 import { prisma } from "@repo/db/client";
 import bcrypt from "bcrypt";
-import express from "express";
+import type { Request, Response, NextFunction } from "express";
 
-import { onboardingRouter } from "./router";
-
-const requestValidation = (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+const registerRequestValidation = (
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   const errors: string[] = [];
 
   if (!req.body.email) errors.push("Please provide an email address.");
+  if (!req.body.name) errors.push("Please provide an name.");
   if (!req.body.password) errors.push("Please provide a password.");
   if (!req.body.password !== req.body.confirmPassword) {
     errors.push("Passwords do not match.");
@@ -21,15 +20,18 @@ const requestValidation = (
   else next();
 };
 
-onboardingRouter.post("/register", requestValidation, async (req, res) => {
-  const { email, password } = req.body;
+const registerHandler = async (req: Request, res: Response) => {
+  const { email, password, name } = req.body;
 
   const user = await prisma.user.create({
     data: {
       email,
+      name,
       passwordHash: await bcrypt.hash(password, 10),
     },
   });
 
   res.status(201).json({ email: user.email, id: user.id });
-});
+};
+
+export const registerRoute = [registerRequestValidation, registerHandler];

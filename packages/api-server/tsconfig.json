@@ -1,10 +1,7 @@
 {
-  "extends": "@repo/typescript-config/base.json",
+  "extends": "../typescript-config/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "paths": {
-      "@api/middleware/*": ["./src/middleware/*"]
-    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

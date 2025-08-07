@@ -1,5 +1,5 @@
 import { PrismaClient as prisma } from "@prisma/client";
 
-export function createContext() {
+export async function createContext() {
   return { prisma };
 }

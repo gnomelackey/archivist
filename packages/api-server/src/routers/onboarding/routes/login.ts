@@ -1,17 +1,15 @@
 import { prisma } from "@repo/db/client";
 import bcrypt from "bcrypt";
-import express from "express";
+import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-
-import { onboardingRouter } from "./router";
 
 const EXPIRATION_DEFAULT = "7d";
 const LOGIN_ERROR = `There was an issue logging in. Please check your email or password, and try again.`;
 
-const requestValidation = (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+const loginRequestValidation = (
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   const errors: string[] = [];
 
@@ -23,14 +21,13 @@ const requestValidation = (
   else next();
 };
 
-onboardingRouter.post("/login", requestValidation, async (req, res) => {
+const loginHandler = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   const user = await prisma.user.findFirst({
     where: {
       email: {
         equals: email,
-        caseSensitive: false,
       },
     },
   });
@@ -49,5 +46,6 @@ onboardingRouter.post("/login", requestValidation, async (req, res) => {
   );
 
   res.json({ token });
-});
+};
 
+export const loginRoute = [loginRequestValidation, loginHandler];

@@ -1,53 +1,51 @@
-version: '3.8'
-
 services:
   web:
     build:
-      context: ./apps/web
+      context: .
+      dockerfile: apps/web/Dockerfile
     ports:
       - "3000:3000"
     depends_on:
-      - graphql-server
       - api-server
+      - graphql-server
+    volumes:
+      - .:/app
+    working_dir: /app/apps/web
     networks:
       - internal
-    volumes:
-      - ./apps/web:/app
-      - /app/node_modules
-
-  graphql-server:
-    build:
-      context: ./packages/graphql-server
-    ports:
-      - "4001:4001"
-    networks:
-      - internal
-    volumes:
-      - ./packages/graphql-server:/app
-      - ./packages/database:/app/packages/database
-      - /app/node_modules
 
   api-server:
     build:
-      context: ./packages/api-server
+      context: .
+      dockerfile: packages/api-server/Dockerfile
+    ports:
+      - "4001:4001"
+    volumes:
+      - .:/app
+    working_dir: /app/packages/api-server
+    networks:
+      - internal     
+
+  graphql-server:
+    build:
+      context: .
+      dockerfile: packages/graphql-server/Dockerfile
     ports:
       - "4002:4002"
+    volumes:
+      - .:/app
+    working_dir: /app/packages/graphql-server
     networks:
       - internal
-    volumes:
-      - ./packages/api-server:/app
-      - ./packages/database:/app/packages/database
-      - /app/node_modules
 
   nginx:
     build:
       context: ./packages/nginx
+      dockerfile: Dockerfile
     ports:
       - "8080:80"
     depends_on:
       - web
-      - graphql-server
-      - api-server
     networks:
       - internal
 

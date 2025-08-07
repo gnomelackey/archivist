@@ -1,0 +1,18 @@
+# General junk
+.git
+*.log
+npm-debug.log
+Dockerfile
+
+# Build output
+node_modules
+.next
+dist
+build
+
+# OS/IDE
+.DS_Store
+.vscode
+
+# DO NOT ignore the SQLite DB
+!packages/database/prisma/dev.db

@@ -1,9 +1,8 @@
 import { prisma } from "@repo/db/client";
 import bcrypt from "bcrypt";
 import type { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 
-const EXPIRATION_DEFAULT = "7d";
 const LOGIN_ERROR = `There was an issue logging in. Please check your email or password, and try again.`;
 
 const loginRequestValidation = (
@@ -32,20 +31,36 @@ const loginHandler = async (req: Request, res: Response) => {
     },
   });
 
-  const invalidLogin =
-    !user || !(await bcrypt.compare(password, user.passwordHash));
+  const invalidUser = !user;
 
-  if (invalidLogin) {
+  if (invalidUser) {
+    console.log("Invalid user login attempt for email:", email);
     return res.status(401).json({ error: LOGIN_ERROR });
   }
+
+  const invalidPassword = !(await bcrypt.compare(password, user.passwordHash));
+
+  if (invalidPassword) {
+    console.log("Invalid password login attempt for email:", email);
+    return res.status(401).json({ error: LOGIN_ERROR });
+  }
+
+  const expirationValue = process.env.JWT_EXPIRATION ?? "7d";
+  const jwtExpiration = expirationValue as SignOptions["expiresIn"];
 
   const token = jwt.sign(
     { id: user.id, email: user.email },
     process.env.JWT_SECRET!,
-    { expiresIn: EXPIRATION_DEFAULT }
+    { expiresIn: jwtExpiration }
   );
 
-  res.json({ token });
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+
+  res.json({ message: 'login successful' });
 };
 
 export const loginRoute = [loginRequestValidation, loginHandler];

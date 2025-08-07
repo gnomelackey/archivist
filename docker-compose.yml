@@ -1,5 +1,7 @@
 services:
   web:
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: apps/web/Dockerfile
@@ -15,6 +17,8 @@ services:
       - internal
 
   api-server:
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: packages/api-server/Dockerfile
@@ -27,6 +31,8 @@ services:
       - internal     
 
   graphql-server:
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: packages/graphql-server/Dockerfile
@@ -39,13 +45,17 @@ services:
       - internal
 
   nginx:
+    image: nginx:latest
     build:
       context: ./packages/nginx
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"
     depends_on:
       - web
+      - api-server
+      - graphql-server
     networks:
       - internal
 

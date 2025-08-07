@@ -1,5 +1,6 @@
 "use client";
 
+import { apiClient } from "@repo/ui/clients";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 
@@ -19,15 +20,10 @@ export const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch("https://localhost:4001/api/onboarding/login", {
+    const res = await apiClient("/api/onboarding/login", {
       method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
 
     if (res.ok) redirect("/maps");
@@ -37,11 +33,7 @@ export const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <p>{formError}</p>
-      <input
-        placeholder="File Name..."
-        type="text"
-        onChange={handleEmailChange}
-      />
+      <input placeholder="Email..." type="text" onChange={handleEmailChange} />
       <input
         placeholder="Password..."
         type="password"

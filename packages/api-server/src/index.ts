@@ -1,31 +1,30 @@
 import express from "express";
-import https from 'https';
 import cors from "cors";
 import dotenv from "dotenv";
-import fs from 'fs';
-import path from 'path';
+import cookieParser from "cookie-parser";
 
 import { onboardingRouter } from "./routers/onboarding/router";
 import { staticRouter } from "./routers/static/router";
 
 dotenv.config();
 
-const port = process.env.PORT || 4001;
-const baseRoute = process.env.BASE_ROUTE || "/api";
-const certPath = path.join(__dirname, '..', 'certs');
-const key = fs.readFileSync(path.join(certPath, 'key.pem'));
-const cert = fs.readFileSync(path.join(certPath, 'cert.pem'));
+const port = Number(process.env.API_PORT ?? 4001);
+const origin = process.env.API_ORIGIN ?? `http://localhost`;
+const baseRoute = process.env.API_BASE_ROUTE ?? "/api";
+const originUrl = `${origin}:${port}`;
+
+const corsOriginUrl = process.env.CLIENT_ORIGIN ?? `http://localhost`;
 
 const app = express();
 
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({ origin: corsOriginUrl, credentials: true }));
 app.use(express.json());
 
 app.use(`${baseRoute}/onboarding`, onboardingRouter);
 app.use(`${baseRoute}/static`, staticRouter);
 
-const server = https.createServer({ key, cert }, app);
-
-server.listen(port, () => {
-  console.log(`API server running at https://localhost:${port}`);
+app.listen(port, () => {
+  console.log(`Server running at ${originUrl}`);
+  console.log(`API running at ${originUrl}${baseRoute}`);
 });

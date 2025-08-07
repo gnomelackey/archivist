@@ -20,7 +20,7 @@ export default async function middleware(req: NextRequest) {
 
     if (isPublicRoute) return NextResponse.next();
 
-    const token = req.headers.get("Authorization");
+    const token = req.cookies.get("token")?.value;
     if (!token) return NextResponse.redirect(new URL("/login", req.nextUrl));
 
     jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;

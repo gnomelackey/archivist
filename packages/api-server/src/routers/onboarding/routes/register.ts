@@ -12,7 +12,7 @@ const registerRequestValidation = (
   if (!req.body.email) errors.push("Please provide an email address.");
   if (!req.body.name) errors.push("Please provide an name.");
   if (!req.body.password) errors.push("Please provide a password.");
-  if (!req.body.password !== req.body.confirmPassword) {
+  if (req.body.password !== req.body.confirmPassword) {
     errors.push("Passwords do not match.");
   }
 

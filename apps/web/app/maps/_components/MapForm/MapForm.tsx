@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export const UploadForm = () => {
+export const MapForm = () => {
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
   const [description, setDescription] = useState("");
@@ -39,7 +39,7 @@ export const UploadForm = () => {
     formData.append("name", fileName);
     formData.append("description", description);
 
-    const res = await fetch("https://localhost:4001/api/static/upload", {
+    const res = await fetch("/api/static/upload", {
       method: "POST",
       body: formData,
     });

@@ -6,10 +6,12 @@
     "./client": "./prisma/client.ts"
   },
   "scripts": {
-    "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push",
+    "prisma:generate": "prisma generate --schema=./dist/schema.prisma",
+    "prisma:push": "prisma db push --schema=./dist/schema.prisma",
     "build:schema": "ts-node ./scripts/generate-schema.ts",
-    "build": "npm run build:schema && npm run prisma:generate && npm run prisma:push"
+    "build": "npm run build:schema && npm run prisma:generate && npm run prisma:push",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",

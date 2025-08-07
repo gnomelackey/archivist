@@ -11,27 +11,36 @@ import { jwtVerify } from "jose";
         const protectedRoutes = ['/maps']
 */
 
-const publicRoutes = ["/login", "/register", "/"];
-const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+const APP_ROUTE = "/campaigns";
+const LOGIN_ROUTE = "/login";
+const PUBLIC_ROUTES = ["/register", "/"];
+
+const JWT_COOKIE_NAME = "token";
+const JWT_SECRET = process.env.JWT_SECRET ?? "your_jwt_secret";
+const SECRET = new TextEncoder().encode(JWT_SECRET);
 
 export default async function middleware(req: NextRequest) {
   try {
     const path = req.nextUrl.pathname;
-    const isPublicRoute = publicRoutes.includes(path);
+    const isLoginRoute = path === LOGIN_ROUTE;
+    const token = req.cookies.get(JWT_COOKIE_NAME)?.value;
+
+    if (isLoginRoute) {
+      if (token) return NextResponse.redirect(new URL(APP_ROUTE, req.nextUrl));
+      else return NextResponse.next();
+    }
+
+    const isPublicRoute = PUBLIC_ROUTES.includes(path);
 
     if (isPublicRoute) return NextResponse.next();
+    if (!token) return NextResponse.redirect(new URL(LOGIN_ROUTE, req.nextUrl));
 
-    const token = req.cookies.get("token")?.value;
-    console.log("Token from cookies:", token);
-    if (!token) return NextResponse.redirect(new URL("/login", req.nextUrl));
-
-    console.log("jwt secret:", process.env.JWT_SECRET);
-    await jwtVerify(token, secret, { algorithms: ["HS256"] });
+    await jwtVerify(token, SECRET, { algorithms: ["HS256"] });
 
     return NextResponse.next();
   } catch (error) {
     console.log("Authentication error:", error);
-    return NextResponse.redirect(new URL("/login", req.nextUrl));
+    return NextResponse.redirect(new URL(LOGIN_ROUTE, req.nextUrl));
   }
 }
 

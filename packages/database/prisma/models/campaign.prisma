@@ -1,0 +1,9 @@
+model Campaign {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+
+  factions  Faction[]
+  maps      Map[]
+  user      User   @relation(fields: [id], references: [id])
+}

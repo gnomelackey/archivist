@@ -45,14 +45,13 @@ const loginHandler = async (req: Request, res: Response) => {
     return res.status(401).json({ error: LOGIN_ERROR });
   }
 
+  const secret = process.env.JWT_SECRET ?? "your_jwt_secret";
   const expirationValue = process.env.JWT_EXPIRATION ?? "7d";
   const jwtExpiration = expirationValue as SignOptions["expiresIn"];
 
-  const token = jwt.sign(
-    { id: user.id, email: user.email },
-    process.env.JWT_SECRET!,
-    { expiresIn: jwtExpiration }
-  );
+  const token = jwt.sign({ id: user.id, email: user.email }, secret, {
+    expiresIn: jwtExpiration,
+  });
 
   res.cookie("token", token, {
     httpOnly: true,
@@ -60,7 +59,7 @@ const loginHandler = async (req: Request, res: Response) => {
     sameSite: "none",
   });
 
-  res.json({ message: 'login successful' });
+  res.json({ message: "login successful" });
 };
 
 export const loginRoute = [loginRequestValidation, loginHandler];

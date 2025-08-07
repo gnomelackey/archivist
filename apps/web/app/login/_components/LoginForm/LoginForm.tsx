@@ -26,7 +26,7 @@ export const LoginForm = () => {
       body: JSON.stringify({ email, password }),
     });
 
-    if (res.ok) redirect("/maps");
+    if (res.ok) redirect("/campaigns");
     else setFormError("Login failed. Please check your credentials.");
   };
 

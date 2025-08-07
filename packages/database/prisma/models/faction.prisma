@@ -1,9 +1,7 @@
-model Map {
+model Faction {
   id          String   @id @default(cuid())
   name        String
   description String?
-  imageUrl    String?
-  createdAt   DateTime @default(now())
 
   campaign   Campaign @relation(fields: [id], references: [id])
 }

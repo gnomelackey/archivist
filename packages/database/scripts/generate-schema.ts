@@ -1,19 +1,25 @@
 import fs from "fs";
 import path from "path";
 
-const basePath = path.join(__dirname, "../prisma/schema.base.prisma");
-const modelsPath = path.join(__dirname, "../prisma/models");
-const outputPath = path.join(__dirname, "../prisma/schema.prisma");
+const inputPath = path.join(__dirname, "../prisma/schema/schema.base.prisma");
+const inputModelsDir = path.join(__dirname, "../prisma/models");
 
-const base = fs.readFileSync(basePath, "utf8");
+const outputDir = path.join(__dirname, "../dist");
+const outputPath = path.join(__dirname, "../dist/schema.prisma");
 
-const modelFiles = fs
-  .readdirSync(modelsPath)
-  .filter((f) => f.endsWith(".prisma"));
+fs.mkdir(outputDir, { recursive: true }, (err) => {
+  if (err) throw err;
+  
+  const base = fs.readFileSync(inputPath, "utf8");
 
-const models = modelFiles
-  .map((file) => fs.readFileSync(path.join(modelsPath, file), "utf8"))
-  .join("\n\n");
+  const modelFiles = fs
+    .readdirSync(inputModelsDir)
+    .filter((f) => f.endsWith(".prisma"));
 
-fs.writeFileSync(outputPath, `${base}\n\n${models}`);
-console.log("✅ schema.prisma generated.");
+  const models = modelFiles
+    .map((file) => fs.readFileSync(path.join(inputModelsDir, file), "utf8"))
+    .join("\n\n");
+
+  fs.writeFileSync(outputPath, `${base}\n\n${models}`);
+  console.log("✅ schema.prisma generated.");
+});

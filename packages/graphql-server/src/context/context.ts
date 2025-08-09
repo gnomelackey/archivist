@@ -1,4 +1,4 @@
-import { prisma } from "@repo/db/client";
+import { prisma } from "@repo/db";
 import jwt from "jsonwebtoken";
 import type { StandaloneServerContextFunctionArgument } from "@apollo/server/standalone";
 import cookie from "cookie";

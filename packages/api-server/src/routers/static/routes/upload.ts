@@ -1,4 +1,4 @@
-import { prisma } from "@repo/db/client";
+import { prisma } from "@repo/db";
 import type { Request, Response, NextFunction } from "express";
 import multer from "multer";
 import path from "path";

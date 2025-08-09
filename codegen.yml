@@ -4,7 +4,7 @@ schema:
   - "packages/graphql-server/src/schemas/**/*.graphql"
 
 generates:
-  packages/graphql-server/__generated__/schema-types.ts:
+  packages/graphql-server/src/__generated__/schema-types.ts:
     plugins:
       - typescript
     config:
@@ -12,16 +12,16 @@ generates:
       useIndexSignature: true
       useTypeImports: true
 
-  packages/graphql-server/__generated__/resolver-types.ts:
+  packages/graphql-server/src/__generated__/resolver-types.ts:
     plugins:
       - add:
           content: "import type * as Types from './schema-types';"
       - typescript-resolvers
     config:
-      contextType: "../src/context#ArchivistGraphQLContext"
+      contextType: "../context#ArchivistGraphQLContext"
       namespacedImportName: Types
       useTypeImports: true
       mappers:
-        Campaign: "../../database/__generated__/prisma/index.d.js#Campaign"
-        User: "../../database/__generated__/prisma/index.d.js#User"
-      resolverTypeWrapperSignature: "Promise<T> | T | import('../../database/__generated__/prisma').PrismaPromise<T>"
+        Campaign: "@repo/db#Campaign"
+        User: "@repo/db#User"
+      resolverTypeWrapperSignature: "Promise<T> | T | import('@repo/db').PrismaPromise<T>"

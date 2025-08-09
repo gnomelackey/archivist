@@ -1,4 +1,4 @@
-import type { Resolvers } from "@generated/graphQL/resolver-types";
+import type { Resolvers } from "../__generated__/resolver-types";
 import { ArchivistGraphQLContext } from "../context";
 
 export type AddCampaignArgs = {

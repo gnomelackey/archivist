@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@repo/db/models";
+import type { PrismaClient } from "@repo/db";
 import type { JwtPayload } from "jsonwebtoken";
 
 export interface ArchivistJwtPayload extends JwtPayload {

@@ -1,4 +1,4 @@
-import { prisma } from "@repo/db/client";
+import { prisma } from "@repo/db/client"
 import bcrypt from "bcrypt";
 import type { Request, Response, NextFunction } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";

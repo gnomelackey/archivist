@@ -1,0 +1,3 @@
+extend type Mutation {
+    addCampaign(name: String!, description: String): Campaign!
+}

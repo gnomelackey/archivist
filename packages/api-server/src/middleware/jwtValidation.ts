@@ -8,16 +8,16 @@ export function jwtValidation(
   res: express.Response,
   next: express.NextFunction
 ) {
-  const auth = req.headers.authorization;
-
-  if (!auth?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Missing token" });
-  }
-
   try {
-    const token = auth.slice(7);
+    const token = req.cookies?.token;
+
+    if (!token) {
+      return res.status(401).json({ error: "Missing token" });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     (req as any).user = decoded;
+
     next();
   } catch {
     res.status(401).json({ error: "Invalid token" });

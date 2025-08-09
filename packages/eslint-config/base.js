@@ -30,7 +30,7 @@ export const config = [
     ignores: [
       "dist/**",
       "node_modules/**",
-      "**/generated/**",
+      "**/__generated__/**",
       "**/schema/**",
       ".next/**",
     ],

@@ -3,15 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./client": "./prisma/client.ts"
+    "./client": "./prisma/client.ts",
+    "./models": "./__generated__/prisma/index.d.js"
   },
+  "types": "./__generated__/prisma/index.d.ts",
   "scripts": {
     "prisma:generate": "prisma generate --schema=./dist/schema.prisma",
     "prisma:push": "prisma db push --schema=./dist/schema.prisma",
     "build:schema": "ts-node ./scripts/generate-schema.ts",
     "build": "npm run build:schema && npm run prisma:generate && npm run prisma:push",
     "lint": "eslint . --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "postinstall": "npm run build"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",

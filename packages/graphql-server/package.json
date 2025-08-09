@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./*": "./src/*.ts"
+    "./*": "./src/*"
   },
   "scripts": {
     "build": "tsc",
@@ -12,8 +12,12 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.7",
+    "@graphql-tools/load-files": "^7.0.1",
+    "@graphql-tools/merge": "^9.1.1",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
+    "@types/cookie": "^0.6.0",
     "@types/node": "^22.15.3",
     "eslint": "^9.31.0",
     "typescript": "5.8.2"
@@ -21,6 +25,8 @@
   "dependencies": {
     "@apollo/server": "^5.0.0",
     "@repo/db": "*",
-    "graphql": "^16.11.0"
+    "cookie": "^0.7.2",
+    "graphql": "^16.11.0",
+    "jsonwebtoken": "^9.0.2"
   }
 }

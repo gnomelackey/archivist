@@ -11,41 +11,59 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  static-testing:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
-
-      - name: Install deps
-        run: npm ci
-
       - name: Restore turbo cache
-        id: turbo-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache@v4
         with:
           path: .turbo
-          key: ${{ runner.os }}-turbo-${{ hashFiles('package-lock.json') }}
+          key: turbo-${{ runner.os }}-${{ hashFiles('package-lock.json', 'turbo.json', '**/package.json', '**/tsconfig*.json') }}
           restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - name: Lint
-        run: npx turbo run lint --cache-dir=.turbo
-
-      - name: Type check
-        run: npx turbo run check-types --cache-dir=.turbo
-
-      - name: Save turbo cache
-        if: always()
-        uses: actions/cache/save@v4
+            turbo-${{ runner.os }}-
+      - run: npm ci
+      - run: npx turbo run build
+      - uses: actions/upload-artifact@v4
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ hashFiles('package-lock.json') }}
+          name: dist
+          path: |
+            packages/**/dist
+            apps/**/dist
+            **/build
+
+  lint:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: .
+      - run: npx turbo run lint
+
+  typecheck:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: .
+      - run: npx turbo run check-types

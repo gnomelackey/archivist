@@ -1,6 +1,6 @@
 "use client";
 
-import { apiClient } from "@repo/ui/clients";
+import { apiClient } from "@repo/clients";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 

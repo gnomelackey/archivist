@@ -11,7 +11,8 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/ui": "*",
+    "@repo/clients": "*",
+    "@repo/components": "*",
     "jose": "^6.0.12",
     "next": "^15.4.2",
     "pixi.js": "^8.12.0",

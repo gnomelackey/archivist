@@ -20,7 +20,7 @@ export default function Home() {
         <p className="mt-4">This is where you can manage your campaigns.</p>
         <Button onClick={handleOpenModal}>Create New Campaign</Button>
       </div>
-      <CreateCampaignModal open={modalOpen} />
+      <CreateCampaignModal open={modalOpen} onClose={handleOpenModal} />
     </>
   );
 }

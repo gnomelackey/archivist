@@ -24,6 +24,7 @@
     "@babel/preset-typescript": "^7.27.1",
     "@repo/api-server": "*",
     "@repo/eslint-config": "*",
+    "@repo/theme": "*",
     "@repo/typescript-config": "*",
     "@storybook/react": "^9.1.1",
     "@storybook/react-webpack5": "^9.1.1",

@@ -1,0 +1,14 @@
+{
+  "name": "@repo/theme",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.css"
+  },
+  "scripts": {
+    "build": "tailwindcss -i ./index.css -o ./dist/index.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.11"
+  }
+}

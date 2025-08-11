@@ -10,7 +10,7 @@ export const Input = ({
   );
 
   const labelText = label ? (
-    <label className="text-sm font-medium mb-1 text-red-500" htmlFor={htmlFor}>
+    <label className="text-sm font-medium mb-1" htmlFor={htmlFor}>
       {label}
     </label>
   ) : null;

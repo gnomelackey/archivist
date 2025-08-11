@@ -13,6 +13,7 @@
   "dependencies": {
     "@repo/clients": "*",
     "@repo/components": "*",
+    "framer-motion": "^12.23.12",
     "jose": "^6.0.12",
     "next": "^15.4.2",
     "pixi.js": "^8.12.0",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@repo/api-server": "*",
     "@repo/eslint-config": "*",
+    "@repo/theme": "*",
     "@repo/typescript-config": "*",
     "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^22.15.3",

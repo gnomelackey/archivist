@@ -2,8 +2,6 @@ import { useMemo } from "react";
 
 import { TextAreaProps } from "./types";
 
-import "./styles.css";
-
 export const TextArea = ({
   label,
   variant = "outline",

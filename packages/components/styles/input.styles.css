@@ -1,13 +1,11 @@
-@import "../index.css";
-
-.textarea-outline {
-  textarea {
+.input-outline {
+  input {
     @apply bg-transparent border rounded text-palette-100;
   }
 }
 
-.textarea-fill {
-  textarea {
+.input-fill {
+  input {
     @apply bg-palette-300 rounded text-palette-100;
   }
 }

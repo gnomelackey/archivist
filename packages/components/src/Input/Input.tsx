@@ -2,8 +2,6 @@ import { useMemo } from "react";
 
 import { InputProps } from "./types";
 
-import "./styles.css";
-
 export const Input = ({ label, className, variant = "outline", ...props }: InputProps) => {
   const variantClassName = {
     fill: "input-fill",

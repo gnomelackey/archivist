@@ -1,5 +1,3 @@
-@import "../index.css";
-
 .btn-outline {
   @apply bg-transparent border hover:border-transparent hover:text-palette-200 rounded text-palette-100;
 }

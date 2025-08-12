@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@repo/theme";
+@import "@repo/theme/styles";
 
 @import './button.styles.css';
 @import './input.styles.css';

@@ -1,24 +1,15 @@
 "use client";
 
+import { Button, ErrorMessage, Input } from "@repo/components";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 
 export const RegisterForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [formError, setFormError] = useState("");
-
-  const toggleShowPassword = () => {
-    setShowPassword((prev) => !prev);
-  };
-
-  const toggleShowConfirmPassword = () => {
-    setShowConfirmPassword((prev) => !prev);
-  };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -58,28 +49,36 @@ export const RegisterForm = () => {
     else setFormError("Registration failed. Please check required fields.");
   };
 
+  const error = formError ? <ErrorMessage>{formError}</ErrorMessage> : null;
+
   return (
-    <form onSubmit={handleSubmit}>
-      <p>{formError}</p>
-      <input placeholder="Email..." type="text" onChange={handleEmailChange} />
-      <input placeholder="Name..." type="text" onChange={handleNameChange} />
-      <input
+    <form className="flex flex-col gap-6 min-w-sm" onSubmit={handleSubmit}>
+      {error}
+      <Input
+        name="email"
+        placeholder="Email..."
+        type="text"
+        onChange={handleEmailChange}
+      />
+      <Input
+        name="name"
+        placeholder="Name..."
+        type="text"
+        onChange={handleNameChange}
+      />
+      <Input
+        name="password"
         placeholder="Password..."
-        type={showPassword ? "text" : "password"}
+        type="password"
         onChange={handlePasswordChange}
       />
-      <button type="button" onClick={toggleShowPassword}>
-        Show
-      </button>
-      <input
+      <Input
+        name="confirm"
         placeholder="Confirm Password..."
-        type={showConfirmPassword ? "text" : "password"}
+        type="password"
         onChange={handleConfirmPasswordChange}
       />
-      <button type="button" onClick={toggleShowConfirmPassword}>
-        Show
-      </button>
-      <button type="submit">Register</button>
+      <Button type="submit">Register</Button>
     </form>
   );
 };

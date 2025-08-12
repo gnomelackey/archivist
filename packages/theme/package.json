@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "type": "module",
   "exports": {
-    ".": "./dist/index.css"
+    "./palette": "./dist/index.js",
+    "./styles": "./dist/index.css"
   },
   "scripts": {
-    "build": "tailwindcss -i ./index.css -o ./dist/index.css --minify"
+    "build:css": "tailwindcss -i ./index.css -o ./dist/index.css --minify",
+    "build:js": "tsc",
+    "build": "npm run build:js && npm run build:css"
   },
   "devDependencies": {
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "typescript": "5.8.2"
   }
 }

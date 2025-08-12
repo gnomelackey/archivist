@@ -31,20 +31,20 @@ export const LoginForm = () => {
     else setFormError("Login failed. Please check your credentials.");
   };
 
-  const error = formError ? (
-    <ErrorMessage>{formError}</ErrorMessage>
-  ) : null;
+  const error = formError ? <ErrorMessage>{formError}</ErrorMessage> : null;
 
   return (
     <form className="flex flex-col gap-6 min-w-sm" onSubmit={handleSubmit}>
       {error}
       <div className="flex flex-col gap-2">
         <Input
+          name="email"
           placeholder="Email..."
           type="text"
           onChange={handleEmailChange}
         />
         <Input
+          name="password"
           placeholder="Password..."
           type="password"
           onChange={handlePasswordChange}

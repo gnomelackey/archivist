@@ -24,6 +24,7 @@
     "@babel/preset-typescript": "^7.27.1",
     "@repo/api-server": "*",
     "@repo/eslint-config": "*",
+    "@repo/hooks": "*",
     "@repo/theme": "*",
     "@repo/typescript-config": "*",
     "@storybook/react": "^9.1.1",
@@ -43,6 +44,7 @@
     "typescript": "5.8.2"
   },
   "dependencies": {
+    "framer-motion": "^12.23.12",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   }

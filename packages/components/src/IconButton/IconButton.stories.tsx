@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { Input } from "./Input";
+import { IconButton } from "./IconButton";
 
 const meta = {
-  component: Input,
-} satisfies Meta<typeof Input>;
+  component: IconButton,
+} satisfies Meta<typeof IconButton>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   args: {
-    variant: "outline",
-    type: "text",
+    icon: "show",
+    size: 5,
   },
 };

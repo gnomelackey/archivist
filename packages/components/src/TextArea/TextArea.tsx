@@ -8,6 +8,11 @@ export const TextArea = ({
   className,
   ...props
 }: TextAreaProps) => {
+  const htmlFor = useMemo(
+    () => (label ? `input-${label}` : undefined),
+    [label]
+  );
+
   const variantClasses = {
     fill: "textarea-fill",
     outline: "textarea-outline",
@@ -15,13 +20,11 @@ export const TextArea = ({
 
   const classes = className ?? `w-full p-2 rounded`;
 
-  const htmlFor = useMemo(
-    () => props.id || "textarea-" + Math.random().toString(36).slice(5),
-    [props.id]
-  );
-
   const labelText = label ? (
-    <label className="text-palette-100 mb-1 text-lg font-semibold" htmlFor={htmlFor}>
+    <label
+      className="text-palette-100 mb-1 text-lg font-semibold"
+      htmlFor={htmlFor}
+    >
       {label}
     </label>
   ) : null;

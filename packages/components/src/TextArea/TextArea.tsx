@@ -1,28 +1,37 @@
 import { useMemo } from "react";
 
+import { TextAreaProps } from "./types";
+
+import "./styles.css";
+
 export const TextArea = ({
   label,
+  variant = "outline",
+  className,
   ...props
-}: { label?: string } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) => {
+}: TextAreaProps) => {
+  const variantClasses = {
+    fill: "textarea-fill",
+    outline: "textarea-outline",
+  }[variant];
+
+  const classes = className ?? `w-full p-2 rounded`;
+
   const htmlFor = useMemo(
-    () => props.id || "TextArea-" + Math.random().toString(36).slice(5),
+    () => props.id || "textarea-" + Math.random().toString(36).slice(5),
     [props.id]
   );
 
   const labelText = label ? (
-    <label className="block text-sm font-medium mb-1" htmlFor={htmlFor}>
+    <label className="text-palette-100 mb-1 text-lg font-semibold" htmlFor={htmlFor}>
       {label}
     </label>
   ) : null;
 
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${variantClasses}`}>
       {labelText}
-      <textarea
-        id={htmlFor}
-        className="w-full border border-gray-300 p-2 rounded"
-        {...props}
-      />
+      <textarea id={htmlFor} className={classes} {...props} />
     </div>
   );
 };

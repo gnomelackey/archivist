@@ -1,5 +1,5 @@
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "text" | "fill" | "outline";
-  size?: "small" | "medium" | "large";
+  size?: "xSmall" | "small" | "medium" | "large" | "xLarge";
   isLoading?: boolean;
 };

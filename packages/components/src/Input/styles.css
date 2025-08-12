@@ -1,0 +1,13 @@
+@import "../index.css";
+
+.input-outline {
+  input {
+    @apply bg-transparent border rounded text-palette-100;
+  }
+}
+
+.input-fill {
+  input {
+    @apply bg-palette-300 rounded text-palette-100;
+  }
+}

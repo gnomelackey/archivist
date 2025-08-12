@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { TextAreaProps } from "./types";
+import type { TextAreaProps } from "./types";
 
 export const TextArea = ({
   label,

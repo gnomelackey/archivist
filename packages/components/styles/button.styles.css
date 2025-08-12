@@ -1,5 +1,5 @@
 .btn-outline {
-  @apply bg-transparent border hover:border-transparent hover:text-palette-200 rounded text-palette-100;
+  @apply bg-transparent border hover:border-palette-200 hover:text-palette-200 rounded text-palette-100;
 }
 
 .btn-fill {

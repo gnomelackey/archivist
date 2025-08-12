@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { InputProps } from "./types";
+import type { InputProps } from "./types";
 
 export const Input = ({ label, className, variant = "outline", ...props }: InputProps) => {
   const variantClassName = {

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@repo/clients": "*",
+    "@repo/graphql-server": "*",
     "@repo/components": "*",
     "framer-motion": "^12.23.12",
     "jose": "^6.0.12",

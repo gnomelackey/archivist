@@ -18,11 +18,11 @@ export const TextArea = ({
     outline: "textarea-outline",
   }[variant];
 
-  const classes = className ?? `w-full p-2 rounded`;
+  const classes = className ?? `w-full p-2 rounded textarea`;
 
   const labelText = label ? (
     <label
-      className="text-palette-100 mb-1 text-lg font-semibold"
+      className="text-palette-100 mb-1 text-lg font-semibold focus:text-palette-200"
       htmlFor={htmlFor}
     >
       {label}
@@ -30,7 +30,7 @@ export const TextArea = ({
   ) : null;
 
   return (
-    <div className={`flex flex-col ${variantClasses}`}>
+    <div className={`flex flex-col textarea-group ${variantClasses}`}>
       {labelText}
       <textarea id={htmlFor} className={classes} {...props} />
     </div>

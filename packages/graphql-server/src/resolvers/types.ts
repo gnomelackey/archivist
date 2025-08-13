@@ -1,7 +1,7 @@
 import type { Resolvers } from "../__generated__/resolver-types";
 import { ArchivistGraphQLContext } from "../context";
 
-export type AddCampaignArgs = {
+export type CreateCampaignArgs = {
   name: string;
   description: string;
 };

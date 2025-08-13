@@ -5,9 +5,12 @@ import { useState } from "react";
 import { Button } from "@repo/components";
 
 import { CreateCampaignModal } from "./_components/CreateCampaignModal";
+import { GET_CAMPAIGNS_QUERY, graphqlClient } from "@repo/clients";
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
+
+  const data = graphqlClient.query({ query: GET_CAMPAIGNS_QUERY });
 
   const handleOpenModal = () => {
     setModalOpen((prev) => !prev);

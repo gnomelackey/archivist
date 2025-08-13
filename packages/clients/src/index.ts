@@ -1,2 +1,2 @@
-export * from "./apiClient";
-export * from "./graphqlClient";
+export * from "./api";
+export * from "./graphql";

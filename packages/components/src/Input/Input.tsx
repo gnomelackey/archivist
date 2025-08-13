@@ -22,7 +22,7 @@ export const Input = ({
     outline: "input-outline",
   }[variant];
 
-  const classes = className ?? `w-full p-2 rounded`;
+  const classes = className ?? `w-full p-2 rounded input`;
 
   const isPassword = type === "password";
   const passwordType = showPassword ? "text" : "password";
@@ -31,7 +31,7 @@ export const Input = ({
 
   const labelText = label ? (
     <label
-      className="text-palette-100 mb-1 text-lg font-semibold"
+      className="text-palette-100 mb-1 text-lg font-semibold focus:text-palette-200"
       htmlFor={htmlFor}
     >
       {label}
@@ -50,7 +50,7 @@ export const Input = ({
   ) : null;
 
   return (
-    <div className={`flex flex-col ${variantClassName}`}>
+    <div className={`flex flex-col input-group ${variantClassName}`}>
       {labelText}
       <div className="relative w-full">
         <input

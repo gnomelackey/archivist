@@ -24,11 +24,11 @@ export type Campaign = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addCampaign: Campaign;
+  createCampaign: Campaign;
 };
 
 
-export type MutationAddCampaignArgs = {
+export type MutationCreateCampaignArgs = {
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
 };

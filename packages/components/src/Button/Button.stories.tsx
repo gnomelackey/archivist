@@ -13,5 +13,7 @@ export const Playground: Story = {
   args: {
     children: "Click Me",
     variant: "outline",
+    mode: "primary",
+    size: "medium"
   },
 };

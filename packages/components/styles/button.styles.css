@@ -1,11 +1,20 @@
-.btn-outline {
-  @apply bg-transparent border hover:border-palette-200 hover:text-palette-200 rounded text-palette-100;
+.btn-outline-primary {
+  @apply font-bold text-palette-100 bg-transparent hover:text-palette-200 hover:border-palette-200 border-3 rounded;
+}
+.btn-outline-secondary {
+  @apply font-bold text-palette-400 bg-transparent hover:text-palette-300 hover:border-palette-300 border-3 rounded;
 }
 
-.btn-fill {
-  @apply bg-palette-100 hover:bg-palette-300 hover:text-palette-100 rounded text-palette-300;
+.btn-fill-primary {
+  @apply text-palette-400 bg-palette-100 hover:text-palette-400 hover:bg-palette-200 rounded;
+}
+.btn-fill-secondary {
+  @apply text-palette-100 bg-palette-400 hover:text-palette-100 hover:bg-palette-300 rounded;
 }
 
-.btn-text {
-  @apply bg-transparent hover:text-palette-200 rounded text-palette-100;
+.btn-text-primary {
+  @apply text-palette-100 bg-transparent hover:text-palette-200 rounded;
+}
+.btn-text-secondary {
+  @apply text-palette-300 bg-transparent hover:text-palette-100 rounded;
 }

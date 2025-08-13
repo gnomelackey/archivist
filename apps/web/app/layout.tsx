@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+
+import { GlobalProviders } from "./_providers/GlobalProviders";
 import styles from "./layout.module.css";
 
 import "@repo/components/styles.css";
@@ -29,8 +31,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <div className={styles.page}>
-          <main className={styles.main}>{children}</main>
-          <footer className={styles.footer}></footer>
+          <GlobalProviders>
+            <main className={styles.main}>{children}</main>
+            <footer className={styles.footer}></footer>
+          </GlobalProviders>
         </div>
       </body>
     </html>

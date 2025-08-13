@@ -5,14 +5,15 @@ export const Button = ({
   className,
   variant = "outline",
   size = "medium",
+  mode = "primary",
   children,
   ...props
 }: ButtonProps) => {
   const variantClassNames = {
-    outline: "btn-outline",
-    fill: "btn-fill",
-    text: "btn-text",
-  }[variant];
+    outline: { primary: "btn-outline-primary", secondary: "btn-outline-secondary" },
+    fill: { primary: "btn-fill-primary", secondary: "btn-fill-secondary" },
+    text: { primary: "btn-text-primary", secondary: "btn-text-secondary" },
+  }[variant][mode];
 
   const sizeClassNames = {
     xSmall: "text-xs",

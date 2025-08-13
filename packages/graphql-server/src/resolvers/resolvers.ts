@@ -7,7 +7,7 @@ export const resolvers: ArchivistGraphQLResolvers = {
     },
   },
   Mutation: {
-    addCampaign: (_, args, context) => {
+    createCampaign: (_, args, context) => {
       const { id } = context.user;
 
       return context.prisma.campaign.create({

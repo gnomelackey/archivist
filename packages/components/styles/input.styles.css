@@ -1,3 +1,12 @@
+.input-group:focus-within label {
+  @apply text-palette-200;
+}
+
+.input:focus {
+  @apply border-palette-200 border;
+  outline: none;
+}
+
 .input-outline {
   input {
     @apply bg-transparent border rounded text-palette-100;

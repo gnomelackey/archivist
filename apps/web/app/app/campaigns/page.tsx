@@ -17,9 +17,16 @@ export default function CampaignsPage() {
   return (
     <>
       <div className="flex flex-col">
-        <h1 className="text-2xl font-bold">Welcome to the Campaigns Page</h1>
+        <h1 className="text-5xl font-bold uppercase mb-10 w-full text-center">
+          Campaigns
+        </h1>
         <CampaignList />
-        <Button onClick={handleOpenModal}>Create New Campaign</Button>
+        <Button
+          className="absolute right-10 bottom-10"
+          onClick={handleOpenModal}
+        >
+          Create New Campaign
+        </Button>
       </div>
       <CreateCampaignModal open={modalOpen} onClose={handleOpenModal} />
     </>

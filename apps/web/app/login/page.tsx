@@ -7,7 +7,7 @@ export default function Login() {
       <LoginForm />
       <p>
         {`Don't have an account? `}
-        <Link style={{ color: "#FFFF11" }} href="/register" prefetch>
+        <Link className="text-palette-200" href="/register" prefetch>
           Register
         </Link>
       </p>

@@ -22,7 +22,7 @@ export const Input = ({
     outline: "input-outline",
   }[variant];
 
-  const classes = className ?? `w-full p-2 rounded input`;
+  const classes = `w-full p-2 rounded input ${className}`;
 
   const isPassword = type === "password";
   const passwordType = showPassword ? "text" : "password";

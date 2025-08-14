@@ -10,7 +10,10 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const variantClassNames = {
-    outline: { primary: "btn-outline-primary", secondary: "btn-outline-secondary" },
+    outline: {
+      primary: "btn-outline-primary",
+      secondary: "btn-outline-secondary",
+    },
     fill: { primary: "btn-fill-primary", secondary: "btn-fill-secondary" },
     text: { primary: "btn-text-primary", secondary: "btn-text-secondary" },
   }[variant][mode];
@@ -23,9 +26,7 @@ export const Button = ({
     xLarge: "text-xl",
   }[size];
 
-  const buttonClassNames =
-    className ??
-    `py-1 px-2 font-semibold hover:cursor-pointer ${variantClassNames} ${sizeClassNames}`;
+  const buttonClassNames = `py-1 px-2 font-semibold hover:cursor-pointer ${variantClassNames} ${sizeClassNames} ${className}`;
 
   return (
     <button className={buttonClassNames} type={type} {...props}>

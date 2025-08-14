@@ -18,7 +18,7 @@ export const TextArea = ({
     outline: "textarea-outline",
   }[variant];
 
-  const classes = className ?? `w-full p-2 rounded textarea`;
+  const classes = `w-full p-2 rounded textarea ${className}`;
 
   const labelText = label ? (
     <label

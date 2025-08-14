@@ -3,14 +3,34 @@
 import { useState } from "react";
 
 import { Button } from "@repo/components";
+import { GetCampaignsDocument, type Campaign } from "@repo/clients";
+import { useQuery } from "@apollo/client";
 
 import { CreateCampaignModal } from "./_components/CreateCampaignModal";
-import { GET_CAMPAIGNS_QUERY, graphqlClient } from "@repo/clients";
+
+const CampaignList = () => {
+  const { data, loading, error } = useQuery(GetCampaignsDocument);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching campaigns</p>;
+
+  const campaigns = data?.campaigns || [];
+
+  if (campaigns.length === 0) {
+    return <p>No campaigns found. Create a new one!</p>;
+  }
+
+  return (
+    <ul>
+      {campaigns.map((campaign: Campaign) => (
+        <li key={campaign.id}>{campaign.name}</li>
+      ))}
+    </ul>
+  );
+};
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
-
-  const data = graphqlClient.query({ query: GET_CAMPAIGNS_QUERY });
 
   const handleOpenModal = () => {
     setModalOpen((prev) => !prev);
@@ -20,7 +40,7 @@ export default function Home() {
     <>
       <div className="flex flex-col">
         <h1 className="text-2xl font-bold">Welcome to the Campaigns Page</h1>
-        <p className="mt-4">This is where you can manage your campaigns.</p>
+        <CampaignList />
         <Button onClick={handleOpenModal}>Create New Campaign</Button>
       </div>
       <CreateCampaignModal open={modalOpen} onClose={handleOpenModal} />

@@ -1,5 +1,5 @@
 import type * as Types from './schema-types';
-import type { GraphQLResolveInfo } from 'graphql';
+import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import type { Campaign, User } from '@repo/db';
 import type { ArchivistGraphQLContext } from '../context';
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
@@ -76,6 +76,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Types.Scalars['Boolean']['output']>;
   Campaign: ResolverTypeWrapper<Campaign>;
+  DateTime: ResolverTypeWrapper<Types.Scalars['DateTime']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Types.Scalars['String']['output']>;
@@ -85,29 +86,39 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Types.Scalars['Boolean']['output'];
   Campaign: Campaign;
+  DateTime: Types.Scalars['DateTime']['output'];
   Mutation: {};
   Query: {};
   String: Types.Scalars['String']['output'];
 };
 
 export type CampaignResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Campaign'] = ResolversParentTypes['Campaign']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   description?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
+
 export type MutationResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  _empty?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createCampaign?: Resolver<ResolversTypes['Campaign'], ParentType, ContextType, RequireFields<Types.MutationCreateCampaignArgs, 'name'>>;
 };
 
 export type QueryResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  _empty?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   campaigns?: Resolver<Array<ResolversTypes['Campaign']>, ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = ArchivistGraphQLContext> = {
   Campaign?: CampaignResolvers<ContextType>;
+  DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 };

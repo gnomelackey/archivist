@@ -3,4 +3,6 @@ type Campaign {
   name: String!
   description: String
   user: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }

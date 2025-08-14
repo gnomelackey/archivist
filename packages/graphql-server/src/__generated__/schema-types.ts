@@ -12,18 +12,22 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
 };
 
 export type Campaign = {
   __typename?: 'Campaign';
+  createdAt: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
   user: Scalars['String']['output'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  _empty?: Maybe<Scalars['String']['output']>;
   createCampaign: Campaign;
 };
 
@@ -35,5 +39,6 @@ export type MutationCreateCampaignArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  _empty?: Maybe<Scalars['String']['output']>;
   campaigns: Array<Campaign>;
 };

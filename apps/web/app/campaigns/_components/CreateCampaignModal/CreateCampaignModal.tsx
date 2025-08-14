@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 
-import { graphqlClient, CREATE_CAMPAIGN_MUTATION } from "@repo/clients";
+import { graphqlClient, CreateCampaignDocument } from "@repo/clients";
 import { Button, Input, Modal, TextArea } from "@repo/components";
 
 import type { CreateCampaignModalProps } from "./types";
@@ -22,7 +22,7 @@ export const CreateCampaignModal = ({
 
   const handleCreateCampaign = async () => {
     await graphqlClient.mutate({
-      mutation: CREATE_CAMPAIGN_MUTATION,
+      mutation: CreateCampaignDocument,
       variables: { name, description },
     });
 

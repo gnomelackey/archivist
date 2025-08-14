@@ -3,6 +3,10 @@ overwrite: true
 schema:
   - "packages/graphql-server/src/schemas/**/*.graphql"
 
+documents:
+  - "packages/clients/src/graphql/**/*.ts"
+  - "apps/web/**/*.{ts,tsx}"
+
 generates:
   packages/graphql-server/src/__generated__/schema-types.ts:
     plugins:
@@ -25,3 +29,11 @@ generates:
         Campaign: "@repo/db#Campaign"
         User: "@repo/db#User"
       resolverTypeWrapperSignature: "Promise<T> | T | import('@repo/db').PrismaPromise<T>"
+
+  packages/clients/src/graphql/types/:
+    preset: client
+    plugins: []
+    config:
+      enumsAsTypes: true
+      useIndexSignature: true
+      useTypeImports: true

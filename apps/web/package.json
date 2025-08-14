@@ -11,9 +11,10 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@pixi/react": "^8.0.0-beta.25",
     "@repo/clients": "*",
-    "@repo/graphql-server": "*",
     "@repo/components": "*",
+    "@repo/graphql-server": "*",
     "framer-motion": "^12.23.12",
     "jose": "^6.0.12",
     "next": "^15.4.2",

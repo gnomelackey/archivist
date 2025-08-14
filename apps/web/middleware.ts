@@ -11,7 +11,7 @@ import { jwtVerify } from "jose";
         const protectedRoutes = ['/maps']
 */
 
-const APP_ROUTE = "/campaigns";
+const APP_ROUTE = "/app/dashboard";
 const LOGIN_ROUTE = "/login";
 const PUBLIC_ROUTES = ["/register", "/"];
 

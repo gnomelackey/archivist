@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
+import { authRouter } from "./routers/auth/router";
 import { onboardingRouter } from "./routers/onboarding/router";
 import { staticRouter } from "./routers/static/router";
 
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(cors({ origin: corsOriginUrl, credentials: true }));
 app.use(express.json());
 
+app.use(`${baseRoute}/auth`, authRouter);
 app.use(`${baseRoute}/onboarding`, onboardingRouter);
 app.use(`${baseRoute}/static`, staticRouter);
 

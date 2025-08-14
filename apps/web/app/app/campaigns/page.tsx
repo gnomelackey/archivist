@@ -3,33 +3,11 @@
 import { useState } from "react";
 
 import { Button } from "@repo/components";
-import { GET_CAMPAIGNS_QUERY, type Campaign } from "@repo/clients";
-import { useQuery } from "@apollo/client";
 
 import { CreateCampaignModal } from "./_components/CreateCampaignModal";
+import { CampaignList } from "./_components/CampaignList/CampaignList";
 
-const CampaignList = () => {
-  const { data, loading, error } = useQuery(GET_CAMPAIGNS_QUERY);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching campaigns</p>;
-
-  const campaigns = data?.campaigns || [];
-
-  if (campaigns.length === 0) {
-    return <p>No campaigns found. Create a new one!</p>;
-  }
-
-  return (
-    <ul>
-      {campaigns.map((campaign: Campaign) => (
-        <li key={campaign.id}>{campaign.name}</li>
-      ))}
-    </ul>
-  );
-};
-
-export default function Home() {
+export default function CampaignsPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleOpenModal = () => {

@@ -1,7 +1,8 @@
-import { prisma } from "@repo/db"
+import { prisma } from "@repo/db";
 import bcrypt from "bcrypt";
 import type { Request, Response, NextFunction } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";
+import { SessionManager } from "../../../services";
 
 const LOGIN_ERROR = `There was an issue logging in. Please check your email or password, and try again.`;
 
@@ -53,7 +54,15 @@ const loginHandler = async (req: Request, res: Response) => {
     expiresIn: jwtExpiration,
   });
 
+  const sessionId = await SessionManager.createSession(user.id);
+
   res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+
+  res.cookie("sessionId", sessionId, {
     httpOnly: true,
     secure: true,
     sameSite: "none",

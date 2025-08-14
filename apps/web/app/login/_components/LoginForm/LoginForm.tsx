@@ -21,20 +21,20 @@ export const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await apiClient("/api/onboarding/login", {
+    const res = await apiClient("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
-    if (res.ok) redirect("/campaigns");
+    if (res.ok) redirect("/app");
     else setFormError("Login failed. Please check your credentials.");
   };
 
   const error = formError ? <ErrorMessage>{formError}</ErrorMessage> : null;
 
   return (
-    <form className="flex flex-col gap-6 min-w-sm" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-6 w-sm" onSubmit={handleSubmit}>
       {error}
       <div className="flex flex-col gap-2">
         <Input

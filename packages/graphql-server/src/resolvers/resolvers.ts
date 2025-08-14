@@ -10,9 +10,7 @@ export const resolvers: ArchivistGraphQLResolvers = {
     createCampaign: (_, args, context) => {
       const { id } = context.user;
 
-      if (!id) {
-        throw new Error("User ID is required to create a campaign");
-      }
+      if (!id) throw new Error("Error: Invalid User.");
 
       return context.prisma.campaign.create({
         data: {
@@ -21,6 +19,11 @@ export const resolvers: ArchivistGraphQLResolvers = {
           user: { connect: { id } },
         },
       });
+    },
+  },
+  Campaign: {
+    user: (parent) => {
+      return parent.userId;
     },
   },
 };

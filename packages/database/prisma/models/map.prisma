@@ -8,5 +8,5 @@ model Map {
   updatedAt   DateTime @updatedAt
 
   campaignId  String
-  campaign    Campaign @relation(fields: [campaignId], references: [id])
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }

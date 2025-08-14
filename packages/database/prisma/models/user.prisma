@@ -8,4 +8,5 @@ model User {
   updatedAt    DateTime @updatedAt
 
   campaigns    Campaign[]
+  sessions     Session[]
 }

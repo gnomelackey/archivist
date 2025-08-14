@@ -17,7 +17,7 @@ model Campaign {
   updatedAt   DateTime @updatedAt
 
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   factions    Faction[]
   maps        Map[]
@@ -33,7 +33,7 @@ model Faction {
   updatedAt   DateTime @updatedAt
 
   campaignId  String
-  campaign    Campaign @relation(fields: [campaignId], references: [id])
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 
@@ -47,7 +47,24 @@ model Map {
   updatedAt   DateTime @updatedAt
 
   campaignId  String
-  campaign    Campaign @relation(fields: [campaignId], references: [id])
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  token     String   @unique
+  userAgent String?
+  ipAddress String?
+  
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  lastUsed  DateTime @default(now())
+  
+  @@index([userId])
+  @@index([token])
 }
 
 model User {
@@ -60,4 +77,5 @@ model User {
   updatedAt    DateTime @updatedAt
 
   campaigns    Campaign[]
+  sessions     Session[]
 }

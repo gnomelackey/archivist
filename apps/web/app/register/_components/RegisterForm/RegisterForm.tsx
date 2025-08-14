@@ -52,7 +52,7 @@ export const RegisterForm = () => {
   const error = formError ? <ErrorMessage>{formError}</ErrorMessage> : null;
 
   return (
-    <form className="flex flex-col gap-6 min-w-sm" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-6 w-sm" onSubmit={handleSubmit}>
       {error}
       <Input
         name="email"

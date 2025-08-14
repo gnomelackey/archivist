@@ -2,24 +2,33 @@
 
 import express from "express";
 import jwt from "jsonwebtoken";
+import { SessionManager } from "../services/SessionManager/SessionManager";
 
-export function jwtValidation(
+export async function jwtValidation(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
   try {
     const token = req.cookies?.token;
+    const sessionToken = req.cookies?.sessionId;
 
-    if (!token) {
-      return res.status(401).json({ error: "Missing token" });
+    if (!token || !sessionToken) {
+      return res.status(401).redirect("/login");
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const sessionValid = await SessionManager.isSessionValid(sessionToken);
+
+    if (!sessionValid) {
+      return res.status(401).redirect("/login");
+    }
+
     (req as any).user = decoded;
 
     next();
-  } catch {
-    res.status(401).json({ error: "Invalid token" });
+  } catch (error) {
+    console.error("Authentication error:", error);
+    res.status(401).redirect("/login");
   }
 }

@@ -10,6 +10,10 @@ export const resolvers: ArchivistGraphQLResolvers = {
     createCampaign: (_, args, context) => {
       const { id } = context.user;
 
+      if (!id) {
+        throw new Error("User ID is required to create a campaign");
+      }
+
       return context.prisma.campaign.create({
         data: {
           name: args.name,

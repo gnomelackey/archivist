@@ -3,13 +3,13 @@
 import { useState } from "react";
 
 import { Button } from "@repo/components";
-import { GetCampaignsDocument, type Campaign } from "@repo/clients";
+import { GET_CAMPAIGNS_QUERY, type Campaign } from "@repo/clients";
 import { useQuery } from "@apollo/client";
 
 import { CreateCampaignModal } from "./_components/CreateCampaignModal";
 
 const CampaignList = () => {
-  const { data, loading, error } = useQuery(GetCampaignsDocument);
+  const { data, loading, error } = useQuery(GET_CAMPAIGNS_QUERY);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching campaigns</p>;

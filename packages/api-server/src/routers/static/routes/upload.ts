@@ -34,13 +34,20 @@ const uploadRequestValidation = (
 
 const uploadHandler = async (req: Request, res: Response) => {
   const file = req.file as Express.Multer.File;
-  const body = req.body as { name: string; description: string };
+  const body = req.body as {
+    name: string;
+    description: string;
+    campaignId: string;
+  };
 
   const map = await prisma.map.create({
     data: {
       name: body.name,
       description: body.description,
       imageUrl: `/uploads/${file.filename}`,
+      campaignId: body.campaignId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 

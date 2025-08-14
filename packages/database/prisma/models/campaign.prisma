@@ -6,7 +6,9 @@ model Campaign {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  factions  Faction[]
-  maps      Map[]
-  user      User   @relation(fields: [id], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  
+  factions    Faction[]
+  maps        Map[]
 }

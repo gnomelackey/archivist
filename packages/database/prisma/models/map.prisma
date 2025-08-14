@@ -7,5 +7,6 @@ model Map {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  campaign   Campaign @relation(fields: [id], references: [id])
+  campaignId  String
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
 }

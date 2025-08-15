@@ -1,3 +1,11 @@
+import { FactionBoard } from "./_components/FactionBoard";
+
 export default function FactionsPage() {
-  return <div>Factions</div>;
+  return (
+    <div className="w-full h-full">
+      <div className="border-2 border-gray-300 rounded-lg overflow-hidden h-full">
+        <FactionBoard />
+      </div>
+    </div>
+  );
 }

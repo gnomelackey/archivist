@@ -75,7 +75,6 @@ export const Book = ({
     "--leather-dk": shade(color, -12),
     "--leather-lt": shade(color, 10),
     "--foil": foil,
-    "--subtitle-height": `${height / 20}rem`,
   } as React.CSSProperties;
 
   const subtext = subtitle ? (
@@ -83,12 +82,10 @@ export const Book = ({
   ) : null;
 
   return (
-    <div className={styles.book}>
-      <div className={styles.spine} style={spineStyle}>
-        <div className={styles["book-label"]} data-direction="ttb">
-          <span className={styles.title}>{title}</span>
-          {subtext}
-        </div>
+    <div className={styles.spine} style={spineStyle}>
+      <div className={styles["book-label"]} data-direction="ttb">
+        <span className={styles.title}>{title}</span>
+        {subtext}
       </div>
     </div>
   );

@@ -20,18 +20,24 @@ export const CreateCampaignModal = ({
     setDescription(event.target.value);
   };
 
+  const handleClose = () => {
+    setName("");
+    setDescription("");
+    onClose();
+  };
+
   const handleCreateCampaign = async () => {
     await graphqlClient.mutate({
       mutation: CREATE_CAMPAIGN_MUTATION,
       variables: { name, description },
     });
 
-    onClose();
+    handleClose();
   };
 
   const footer = (
     <div className="flex justify-end space-x-2 w-full">
-      <Button mode="secondary" onClick={onClose}>
+      <Button mode="secondary" onClick={handleClose}>
         Cancel
       </Button>
       <Button mode="secondary" variant="fill" onClick={handleCreateCampaign}>

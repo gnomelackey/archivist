@@ -40,5 +40,11 @@ export type MutationCreateCampaignArgs = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']['output']>;
+  campaign?: Maybe<Campaign>;
   campaigns: Array<Campaign>;
+};
+
+
+export type QueryCampaignArgs = {
+  id: Scalars['ID']['input'];
 };

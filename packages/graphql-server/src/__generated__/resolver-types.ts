@@ -77,6 +77,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Types.Scalars['Boolean']['output']>;
   Campaign: ResolverTypeWrapper<Campaign>;
   DateTime: ResolverTypeWrapper<Types.Scalars['DateTime']['output']>;
+  ID: ResolverTypeWrapper<Types.Scalars['ID']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Types.Scalars['String']['output']>;
@@ -87,6 +88,7 @@ export type ResolversParentTypes = {
   Boolean: Types.Scalars['Boolean']['output'];
   Campaign: Campaign;
   DateTime: Types.Scalars['DateTime']['output'];
+  ID: Types.Scalars['ID']['output'];
   Mutation: {};
   Query: {};
   String: Types.Scalars['String']['output'];
@@ -113,6 +115,7 @@ export type MutationResolvers<ContextType = ArchivistGraphQLContext, ParentType 
 
 export type QueryResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _empty?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  campaign?: Resolver<Types.Maybe<ResolversTypes['Campaign']>, ParentType, ContextType, RequireFields<Types.QueryCampaignArgs, 'id'>>;
   campaigns?: Resolver<Array<ResolversTypes['Campaign']>, ParentType, ContextType>;
 };
 

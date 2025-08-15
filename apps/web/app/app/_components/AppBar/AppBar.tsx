@@ -4,6 +4,7 @@ import { apiClient } from "@repo/clients";
 import { Button } from "@repo/components";
 import Link from "next/link";
 import { redirect, usePathname, useParams } from "next/navigation";
+import { useCallback, useMemo } from "react";
 
 const navigationLinks = [
   { name: "Dashboard", href: "/app/dashboard" },
@@ -21,16 +22,34 @@ const subNavigationLinks = (path: string, id: string) => {
   return [];
 };
 
+const useSubPathSelected = () => {
+  const currentPath = usePathname();
+  const { id } = useParams();
+
+  return useMemo(
+    () =>
+      currentPath &&
+      id &&
+      navigationLinks.some((link) =>
+        currentPath.startsWith(`${link.href}/${id}`)
+      ),
+    [currentPath, id]
+  );
+};
+
 export const AppBar = () => {
   const currentPath = usePathname();
   const { id } = useParams();
 
-  const isSubPathSelected =
-    currentPath &&
-    id &&
-    navigationLinks.some((link) =>
-      currentPath.startsWith(`${link.href}/${id}`)
-    );
+  const isSubPathSelected = useSubPathSelected();
+
+  const getActiveLinkClass = useCallback(
+    (href: string) =>
+      currentPath.startsWith(href)
+        ? "text-palette-200 font-semibold"
+        : "text-palette-100",
+    [currentPath]
+  );
 
   const handleLogout = async () => {
     try {
@@ -49,43 +68,42 @@ export const AppBar = () => {
         bg-white/70 dark:bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:backdrop-blur
       "
     >
-      <div className="flex items-center justify-between px-4 py-2">
-        <h1 className="text-lg font-semibold text-palette-100">Archivist</h1>
-        <nav className="flex space-x-4">
-          {navigationLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={
-                currentPath === link.href
-                  ? "text-palette-200 font-semibold"
-                  : "text-palette-100"
-              }
-            >
-              {link.name}
-            </Link>
-          ))}
-        </nav>
-        {isSubPathSelected ? (
+      <div className="block w-full">
+        <div className="flex items-center justify-between py-2 max-w-7xl m-auto">
+          <h1 className="text-lg font-semibold text-palette-100">Archivist</h1>
           <nav className="flex space-x-4">
-            {subNavigationLinks(currentPath, id as string)?.map((link) => (
+            {navigationLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={
-                  currentPath === link.href
-                    ? "text-palette-200 font-semibold"
-                    : "text-palette-100"
-                }
+                className={getActiveLinkClass(link.href)}
               >
                 {link.name}
               </Link>
             ))}
           </nav>
+
+          <Button type="button" variant="text" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
+        {isSubPathSelected ? (
+          <div className="w-full bg-palette-600">
+            <div className="flex items-center justify-center py-2 max-w-7xl m-auto">
+              <nav className="flex space-x-4">
+                {subNavigationLinks(currentPath, id as string)?.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={getActiveLinkClass(link.href)}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </div>
         ) : null}
-        <Button type="button" variant="text" onClick={handleLogout}>
-          Logout
-        </Button>
       </div>
     </header>
   );

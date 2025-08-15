@@ -15,10 +15,12 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  */
 type Documents = {
     "\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n": typeof types.CreateCampaignDocument,
+    "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n      user\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.GetCampaignDocument,
     "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n      user\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.GetCampaignsDocument,
 };
 const documents: Documents = {
     "\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n": types.CreateCampaignDocument,
+    "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n      user\n      createdAt\n      updatedAt\n    }\n  }\n": types.GetCampaignDocument,
     "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n      user\n      createdAt\n      updatedAt\n    }\n  }\n": types.GetCampaignsDocument,
 };
 
@@ -40,6 +42,10 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n"): (typeof documents)["\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n      user\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n      user\n      createdAt\n      updatedAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

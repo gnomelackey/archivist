@@ -27,8 +27,7 @@ export const Modal = ({
 }: ModalProps) => {
   useScreenLock(open);
 
-  const maskKey = `modal-mask-${title}`;
-  const modalKey = `modal-${title}`;
+  const modalKey = `${title}-modal-animation`;
 
   const sizeClass = {
     sm: "w-80",
@@ -38,16 +37,19 @@ export const Modal = ({
   }[size];
 
   const footerContent = footer ? (
-    <div className="bg-palette-100 px-6 py-4 mt-10 rounded-b-2xl flex align-middle">
+    <div id={`${title}-modal-footer`} className="bg-palette-100 px-6 py-4 mt-10 rounded-b-2xl flex align-middle">
       {footer}
     </div>
   ) : null;
 
   const content = open ? (
-    <motion.div key={maskKey} {...modalMaskAnimation}>
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75">
-        <motion.div key={modalKey} {...modalAnimation}>
-          <div className={`bg-palette-500 rounded-2xl shadow-lg border border-palette-100 ${sizeClass}`}>
+    <motion.div key={modalKey} {...modalMaskAnimation} className="fixed inset-0 z-99">
+      <div id={`${title}-modal-mask`} className="bg-black opacity-50 absolute inset-0" />
+      <div id={`${title}-modal-content`} className="relative flex items-center justify-center h-full">
+        <motion.div {...modalAnimation}>
+          <div
+            className={`bg-palette-500 rounded-2xl shadow-lg border border-palette-100 ${sizeClass}`}
+          >
             <h2 className="text-xl text-palette-100 pt-6 px-6 pb-0 font-bold mb-4 uppercase">
               {title}
             </h2>
@@ -61,7 +63,9 @@ export const Modal = ({
 
   return (
     <Portal>
-      <AnimatePresence mode="wait">{content}</AnimatePresence>
+      <AnimatePresence>
+        {content}
+      </AnimatePresence>
     </Portal>
   );
 };

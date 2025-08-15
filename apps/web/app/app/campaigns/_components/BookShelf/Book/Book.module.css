@@ -30,7 +30,8 @@
   justify-content: center;
   align-items: center;
   transform-style: preserve-3d;
-  transition: transform 0.15s ease;
+  opacity: 1;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .spine::after {
@@ -49,6 +50,7 @@
 
 .spine:hover {
   transform: translateY(-2px) rotateX(2deg);
+  opacity: 0.9;
   cursor: pointer;
 }
 

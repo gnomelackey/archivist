@@ -3,9 +3,19 @@
 import { apiClient } from "@repo/clients";
 import { Button } from "@repo/components";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
+
+import styles from "./AppBar.module.css";
+
+const navigationLinks = [
+  { name: "Dashboard", href: "/app/dashboard" },
+  { name: "Campaigns", href: "/app/campaigns" },
+  { name: "Settings", href: "/app/settings" },
+];
 
 export const AppBar = () => {
+  const currentPath = usePathname();
+
   const handleLogout = async () => {
     try {
       await apiClient("/api/auth/logout", { method: "POST" });
@@ -26,24 +36,20 @@ export const AppBar = () => {
       <div className="flex items-center justify-between px-4 py-2">
         <h1 className="text-lg font-semibold text-palette-100">Archivist</h1>
         <nav className="flex space-x-4">
-          <Link
-            href="/app/dashboard"
-            className="text-gray-700 hover:text-gray-900"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/app/campaigns"
-            className="text-gray-700 hover:text-gray-900"
-          >
-            Campaigns
-          </Link>
-          <Link
-            href="/app/settings"
-            className="text-gray-700 hover:text-gray-900"
-          >
-            Settings
-          </Link>
+          {navigationLinks.map((link) => {
+            const activeClassName =
+              currentPath === link.href ? styles.active : "text-palette-100";
+
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={activeClassName}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </nav>
         <Button type="button" variant="text" onClick={handleLogout}>
           Logout

@@ -2,8 +2,9 @@
 
 import { GET_CAMPAIGNS_QUERY, type Campaign } from "@repo/clients";
 import { useQuery } from "@apollo/client";
+import { Book } from "./Book/Book";
 
-export const CampaignList = () => {
+export const BookShelf = () => {
   const { data, loading, error } = useQuery(GET_CAMPAIGNS_QUERY);
 
   if (loading) return <p>Loading...</p>;
@@ -16,10 +17,16 @@ export const CampaignList = () => {
   }
 
   return (
-    <ul>
+    <div>
       {campaigns.map((campaign: Campaign) => (
-        <li key={campaign.id}>{campaign.name}</li>
+        <Book
+          key={campaign.id}
+          title={campaign.name}
+          subtitle={campaign.description}
+          width={100}
+          height={300}
+        />
       ))}
-    </ul>
+    </div>
   );
 };

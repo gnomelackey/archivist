@@ -1,0 +1,99 @@
+.shelf {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 20px;
+  background: #d8d2c3;
+  border-radius: 12px;
+  outline: 1px solid #c9c2b1;
+}
+
+.spine {
+  width: var(--w, 36px);
+  height: var(--h, 220px);
+  border-radius: 4px;
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.18)),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 32px,
+      rgba(255, 255, 255, 0.06) 32px 34px,
+      transparent 34px 68px
+    ),
+    linear-gradient(135deg, var(--leather-lt), var(--leather));
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+    inset 0 0 8px rgba(0, 0, 0, 0.35),
+    0 6px 10px rgba(0, 0, 0, 0.25);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease;
+}
+
+.spine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    120% 30% at 50% 0%,
+    rgba(255, 255, 255, 0.3),
+    transparent 60%
+  );
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.spine:hover {
+  transform: translateY(-2px) rotateX(2deg);
+  cursor: pointer;
+}
+
+.book-label {
+  opacity: 0.85;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  color: var(--foil, #f7e7c6);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 0 8px;
+}
+
+.book-label[data-direction="btt"] {
+  transform: none;
+}
+
+.book-label .title {
+  font-size: 32px;
+}
+
+.book-label .sub-title {
+  --lines: 1;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--lines);
+
+  line-clamp: var(--lines);
+
+  font-size: 14px;
+  opacity: 0.85;
+  overflow: hidden;
+  max-height: var(--subtitle-height, 15rem);
+  max-width: 24ch;
+  word-break: break-word;
+  hyphens: auto;
+  font-style: italic;
+}

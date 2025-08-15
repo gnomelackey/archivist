@@ -2,6 +2,7 @@ import { Maybe } from "@repo/clients";
 import Palette from "@repo/theme/palette";
 
 import styles from "./Book.module.css";
+import Link from "next/link";
 
 function hslFromHex(hex: string) {
   const m = hex.replace("#", "");
@@ -54,6 +55,7 @@ function shade(hex: string, amount: number) {
 }
 
 export const Book = ({
+  id,
   title,
   subtitle,
   width = 100,
@@ -61,6 +63,7 @@ export const Book = ({
   color = Palette[400],
   foil = Palette[100],
 }: {
+  id: string;
   title: string;
   subtitle?: Maybe<string>;
   width?: number;
@@ -82,11 +85,17 @@ export const Book = ({
   ) : null;
 
   return (
-    <div className={styles.spine} style={spineStyle}>
-      <div className={styles["book-label"]} data-direction="ttb">
-        <span className={styles.title}>{title}</span>
-        {subtext}
+    <Link
+      className="text-transparent"
+      href="/app/campaigns/[id]"
+      as={`/app/campaigns/${id}`}
+    >
+      <div className={styles.spine} style={spineStyle}>
+        <div className={styles["book-label"]} data-direction="ttb">
+          <span className={styles.title}>{title}</span>
+          {subtext}
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };

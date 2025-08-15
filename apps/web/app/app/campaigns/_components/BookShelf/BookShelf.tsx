@@ -32,6 +32,7 @@ export const BookShelf = () => {
             {shelfBooks.map((campaign: Campaign) => (
               <Book
                 key={campaign.id}
+                id={campaign.id}
                 title={campaign.name}
                 subtitle={campaign.description}
                 width={100}

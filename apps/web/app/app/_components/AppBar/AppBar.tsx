@@ -3,18 +3,34 @@
 import { apiClient } from "@repo/clients";
 import { Button } from "@repo/components";
 import Link from "next/link";
-import { redirect, usePathname } from "next/navigation";
-
-import styles from "./AppBar.module.css";
+import { redirect, usePathname, useParams } from "next/navigation";
 
 const navigationLinks = [
   { name: "Dashboard", href: "/app/dashboard" },
   { name: "Campaigns", href: "/app/campaigns" },
-  { name: "Settings", href: "/app/settings" },
 ];
+
+const subNavigationLinks = (path: string, id: string) => {
+  if (path.startsWith("/app/campaigns")) {
+    return [
+      { name: "Factions", href: `/app/campaigns/${id}/factions` },
+      { name: "Maps", href: `/app/campaigns/${id}/maps` },
+    ];
+  }
+
+  return [];
+};
 
 export const AppBar = () => {
   const currentPath = usePathname();
+  const { id } = useParams();
+
+  const isSubPathSelected =
+    currentPath &&
+    id &&
+    navigationLinks.some((link) =>
+      currentPath.startsWith(`${link.href}/${id}`)
+    );
 
   const handleLogout = async () => {
     try {
@@ -36,21 +52,37 @@ export const AppBar = () => {
       <div className="flex items-center justify-between px-4 py-2">
         <h1 className="text-lg font-semibold text-palette-100">Archivist</h1>
         <nav className="flex space-x-4">
-          {navigationLinks.map((link) => {
-            const activeClassName =
-              currentPath === link.href ? styles.active : "text-palette-100";
-
-            return (
+          {navigationLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={
+                currentPath === link.href
+                  ? "text-palette-200 font-semibold"
+                  : "text-palette-100"
+              }
+            >
+              {link.name}
+            </Link>
+          ))}
+        </nav>
+        {isSubPathSelected ? (
+          <nav className="flex space-x-4">
+            {subNavigationLinks(currentPath, id as string)?.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={activeClassName}
+                className={
+                  currentPath === link.href
+                    ? "text-palette-200 font-semibold"
+                    : "text-palette-100"
+                }
               >
                 {link.name}
               </Link>
-            );
-          })}
-        </nav>
+            ))}
+          </nav>
+        ) : null}
         <Button type="button" variant="text" onClick={handleLogout}>
           Logout
         </Button>

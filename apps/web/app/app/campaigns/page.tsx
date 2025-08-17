@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@repo/components";
 
 import { CreateCampaignModal } from "./_components/CreateCampaignModal";
-import { BookShelf } from "./_components/BookShelf/BookShelf";
+import { CampaignList } from "./_components/BookShelf/CampaignList";
 
 export default function CampaignsPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -17,7 +17,7 @@ export default function CampaignsPage() {
   return (
     <>
       <div className="flex flex-col">
-        <BookShelf />
+        <CampaignList />
         <Button
           className="absolute right-10 bottom-10"
           onClick={handleOpenModal}

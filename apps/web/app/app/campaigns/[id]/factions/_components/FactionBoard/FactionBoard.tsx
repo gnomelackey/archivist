@@ -2,35 +2,25 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 
-import Styles from './FactionBoard.module.css';
+import Chance from "chance";
+
+import { FactionTooltip, type FactionToolTipProps } from "./FactionTooltip";
 import type { Point, Rectangle } from "./types";
+import { NAMES, RACES } from "./constants";
 
-type ToolTipProps = { x: number; y: number; id: string };
-
-const Tooltip = ({ x, y, id }: ToolTipProps) => (
-  <div
-    className={`absolute bg-gray-200 p-2 rounded shadow text-palette-300 pointer-events-none ${Styles.tooltip}`}
-    style={{
-      left: x - 100,
-      top: y - 100,
-      width: 200,
-      height: 100,
-      transform: "translate(0, 0)",
-    }}
-  >
-    Overlap: {id}
-  </div>
-);
+const chance = new Chance();
 
 export const FactionBoard = () => {
   const [rectangles, setRectangles] = useState<Array<Rectangle>>([]);
-  const [tooltips, setTooltips] = useState<Array<ToolTipProps>>([]);
+  const [tooltips, setTooltips] = useState<Array<FactionToolTipProps>>([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPoint, setStartPoint] = useState<Point | null>(null);
   const [currentRect, setCurrentRect] = useState<Rectangle | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (event.target !== canvasRef.current) return;
+
     const canvas = canvasRef.current;
 
     if (!canvas) return;
@@ -92,24 +82,24 @@ export const FactionBoard = () => {
     const newRect: Rectangle = {
       ...currentRect,
       id: `rect-${Date.now()}`,
+      name: NAMES[chance.integer({ min: 0, max: NAMES.length - 1 })],
+      race: RACES[chance.integer({ min: 0, max: RACES.length - 1 })],
       color: "#3498db",
     };
 
-    const newTooltips = rectangles.reduce<Array<ToolTipProps>>(
+    const newTooltips = rectangles.reduce<Array<FactionToolTipProps>>(
       (acc, rectangle) => {
         const oldRectRight = rectangle.x + rectangle.width;
         const newRectRight = newRect.x + newRect.width;
         const oldRectBottom = rectangle.y + rectangle.height;
         const newRectBottom = newRect.y + newRect.height;
 
-        // Check if rectangles overlap
         if (
           rectangle.x < newRectRight &&
           oldRectRight > newRect.x &&
           rectangle.y < newRectBottom &&
           oldRectBottom > newRect.y
         ) {
-          // Calculate overlap area boundaries
           const overlapLeft = Math.max(rectangle.x, newRect.x);
           const overlapTop = Math.max(rectangle.y, newRect.y);
           const overlapRight = Math.min(oldRectRight, newRectRight);
@@ -120,7 +110,6 @@ export const FactionBoard = () => {
 
           if (overlapWidth <= 0 || overlapHeight <= 0) return acc;
 
-          // Calculate center point of overlap area
           const overlapCenterX = overlapLeft + overlapWidth / 2;
           const overlapCenterY = overlapTop + overlapHeight / 2;
 
@@ -130,6 +119,10 @@ export const FactionBoard = () => {
               id: `tooltip-${rectangle.id}-${newRect.id}`,
               x: overlapCenterX,
               y: overlapCenterY,
+              onClick: (id: string, relationship: "conflict" | "alliance") => {
+                console.log(id, relationship);
+                setTooltips((prev) => prev.filter((t) => t.id !== id));
+              },
             },
           ];
         }
@@ -161,8 +154,10 @@ export const FactionBoard = () => {
       ctx.fillStyle = rect.color + "B3";
       ctx.strokeStyle = rect.color;
       ctx.lineWidth = 2;
+      ctx.font = "24px sans-serif";
       ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
       ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+      ctx.fillText(`${rect.name} (${rect.race})`, rect.x, rect.y - 5);
     });
 
     const { height = 0, width = 0 } = currentRect || {};
@@ -202,7 +197,13 @@ export const FactionBoard = () => {
         onMouseLeave={handleMouseUp}
       />
       {tooltips.map((tooltip) => (
-        <Tooltip key={tooltip.id} x={tooltip.x} y={tooltip.y} id={tooltip.id} />
+        <FactionTooltip
+          key={tooltip.id}
+          x={tooltip.x}
+          y={tooltip.y}
+          id={tooltip.id}
+          onClick={tooltip.onClick}
+        />
       ))}
     </div>
   );

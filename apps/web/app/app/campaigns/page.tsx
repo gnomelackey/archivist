@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@repo/components";
 
 import { CreateCampaignModal } from "./_components/CreateCampaignModal";
-import { CampaignList } from "./_components/BookShelf/CampaignList";
+import { CampaignList } from "./_components/CampaignList/CampaignList";
 
 export default function CampaignsPage() {
   const [modalOpen, setModalOpen] = useState(false);

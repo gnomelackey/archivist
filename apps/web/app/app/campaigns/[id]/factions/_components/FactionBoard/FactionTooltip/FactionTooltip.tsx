@@ -28,7 +28,7 @@ export const FactionTooltip = ({ x, y, id, onClick }: FactionToolTipProps) => {
       <Button
         mode="secondary"
         type="button"
-        variant="outline"
+        variant="fill"
         onClick={handleConflictClick}
       >
         Conflict

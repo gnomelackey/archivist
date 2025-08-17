@@ -26,7 +26,7 @@ export const Button = ({
     xLarge: "text-xl",
   }[size];
 
-  const buttonClassNames = `py-1 px-2 font-semibold hover:cursor-pointer ${variantClassNames} ${sizeClassNames} ${className}`;
+  const buttonClassNames = `py-1 px-2 font-semibold hover:cursor-pointer hover:opacity-80 ${variantClassNames} ${sizeClassNames} ${className}`;
 
   return (
     <button className={buttonClassNames} type={type} {...props}>

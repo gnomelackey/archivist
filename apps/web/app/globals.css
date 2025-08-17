@@ -4,6 +4,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --appbar-height: 48px; /* Adjust based on your actual AppBar height */
+  --full-appbar-height: 88px; /* Adjust based on your actual AppBar height */
 }
 
 @media (prefers-color-scheme: dark) {

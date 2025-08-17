@@ -50,7 +50,7 @@ export const Input = ({
   ) : null;
 
   return (
-    <div className={`flex flex-col input-group ${variantClassName}`}>
+    <div className={`flex flex-col input-group w-full ${variantClassName}`}>
       {labelText}
       <div className="relative w-full">
         <input

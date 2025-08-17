@@ -64,7 +64,7 @@ export const AppBar = () => {
   return (
     <header
       className="
-        sticky top-0 z-50 border-b border-black/5 dark:border-white/10
+        sticky top-0 z-50 border-b border-palette-100
         bg-white/70 dark:bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:backdrop-blur
       "
     >

@@ -2,6 +2,7 @@ import Palette from "@repo/theme/palette";
 
 import { HideIcon } from "./Icons/HideIcon";
 import { ShowIcon } from "./Icons/ShowIcon";
+import { DeleteIcon } from "./Icons/DeleteIcon";
 
 import type { IconographyProps } from "./types";
 
@@ -15,6 +16,7 @@ export const Iconography = ({ name, color = 100, ...props }: IconographyProps) =
   const Icon = {
     "show": ShowIcon,
     "hide": HideIcon,
+    "delete": DeleteIcon,
   }[name];
 
   const themeColor = Palette[color];

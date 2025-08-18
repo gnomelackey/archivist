@@ -1,5 +1,7 @@
 import Chance from "chance";
 
+import type { Rectangle } from "./types";
+
 const chance = new Chance();
 
 export const getUniqueRandomColor = (usedColors: string[]): string => {
@@ -10,6 +12,66 @@ export const getUniqueRandomColor = (usedColors: string[]): string => {
   } while (usedColors.includes(newColor));
 
   return newColor;
+};
+
+const getFactionDisplayText = (
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  width: number
+): string => {
+  const maxWidth = width - 8;
+
+  if (ctx.measureText(text).width > maxWidth) {
+    const ellipsis = "...";
+    const ellipsisWidth = ctx.measureText(ellipsis).width;
+    const availableWidth = maxWidth - ellipsisWidth;
+
+    let start = 0;
+    let end = text.length;
+    let bestFit = "";
+
+    while (start <= end) {
+      const mid = Math.floor((start + end) / 2);
+      const testText = text.substring(0, mid);
+      const testWidth = ctx.measureText(testText).width;
+
+      if (testWidth <= availableWidth) {
+        bestFit = testText;
+        start = mid + 1;
+      } else {
+        end = mid - 1;
+      }
+    }
+
+    return bestFit + ellipsis;
+  }
+
+  return text;
+};
+
+export const buildRectangle = (
+  ctx: CanvasRenderingContext2D | null,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  originalLabel: string = "",
+  color: string
+): Rectangle => {
+  if (!ctx) throw new Error("Canvas context is required to build rectangle");
+
+  const id = `temp-${Date.now()}`;
+
+  return {
+    id,
+    x,
+    y,
+    width,
+    height,
+    originalLabel,
+    color,
+    label: getFactionDisplayText(ctx, originalLabel, width),
+  };
 };
 
 function normalizeHex(hex: string) {

@@ -4,17 +4,27 @@ import { useState, useRef, useEffect, useCallback } from "react";
 
 import Chance from "chance";
 
-import { FactionTooltip, type FactionToolTipProps } from "./FactionTooltip";
-import type { Point, Rectangle } from "./types";
-import { NAMES, RACES } from "./constants";
-import { getContrastTextColor, getUniqueRandomColor } from "./utils";
 import { FactionFormSideBar } from "./FactionSidebar";
+import { FactionTooltip, type FactionToolTipProps } from "./FactionTooltip";
+import { NAMES, RACES } from "./constants";
+import type { Point, Rectangle } from "./types";
+import {
+  buildRectangle,
+  getContrastTextColor,
+  getUniqueRandomColor,
+} from "./utils";
 
 const chance = new Chance();
 
 export const FactionBoard = () => {
   const [rectangles, setRectangles] = useState<Array<Rectangle>>([]);
   const [tooltips, setTooltips] = useState<Array<FactionToolTipProps>>([]);
+  const [hoverTooltip, setHoverTooltip] = useState<{
+    id: string;
+    label?: string;
+    x: number;
+    y: number;
+  } | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPoint, setStartPoint] = useState<Point | null>(null);
   const [currentRect, setCurrentRect] = useState<Rectangle | null>(null);
@@ -27,37 +37,77 @@ export const FactionBoard = () => {
 
     if (!canvas) return;
 
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) return;
+
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    const id = `temp-${Date.now()}`;
+
+    const width = 0;
+    const height = 0;
 
     setIsDrawing(true);
     setStartPoint({ x, y });
-    setCurrentRect({ id, x, y, width: 0, height: 0, color: "#ff6b6b" });
+    setCurrentRect(buildRectangle(ctx, x, y, width, height, "", "#ff6b6b"));
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !startPoint) return;
+    const canvas = canvasRef.current;
 
+    if (!canvas) {
+      return;
+    } else if (!isDrawing) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      for (let i = rectangles.length - 1; i >= 0; i--) {
+        const r = rectangles[i];
+
+        const isHovered =
+          r &&
+          x >= r.x &&
+          x <= r.x + r.width &&
+          y >= r.y - 26 &&
+          y <= r.y + r.height + 26 &&
+          r.label.includes("...");
+
+        if (isHovered) {
+          setHoverTooltip({ id: r.id, label: r.originalLabel, x, y });
+          return;
+        }
+      }
+
+      if (hoverTooltip) setHoverTooltip(null);
+    } else if (startPoint) {
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const currentX = event.clientX - rect.left;
+      const currentY = event.clientY - rect.top;
+
+      const x = Math.min(startPoint.x, currentX);
+      const y = Math.min(startPoint.y, currentY);
+      const width = Math.abs(currentX - startPoint.x);
+      const height = Math.abs(currentY - startPoint.y);
+
+      setCurrentRect(buildRectangle(ctx, x, y, width, height, "", "#ff6b6b"));
+    }
+  };
+
+  const handleMouseUp = useCallback(() => {
     const canvas = canvasRef.current;
 
     if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const currentX = event.clientX - rect.left;
-    const currentY = event.clientY - rect.top;
+    const ctx = canvas.getContext("2d");
 
-    const x = Math.min(startPoint.x, currentX);
-    const y = Math.min(startPoint.y, currentY);
-    const width = Math.abs(currentX - startPoint.x);
-    const height = Math.abs(currentY - startPoint.y);
-    const id = `temp-${Date.now()}`;
+    if (!ctx) return;
 
-    setCurrentRect({ id, x, y, width, height, color: "#ff6b6b" });
-  };
-
-  const handleMouseUp = useCallback(() => {
     const { width = 0, height = 0 } = currentRect || {};
 
     const isTooSmall = width < 10 || height < 10;
@@ -70,14 +120,19 @@ export const FactionBoard = () => {
     }
 
     const usedColors = rectangles.map((rect) => rect.color);
+    const name = NAMES[chance.integer({ min: 0, max: NAMES.length - 1 })];
+    const race = RACES[chance.integer({ min: 0, max: RACES.length - 1 })];
+    const originalLabel = `${name} (${race})`;
 
-    const newRect: Rectangle = {
-      ...currentRect,
-      id: `rect-${Date.now()}`,
-      name: NAMES[chance.integer({ min: 0, max: NAMES.length - 1 })],
-      race: RACES[chance.integer({ min: 0, max: RACES.length - 1 })],
-      color: getUniqueRandomColor(usedColors),
-    };
+    const newRect = buildRectangle(
+      ctx,
+      currentRect.x,
+      currentRect.y,
+      currentRect.width,
+      currentRect.height,
+      originalLabel,
+      getUniqueRandomColor(usedColors)
+    );
 
     const newTooltips = rectangles.reduce<Array<FactionToolTipProps>>(
       (acc, rectangle) => {
@@ -157,11 +212,10 @@ export const FactionBoard = () => {
       ctx.fillRect(rect.x - 1, rect.y - 26, rect.width + 2, 25);
 
       ctx.font = "16px sans-serif";
-      ctx.lineWidth = 3;
-      ctx.strokeText(`${rect.name} (${rect.race})`, rect.x + 4, rect.y - 6);
 
+      ctx.lineWidth = 3;
       ctx.fillStyle = getContrastTextColor(rect.color);
-      ctx.fillText(`${rect.name} (${rect.race})`, rect.x + 4, rect.y - 6);
+      ctx.fillText(rect.label, rect.x + 4, rect.y - 6);
     });
 
     const { height = 0, width = 0 } = currentRect || {};
@@ -201,6 +255,20 @@ export const FactionBoard = () => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       />
+      {hoverTooltip ? (
+        <div
+          className={`absolute bg-gray-200 p-2 rounded shadow text-palette-300 flex flex-col gap-2 z-50 pointer-events-none`}
+          style={{
+            left: hoverTooltip.x - 100,
+            top: hoverTooltip.y - 100,
+            width: 200,
+            height: 100,
+            transform: "translate(0, 0)",
+          }}
+        >
+          {hoverTooltip.label}
+        </div>
+      ) : null}
       {tooltips.map((tooltip) => (
         <FactionTooltip
           key={tooltip.id}

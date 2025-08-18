@@ -1,4 +1,4 @@
-export type FactionToolTipProps = {
+export type FactionRelationsTooltipProp = {
   x: number;
   y: number;
   id: string;

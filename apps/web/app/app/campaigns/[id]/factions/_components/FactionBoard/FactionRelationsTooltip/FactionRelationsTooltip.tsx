@@ -1,9 +1,15 @@
-import { Button } from "@repo/components";
+import { Button, Tooltip } from "@repo/components";
 
-import Styles from "./styles.module.css";
-import type { FactionToolTipProps } from "./types";
+import type { FactionRelationsTooltipProp } from "./types";
 
-export const FactionTooltip = ({ x, y, id, onClick }: FactionToolTipProps) => {
+import styles from "./styles.module.css";
+
+export const FactionRelationsTooltip = ({
+  x,
+  y,
+  id,
+  onClick,
+}: FactionRelationsTooltipProp) => {
   const handleConflictClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClick(id, "conflict");
@@ -15,16 +21,7 @@ export const FactionTooltip = ({ x, y, id, onClick }: FactionToolTipProps) => {
   };
 
   return (
-    <div
-      className={`absolute bg-gray-200 p-2 rounded shadow text-palette-300 ${Styles.tooltip} flex flex-col gap-2 z-50`}
-      style={{
-        left: x - 100,
-        top: y - 100,
-        width: 200,
-        height: 100,
-        transform: "translate(0, 0)",
-      }}
-    >
+    <Tooltip x={x} y={y} className={styles["faction-relations-tooltip"]}>
       <Button
         mode="secondary"
         type="button"
@@ -41,6 +38,6 @@ export const FactionTooltip = ({ x, y, id, onClick }: FactionToolTipProps) => {
       >
         Alliance
       </Button>
-    </div>
+    </Tooltip>
   );
 };

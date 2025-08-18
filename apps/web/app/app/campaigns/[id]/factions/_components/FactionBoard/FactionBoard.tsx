@@ -5,7 +5,10 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Chance from "chance";
 
 import { FactionFormSideBar } from "./FactionSidebar";
-import { FactionTooltip, type FactionToolTipProps } from "./FactionTooltip";
+import {
+  FactionRelationsTooltip,
+  type FactionToolTipProps,
+} from "./FactionRelationsTooltip";
 import { NAMES, RACES } from "./constants";
 import type { Point, Rectangle } from "./types";
 import {
@@ -13,21 +16,21 @@ import {
   getContrastTextColor,
   getUniqueRandomColor,
 } from "./utils";
+import {
+  FactionNameTooltip,
+  FactionNameTooltipData,
+} from "./FactionNameTooltip";
 
 const chance = new Chance();
 
 export const FactionBoard = () => {
+  const [isDrawing, setIsDrawing] = useState(false);
   const [rectangles, setRectangles] = useState<Array<Rectangle>>([]);
   const [tooltips, setTooltips] = useState<Array<FactionToolTipProps>>([]);
-  const [hoverTooltip, setHoverTooltip] = useState<{
-    id: string;
-    label?: string;
-    x: number;
-    y: number;
-  } | null>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
+  const [nameTooltip, setNameTooltip] = useState<FactionNameTooltipData>(null);
   const [startPoint, setStartPoint] = useState<Point | null>(null);
   const [currentRect, setCurrentRect] = useState<Rectangle | null>(null);
+  
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -75,12 +78,12 @@ export const FactionBoard = () => {
           r.label.includes("...");
 
         if (isHovered) {
-          setHoverTooltip({ id: r.id, label: r.originalLabel, x, y });
+          setNameTooltip({ id: r.id, label: r.originalLabel, x, y });
           return;
         }
       }
 
-      if (hoverTooltip) setHoverTooltip(null);
+      if (nameTooltip) setNameTooltip(null);
     } else if (startPoint) {
       const ctx = canvas.getContext("2d");
 
@@ -255,22 +258,15 @@ export const FactionBoard = () => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       />
-      {hoverTooltip ? (
-        <div
-          className={`absolute bg-gray-200 p-2 rounded shadow text-palette-300 flex flex-col gap-2 z-50 pointer-events-none`}
-          style={{
-            left: hoverTooltip.x - 100,
-            top: hoverTooltip.y - 100,
-            width: 200,
-            height: 100,
-            transform: "translate(0, 0)",
-          }}
-        >
-          {hoverTooltip.label}
-        </div>
+      {nameTooltip ? (
+        <FactionNameTooltip
+          x={nameTooltip.x}
+          y={nameTooltip.y}
+          label={nameTooltip.label}
+        />
       ) : null}
       {tooltips.map((tooltip) => (
-        <FactionTooltip
+        <FactionRelationsTooltip
           key={tooltip.id}
           x={tooltip.x}
           y={tooltip.y}

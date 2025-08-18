@@ -13,9 +13,6 @@
     "next-env.d.ts",
     "next.config.js",
     ".next/types/**/*.ts"
-, "../../packages/components/src/Modal/Modal.tsx"  ],
-  "exclude": [
-    "node_modules",
-    ".next"
-  ]
+  ],
+  "exclude": ["node_modules", ".next"]
 }

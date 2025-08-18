@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "@repo/theme/styles";
 
-@import './button.styles.css';
-@import './input.styles.css';
-@import './textarea.styles.css';
+@import "./Button.styles.css";
+@import "./Input.styles.css";
+@import "./TextArea.styles.css";
+@import "./Tooltip.styles.css";

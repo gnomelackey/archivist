@@ -40,13 +40,14 @@ export const Input = ({
 
   const showHideButton = isPassword ? (
     <div className="absolute inset-y-0 right-0 flex items-center pr-2">
-    <IconButton
-      size={2}
-      type="button"
-      icon={showPassword ? "hide" : "show"}
-      aria-label={showPassword ? "Hide password" : "Show password"}
-      onClick={() => setShowPassword(!showPassword)}
-    /></div>
+      <IconButton
+        size={2}
+        type="button"
+        icon={showPassword ? "hide" : "show"}
+        aria-label={showPassword ? "Hide password" : "Show password"}
+        onClick={() => setShowPassword(!showPassword)}
+      />
+    </div>
   ) : null;
 
   return (

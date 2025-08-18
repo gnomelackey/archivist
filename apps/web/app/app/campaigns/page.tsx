@@ -15,7 +15,7 @@ export default function CampaignsPage() {
   };
 
   return (
-    <>
+    <div className="max-w-7xl w-full">
       <div className="flex flex-col">
         <CampaignList />
         <Button
@@ -26,6 +26,6 @@ export default function CampaignsPage() {
         </Button>
       </div>
       <CreateCampaignModal open={modalOpen} onClose={handleOpenModal} />
-    </>
+    </div>
   );
 }

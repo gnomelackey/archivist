@@ -1,3 +1,3 @@
 export default function Dashboard() {
-  return <div>Dashboard</div>;
+  return <div className="max-w-7xl w-full">Dashboard</div>;
 }

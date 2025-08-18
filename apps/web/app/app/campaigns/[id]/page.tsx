@@ -10,5 +10,7 @@ export default function CampaignPage() {
 
   if (!data) return <div>Loading...</div>;
   if (!data.campaign) return <div>Campaign not found</div>;
-  return <div>Campaign ID: {data.campaign.name}</div>;
+  return (
+    <div className="max-w-7xl w-full">Campaign ID: {data.campaign.name}</div>
+  );
 }

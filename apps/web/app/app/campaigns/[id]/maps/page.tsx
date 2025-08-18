@@ -1,3 +1,3 @@
 export default function MapsPage() {
-  return <div>Maps</div>;
+  return <div className="max-w-7xl w-full">Maps</div>;
 }

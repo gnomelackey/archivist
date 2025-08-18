@@ -8,9 +8,7 @@ export default function DashboardLayout({
   return (
     <>
       <AppBar />
-      <div className="flex justify-center w-full pt-5">
-        <div className="max-w-7xl w-full">{children}</div>
-      </div>
+      <div className="flex justify-center w-full pt-5">{children}</div>
     </>
   );
 }

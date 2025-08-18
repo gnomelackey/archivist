@@ -4,6 +4,41 @@ import type { Rectangle } from "./types";
 
 const chance = new Chance();
 
+export const screenToWorld = (
+  screenX: number,
+  screenY: number,
+  panOffset: { x: number; y: number }
+) => ({
+  x: screenX - panOffset.x,
+  y: screenY - panOffset.y,
+});
+
+export const worldToScreen = (
+  worldX: number,
+  worldY: number,
+  panOffset: { x: number; y: number }
+) => ({
+  x: worldX + panOffset.x,
+  y: worldY + panOffset.y,
+});
+
+export const getMousePosition = (
+  event: React.MouseEvent<HTMLCanvasElement>,
+  canvas: HTMLCanvasElement,
+  panOffset: { x: number; y: number }
+) => {
+  if (!canvas) return null;
+
+  const rect = canvas.getBoundingClientRect();
+  const screenX = event.clientX - rect.left;
+  const screenY = event.clientY - rect.top;
+
+  return {
+    screen: { x: screenX, y: screenY },
+    world: screenToWorld(screenX, screenY, panOffset),
+  };
+};
+
 export const getUniqueRandomColor = (usedColors: string[]): string => {
   let newColor: string;
 
@@ -20,6 +55,12 @@ const getFactionDisplayText = (
   width: number
 ): string => {
   const maxWidth = width - 8;
+
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.font = "16px sans-serif";
+
+  let displayText = text;
 
   if (ctx.measureText(text).width > maxWidth) {
     const ellipsis = "...";
@@ -43,10 +84,12 @@ const getFactionDisplayText = (
       }
     }
 
-    return bestFit + ellipsis;
+    displayText = bestFit + ellipsis;
   }
 
-  return text;
+  ctx.restore();
+
+  return displayText;
 };
 
 export const buildRectangle = (

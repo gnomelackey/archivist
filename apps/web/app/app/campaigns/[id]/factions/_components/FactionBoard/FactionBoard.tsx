@@ -14,7 +14,9 @@ import type { Point, Rectangle } from "./types";
 import {
   buildRectangle,
   getContrastTextColor,
+  getMousePosition,
   getUniqueRandomColor,
+  worldToScreen,
 } from "./utils";
 import {
   FactionNameTooltip,
@@ -25,60 +27,87 @@ const chance = new Chance();
 
 export const FactionBoard = () => {
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isPanning, setIsPanning] = useState(false);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [panStart, setPanStart] = useState<Point | null>(null);
   const [rectangles, setRectangles] = useState<Array<Rectangle>>([]);
   const [tooltips, setTooltips] = useState<Array<FactionToolTipProps>>([]);
   const [nameTooltip, setNameTooltip] = useState<FactionNameTooltipData>(null);
   const [startPoint, setStartPoint] = useState<Point | null>(null);
   const [currentRect, setCurrentRect] = useState<Rectangle | null>(null);
-  
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (event.target !== canvasRef.current) return;
 
-    const canvas = canvasRef.current;
+    const positions = getMousePosition(event, canvasRef.current, panOffset);
+    if (!positions) return;
 
+    const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
-
     if (!ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    if (event.button === 2 || event.button === 1 || event.shiftKey) {
+      setIsPanning(true);
+      setPanStart(positions.screen);
+      return;
+    }
 
-    const width = 0;
-    const height = 0;
+    const { world } = positions;
 
     setIsDrawing(true);
-    setStartPoint({ x, y });
-    setCurrentRect(buildRectangle(ctx, x, y, width, height, "", "#ff6b6b"));
+    setStartPoint(world);
+    setCurrentRect(buildRectangle(ctx, world.x, world.y, 0, 0, "", "#ff6b6b"));
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    if (!canvas) {
+    const positions = getMousePosition(event, canvas, panOffset);
+    if (!positions) return;
+
+    if (isPanning && panStart && tooltips.length === 0) {
+      const deltaX = positions.screen.x - panStart.x;
+      const deltaY = positions.screen.y - panStart.y;
+
+      setPanOffset((prev) => ({
+        x: prev.x + deltaX,
+        y: prev.y + deltaY,
+      }));
+
+      setPanStart(positions.screen);
+
       return;
-    } else if (!isDrawing) {
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+    }
+
+    if (!isDrawing) {
+      const { world } = positions;
 
       for (let i = rectangles.length - 1; i >= 0; i--) {
         const r = rectangles[i];
 
         const isHovered =
           r &&
-          x >= r.x &&
-          x <= r.x + r.width &&
-          y >= r.y - 26 &&
-          y <= r.y + r.height + 26 &&
+          world.x >= r.x &&
+          world.x <= r.x + r.width &&
+          world.y >= r.y - 26 &&
+          world.y <= r.y + r.height + 26 &&
           r.label.includes("...");
 
         if (isHovered) {
-          setNameTooltip({ id: r.id, label: r.originalLabel, x, y });
+          const screenPos = worldToScreen(world.x, world.y, panOffset);
+
+          setNameTooltip({
+            id: r.id,
+            label: r.originalLabel,
+            x: screenPos.x,
+            y: screenPos.y,
+          });
+
           return;
         }
       }
@@ -86,34 +115,33 @@ export const FactionBoard = () => {
       if (nameTooltip) setNameTooltip(null);
     } else if (startPoint) {
       const ctx = canvas.getContext("2d");
-
       if (!ctx) return;
 
-      const rect = canvas.getBoundingClientRect();
-      const currentX = event.clientX - rect.left;
-      const currentY = event.clientY - rect.top;
-
-      const x = Math.min(startPoint.x, currentX);
-      const y = Math.min(startPoint.y, currentY);
-      const width = Math.abs(currentX - startPoint.x);
-      const height = Math.abs(currentY - startPoint.y);
+      const { world } = positions;
+      const x = Math.min(startPoint.x, world.x);
+      const y = Math.min(startPoint.y, world.y);
+      const width = Math.abs(world.x - startPoint.x);
+      const height = Math.abs(world.y - startPoint.y);
 
       setCurrentRect(buildRectangle(ctx, x, y, width, height, "", "#ff6b6b"));
     }
   };
 
   const handleMouseUp = useCallback(() => {
-    const canvas = canvasRef.current;
+    if (isPanning) {
+      setIsPanning(false);
+      setPanStart(null);
+      return;
+    }
 
+    const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
-
     if (!ctx) return;
 
     const { width = 0, height = 0 } = currentRect || {};
-
-    const isTooSmall = width < 10 || height < 10;
+    const isTooSmall = width < 100 || height < 100;
 
     if (!isDrawing || !currentRect || isTooSmall) {
       setIsDrawing(false);
@@ -163,12 +191,18 @@ export const FactionBoard = () => {
           const overlapCenterX = overlapLeft + overlapWidth / 2;
           const overlapCenterY = overlapTop + overlapHeight / 2;
 
+          const screenPos = worldToScreen(
+            overlapCenterX,
+            overlapCenterY,
+            panOffset
+          );
+
           return [
             ...acc,
             {
               id: `tooltip-${rectangle.id}-${newRect.id}`,
-              x: overlapCenterX,
-              y: overlapCenterY,
+              x: screenPos.x,
+              y: screenPos.y,
               onClick: (id: string, relationship: "conflict" | "alliance") => {
                 console.log(id, relationship);
                 setTooltips((prev) => prev.filter((t) => t.id !== id));
@@ -187,7 +221,7 @@ export const FactionBoard = () => {
     setIsDrawing(false);
     setStartPoint(null);
     setCurrentRect(null);
-  }, [currentRect, isDrawing, rectangles]);
+  }, [isPanning, currentRect, isDrawing, rectangles, panOffset]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -199,6 +233,9 @@ export const FactionBoard = () => {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.translate(panOffset.x, panOffset.y);
 
     rectangles.forEach((rect) => {
       const borderColor = rect.color + "FF";
@@ -244,7 +281,9 @@ export const FactionBoard = () => {
       );
       ctx.setLineDash([]);
     }
-  }, [rectangles, currentRect, isDrawing, tooltips]);
+
+    ctx.restore();
+  }, [rectangles, currentRect, isDrawing, tooltips, panOffset]);
 
   return (
     <div className="relative w-full h-full">
@@ -252,11 +291,12 @@ export const FactionBoard = () => {
         ref={canvasRef}
         width={window.innerWidth - 100}
         height={window.innerHeight - 200}
-        className="block bg-gray-50 cursor-crosshair"
+        className={`block bg-gray-50 cursoir-pointer ${isPanning ? "cursor-grabbing" : isDrawing ? "cursor-crosshair" : ""}`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onContextMenu={(e) => e.preventDefault()}
       />
       {nameTooltip ? (
         <FactionNameTooltip

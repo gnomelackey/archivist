@@ -5,6 +5,7 @@ import type { IconProps } from "./types";
 /**
  * Vectors and icons by <a href="https://github.com/nagoshiashumari/Rpg-Awesome?ref=svgrepo.com" target="_blank">Nagoshiashumari</a> in GPL License via <a href="https://www.svgrepo.com/" target="_blank">SVG Repo</a>
  * @param size - size of the icon in rem
+ * @param color - color of the icon
  * @returns JSX Element representing the Show icon
  */
 export const ShowIcon = ({

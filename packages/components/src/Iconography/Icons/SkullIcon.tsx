@@ -4,11 +4,11 @@ import type { IconProps } from "./types";
 
 /**
  * Vectors and icons by <a href="https://github.com/nagoshiashumari/Rpg-Awesome?ref=svgrepo.com" target="_blank">Nagoshiashumari</a> in GPL License via <a href="https://www.svgrepo.com/" target="_blank">SVG Repo</a>
- * Modified to create a Hide icon
  * @param size - size of the icon in rem
+ * @param color - color of the icon
  * @returns JSX Element representing the Hide icon
  */
-export const DeleteIcon = ({ size = 1, color = Palette[100] }: IconProps) => (
+export const SkullIcon = ({ size = 1, color = Palette[100] }: IconProps) => (
   <svg
     fill={color}
     width={`${size}rem`}

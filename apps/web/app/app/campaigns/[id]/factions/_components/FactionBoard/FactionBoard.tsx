@@ -219,7 +219,6 @@ export const FactionBoard = () => {
       ))}
       <FactionFormSideBar
         onColorChange={(id: string, color: string) => {
-          console.log("Color change:", id, color);
           setRectangles((prev) =>
             prev.map((rect) => (rect.id === id ? { ...rect, color } : rect))
           );

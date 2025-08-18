@@ -1,4 +1,4 @@
-import { Button, Input, TextArea, IconButton } from "@repo/components";
+import { Button, Input, TextArea } from "@repo/components";
 
 /* TODO: Figure out if we want these
     <div>
@@ -13,17 +13,6 @@ import { Button, Input, TextArea, IconButton } from "@repo/components";
         </option>
         ))}
     </select>
-    </div>
-
-    <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">
-        Faction Color
-    </label>
-    <input
-        type="color"
-        className="w-full h-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        defaultValue="#3498db"
-    />
     </div>
 */
 
@@ -76,7 +65,9 @@ export const FactionFormSideBar = ({
       <div className="p-6 pt-3 flex flex-col gap-6">
         {factions.map((faction) => (
           <div key={faction.id} className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 w-full">
+            <Input placeholder="Faction Name" defaultValue={faction.name} />
+            <TextArea placeholder="Description" rows={1} />
+            <div className="flex gap-2 items-center">
               <button
                 className={`w-10 rounded h-10 flex-shrink-0 hover:cursor-pointer`}
                 style={{ backgroundColor: faction.color }}
@@ -93,29 +84,28 @@ export const FactionFormSideBar = ({
                 value={faction.color}
                 onChange={(ev) => onColorChange(faction.id, ev.target.value)}
               />
-              <Input placeholder="Faction Name" defaultValue={faction.name} />
-            </div>
-            <TextArea placeholder="Description" rows={1} />
-            <div className="flex gap-2">
-              <IconButton
-                onClick={() => onRemove(faction.id)}
-                icon="delete"
-                size={2}
-                color={300}
-                className="hover:opacity-80"
-              />
-              <Button
-                type="button"
-                variant="fill"
-                className="w-full"
-                onClick={() => {
-                  if (faction.name) {
-                    onCreate(faction.name, "");
-                  }
-                }}
-              >
-                Create
-              </Button>
+              <div className="flex gap-2 flex-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  mode="secondary"
+                  onClick={() => onRemove(faction.id)}
+                >
+                  Remove
+                </Button>
+                <Button
+                  type="button"
+                  variant="fill"
+                  className="flex-1"
+                  onClick={() => {
+                    if (faction.name) {
+                      onCreate(faction.name, "");
+                    }
+                  }}
+                >
+                  Save
+                </Button>
+              </div>
             </div>
           </div>
         ))}

@@ -2,7 +2,9 @@ import Palette from "@repo/theme/palette";
 
 import { HideIcon } from "./Icons/HideIcon";
 import { ShowIcon } from "./Icons/ShowIcon";
-import { DeleteIcon } from "./Icons/DeleteIcon";
+import { SkullIcon } from "./Icons/SkullIcon";
+import { ClearIcon } from "./Icons/ClearIcon";
+import { SaveIcon } from "./Icons/SaveIcon";
 
 import type { IconographyProps } from "./types";
 
@@ -12,11 +14,17 @@ import type { IconographyProps } from "./types";
  * @param size - size of the icon in rem
  * @returns JSX Element representing the requested icon
  */
-export const Iconography = ({ name, color = 100, ...props }: IconographyProps) => {
+export const Iconography = ({
+  name,
+  color = 100,
+  ...props
+}: IconographyProps) => {
   const Icon = {
-    "show": ShowIcon,
-    "hide": HideIcon,
-    "delete": DeleteIcon,
+    show: ShowIcon,
+    hide: HideIcon,
+    skull: SkullIcon,
+    save: SaveIcon,
+    clear: ClearIcon,
   }[name];
 
   const themeColor = Palette[color];

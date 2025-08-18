@@ -7,7 +7,7 @@ import Chance from "chance";
 import { FactionTooltip, type FactionToolTipProps } from "./FactionTooltip";
 import type { Point, Rectangle } from "./types";
 import { NAMES, RACES } from "./constants";
-import { getUniqueRandomColor } from "./utils";
+import { getContrastTextColor, getUniqueRandomColor } from "./utils";
 import { FactionFormSideBar } from "./FactionSidebar";
 
 const chance = new Chance();
@@ -30,17 +30,11 @@ export const FactionBoard = () => {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
+    const id = `temp-${Date.now()}`;
 
-    setStartPoint({ x, y });
     setIsDrawing(true);
-    setCurrentRect({
-      id: `temp-${Date.now()}`,
-      x,
-      y,
-      width: 0,
-      height: 0,
-      color: "#ff6b6b",
-    });
+    setStartPoint({ x, y });
+    setCurrentRect({ id, x, y, width: 0, height: 0, color: "#ff6b6b" });
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -58,15 +52,9 @@ export const FactionBoard = () => {
     const y = Math.min(startPoint.y, currentY);
     const width = Math.abs(currentX - startPoint.x);
     const height = Math.abs(currentY - startPoint.y);
+    const id = `temp-${Date.now()}`;
 
-    setCurrentRect({
-      id: `temp-${Date.now()}`,
-      x,
-      y,
-      width,
-      height,
-      color: "#ff6b6b",
-    });
+    setCurrentRect({ id, x, y, width, height, color: "#ff6b6b" });
   };
 
   const handleMouseUp = useCallback(() => {
@@ -155,20 +143,25 @@ export const FactionBoard = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     rectangles.forEach((rect) => {
-      ctx.fillStyle = rect.color + "40";
+      const borderColor = rect.color + "FF";
+      const fillColor = rect.color + "40";
+
+      ctx.fillStyle = fillColor;
       ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 
-      ctx.strokeStyle = rect.color + "FF";
+      ctx.strokeStyle = borderColor;
       ctx.lineWidth = 2;
       ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
 
+      ctx.fillStyle = borderColor;
+      ctx.fillRect(rect.x - 1, rect.y - 26, rect.width + 2, 25);
+
       ctx.font = "16px sans-serif";
       ctx.lineWidth = 3;
-      ctx.strokeStyle = rect.color + "50";
-      ctx.strokeText(`${rect.name} (${rect.race})`, rect.x + 4, rect.y - 5);
+      ctx.strokeText(`${rect.name} (${rect.race})`, rect.x + 4, rect.y - 6);
 
-      ctx.fillStyle = rect.color;
-      ctx.fillText(`${rect.name} (${rect.race})`, rect.x + 4, rect.y - 5);
+      ctx.fillStyle = getContrastTextColor(rect.color);
+      ctx.fillText(`${rect.name} (${rect.race})`, rect.x + 4, rect.y - 6);
     });
 
     const { height = 0, width = 0 } = currentRect || {};

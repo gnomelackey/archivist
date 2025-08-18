@@ -1,14 +1,13 @@
+import { forwardRef } from "react";
+
 import type { TooltipProps } from "./types";
 
-export const Tooltip = ({
-  x,
-  y,
-  width = 200,
-  height = 100,
-  children,
-  className = "",
-}: TooltipProps) => (
+const TooltipComponent = (
+  { x, y, width = 200, height = 100, children, className = "" }: TooltipProps,
+  ref: React.Ref<HTMLDivElement>
+) => (
   <div
+    ref={ref}
     className={`absolute bg-gray-200 p-2 rounded shadow text-palette-300 tooltip flex flex-col gap-2 z-50 ${className}`}
     style={{
       left: x - width / 2,
@@ -20,4 +19,8 @@ export const Tooltip = ({
   >
     {children}
   </div>
+);
+
+export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
+  TooltipComponent
 );

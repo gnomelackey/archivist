@@ -1,0 +1,20 @@
+.btn-outline-primary {
+  @apply font-bold text-palette-100 bg-transparent border-3 rounded;
+}
+.btn-outline-secondary {
+  @apply font-bold text-palette-200 bg-transparent border-3 rounded;
+}
+
+.btn-fill-primary {
+  @apply text-palette-400 bg-palette-100 rounded;
+}
+.btn-fill-secondary {
+  @apply text-palette-100 bg-palette-400 rounded;
+}
+
+.btn-text-primary {
+  @apply text-palette-100 bg-transparent rounded;
+}
+.btn-text-secondary {
+  @apply text-palette-200 bg-transparent rounded;
+}

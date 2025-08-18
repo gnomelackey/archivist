@@ -1,0 +1,20 @@
+.textarea-group:focus-within label {
+  @apply text-palette-200;
+}
+
+.textarea:focus {
+  @apply border-palette-200 border;
+  outline: none;
+}
+
+.textarea-outline {
+  textarea {
+    @apply bg-transparent border rounded text-palette-100;
+  }
+}
+
+.textarea-fill {
+  textarea {
+    @apply bg-palette-300 rounded text-palette-100;
+  }
+}

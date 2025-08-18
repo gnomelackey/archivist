@@ -8,6 +8,7 @@ export const Input = ({
   className,
   variant = "outline",
   type = "text",
+  fullWidth = true,
   ...props
 }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +23,9 @@ export const Input = ({
     outline: "input-outline",
   }[variant];
 
-  const classes = `w-full p-2 rounded input ${className}`;
+  const fullWidthClass = fullWidth ? "w-full" : "";
+
+  const classes = `${fullWidthClass} p-2 rounded input ${className}`;
 
   const isPassword = type === "password";
   const passwordType = showPassword ? "text" : "password";
@@ -51,9 +54,9 @@ export const Input = ({
   ) : null;
 
   return (
-    <div className={`flex flex-col input-group w-full ${variantClassName}`}>
+    <div className={`flex flex-col input-group ${fullWidthClass} ${variantClassName}`}>
       {labelText}
-      <div className="relative w-full">
+      <div className={`relative ${fullWidthClass}`}>
         <input
           type={inputType}
           id={htmlFor}

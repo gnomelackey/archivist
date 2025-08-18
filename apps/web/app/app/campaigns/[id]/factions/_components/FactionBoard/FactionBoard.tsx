@@ -60,7 +60,13 @@ export const FactionBoard = () => {
 
     setIsDrawing(true);
     setStartPoint(world);
-    setCurrentRect(buildRectangle(ctx, world.x, world.y, 0, 0, "", "#ff6b6b"));
+    setCurrentRect(
+      buildRectangle(ctx, world.x, world.y, 0, 0, {
+        name: "",
+        race: "",
+        color: "#ff6b6b",
+      })
+    );
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -123,7 +129,13 @@ export const FactionBoard = () => {
       const width = Math.abs(world.x - startPoint.x);
       const height = Math.abs(world.y - startPoint.y);
 
-      setCurrentRect(buildRectangle(ctx, x, y, width, height, "", "#ff6b6b"));
+      setCurrentRect(
+        buildRectangle(ctx, x, y, width, height, {
+          name: "",
+          race: "",
+          color: "#ff6b6b",
+        })
+      );
     }
   };
 
@@ -151,9 +163,8 @@ export const FactionBoard = () => {
     }
 
     const usedColors = rectangles.map((rect) => rect.color);
-    const name = NAMES[chance.integer({ min: 0, max: NAMES.length - 1 })];
-    const race = RACES[chance.integer({ min: 0, max: RACES.length - 1 })];
-    const originalLabel = `${name} (${race})`;
+    const name = NAMES[chance.integer({ min: 0, max: NAMES.length - 1 })]!;
+    const race = RACES[chance.integer({ min: 0, max: RACES.length - 1 })]!;
 
     const newRect = buildRectangle(
       ctx,
@@ -161,8 +172,7 @@ export const FactionBoard = () => {
       currentRect.y,
       currentRect.width,
       currentRect.height,
-      originalLabel,
-      getUniqueRandomColor(usedColors)
+      { name, race, color: getUniqueRandomColor(usedColors) }
     );
 
     const newTooltips = rectangles.reduce<Array<FactionToolTipProps>>(
@@ -324,12 +334,10 @@ export const FactionBoard = () => {
           setTooltips((prev) => prev.filter((t) => !t.id.includes(id)));
           setRectangles((prev) => prev.filter((rect) => rect.id !== id));
         }}
-        onCreate={(name, description) => {
-          console.log("Create faction:", name, description);
-        }}
         factions={rectangles.map((rect) => ({
           id: rect.id,
-          name: rect.name,
+          name: rect.name!,
+          race: rect.race!,
           color: rect.color,
         }))}
       />

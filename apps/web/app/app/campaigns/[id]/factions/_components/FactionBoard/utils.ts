@@ -98,21 +98,21 @@ export const buildRectangle = (
   y: number,
   width: number,
   height: number,
-  originalLabel: string = "",
-  color: string
+  faction: { name: string; description?: string; race: string; color: string }
 ): Rectangle => {
   if (!ctx) throw new Error("Canvas context is required to build rectangle");
 
   const id = `temp-${Date.now()}`;
+  const originalLabel = `${faction.name} (${faction.race})`;
 
   return {
+    ...faction,
     id,
     x,
     y,
     width,
     height,
     originalLabel,
-    color,
     label: getFactionDisplayText(ctx, originalLabel, width),
   };
 };

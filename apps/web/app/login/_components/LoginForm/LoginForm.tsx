@@ -2,10 +2,12 @@
 
 import { apiClient } from "@repo/clients";
 import { Button, Input, ErrorMessage } from "@repo/components";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export const LoginForm = () => {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [formError, setFormError] = useState("");
@@ -27,7 +29,7 @@ export const LoginForm = () => {
       body: JSON.stringify({ email, password }),
     });
 
-    if (res.ok) redirect("/app");
+    if (res.ok) router.push("/app");
     else setFormError("Login failed. Please check your credentials.");
   };
 

@@ -1,8 +1,9 @@
 import { prisma } from "@repo/db";
 import bcrypt from "bcrypt";
 import type { Request, Response, NextFunction } from "express";
-import jwt, { SignOptions } from "jsonwebtoken";
-import { SessionManager } from "../../../services";
+
+import { COOKIE_CONFIG, SESSION_COOKIE_NAME } from "../../../configs";
+import { SessionManager } from "@repo/session";
 
 const LOGIN_ERROR = `There was an issue logging in. Please check your email or password, and try again.`;
 
@@ -46,27 +47,9 @@ const loginHandler = async (req: Request, res: Response) => {
     return res.status(401).json({ error: LOGIN_ERROR });
   }
 
-  const secret = process.env.JWT_SECRET ?? "your_jwt_secret";
-  const expirationValue = process.env.JWT_EXPIRATION ?? "7d";
-  const jwtExpiration = expirationValue as SignOptions["expiresIn"];
-
-  const token = jwt.sign({ id: user.id, email: user.email }, secret, {
-    expiresIn: jwtExpiration,
-  });
-
   const sessionId = await SessionManager.createSession(user.id);
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-  });
-
-  res.cookie("sessionId", sessionId, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-  });
+  res.cookie(SESSION_COOKIE_NAME, sessionId, COOKIE_CONFIG);
 
   res.json({ message: "login successful" });
 };

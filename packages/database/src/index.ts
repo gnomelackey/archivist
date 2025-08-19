@@ -7,4 +7,5 @@ export type {
   PrismaPromise,
   Campaign,
   User,
+  Seed,
 } from "@prisma/client";

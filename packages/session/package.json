@@ -1,5 +1,5 @@
 {
-  "name": "@repo/api-server",
+  "name": "@repo/session",
   "version": "0.0.0",
   "private": true,
   "exports": {
@@ -19,8 +19,6 @@
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@types/bcrypt": "^6.0.0",
-    "@types/cookie-parser": "^1.4.9",
-    "@types/cors": "^2.8.12",
     "@types/multer": "^2.0.0",
     "@types/node": "^22.15.3",
     "eslint": "^9.31.0",
@@ -28,12 +26,7 @@
   },
   "dependencies": {
     "@repo/db": "*",
-    "@repo/session": "*",
     "bcrypt": "^6.0.0",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "multer": "^2.0.2",
     "uuid": "^11.1.0"
   }
 }

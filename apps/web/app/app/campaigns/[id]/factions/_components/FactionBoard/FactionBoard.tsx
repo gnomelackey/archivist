@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 
 import { useQuery } from "@apollo/client";
-import Chance from "chance";
+import { GET_SEEDS_BY_TYPES_QUERY } from "@repo/clients";
 
 import { FactionFormSideBar } from "./FactionSidebar";
 import {
@@ -23,10 +23,13 @@ import {
   FactionNameTooltipData,
 } from "./FactionNameTooltip";
 
-const chance = new Chance();
-
 export const FactionBoard = () => {
-  const { data } = useQuery(GET_CAMPAIGN_QUERY, { variables: { id } });
+  const { data } = useQuery(GET_SEEDS_BY_TYPES_QUERY, {
+    variables: { types: ["race", "noun", "faction", "adjective"] },
+  });
+
+  // TODO: Remove this console when Typeaheads are used
+  console.log(data);
 
   const [isDrawing, setIsDrawing] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
@@ -165,8 +168,8 @@ export const FactionBoard = () => {
     }
 
     const usedColors = rectangles.map((rect) => rect.color);
-    const name = NAMES[chance.integer({ min: 0, max: NAMES.length - 1 })]!;
-    const race = RACES[chance.integer({ min: 0, max: RACES.length - 1 })]!;
+    const name = ""; // NAMES[chance.integer({ min: 0, max: NAMES.length - 1 })]!;
+    const race = ""; //RACES[chance.integer({ min: 0, max: RACES.length - 1 })]!;
 
     const newRect = buildRectangle(
       ctx,

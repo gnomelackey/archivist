@@ -13,6 +13,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTime: { input: any; output: any; }
+  JSONObject: { input: any; output: any; }
 };
 
 export type Campaign = {
@@ -44,6 +45,8 @@ export type Query = {
   campaigns: Array<Campaign>;
   seed?: Maybe<Seed>;
   seeds: Array<Seed>;
+  seedsByType: Array<Seed>;
+  seedsByTypes: Scalars['JSONObject']['output'];
 };
 
 
@@ -56,6 +59,16 @@ export type QuerySeedArgs = {
   id: Scalars['ID']['input'];
 };
 
+
+export type QuerySeedsByTypeArgs = {
+  type: Scalars['String']['input'];
+};
+
+
+export type QuerySeedsByTypesArgs = {
+  types: Array<Scalars['String']['input']>;
+};
+
 export type Seed = {
   __typename?: 'Seed';
   createdAt: Scalars['DateTime']['output'];
@@ -64,4 +77,10 @@ export type Seed = {
   updatedAt: Scalars['DateTime']['output'];
   user: Scalars['String']['output'];
   value: Scalars['String']['output'];
+};
+
+export type SeedType = {
+  __typename?: 'SeedType';
+  seeds: Array<Seed>;
+  type: Scalars['String']['output'];
 };

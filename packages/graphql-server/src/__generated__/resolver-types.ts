@@ -1,7 +1,8 @@
 import type * as Types from './schema-types';
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import type { Campaign, User } from '@repo/db';
+import type { Campaign, User, Seed } from '@repo/db';
 import type { ArchivistGraphQLContext } from '../context';
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 
 
@@ -78,9 +79,11 @@ export type ResolversTypes = {
   Campaign: ResolverTypeWrapper<Campaign>;
   DateTime: ResolverTypeWrapper<Types.Scalars['DateTime']['output']>;
   ID: ResolverTypeWrapper<Types.Scalars['ID']['output']>;
+  JSONObject: ResolverTypeWrapper<Types.Scalars['JSONObject']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
-  Seed: ResolverTypeWrapper<Types.Seed>;
+  Seed: ResolverTypeWrapper<Seed>;
+  SeedType: ResolverTypeWrapper<Omit<Types.SeedType, 'seeds'> & { seeds: Array<ResolversTypes['Seed']> }>;
   String: ResolverTypeWrapper<Types.Scalars['String']['output']>;
 };
 
@@ -90,9 +93,11 @@ export type ResolversParentTypes = {
   Campaign: Campaign;
   DateTime: Types.Scalars['DateTime']['output'];
   ID: Types.Scalars['ID']['output'];
+  JSONObject: Types.Scalars['JSONObject']['output'];
   Mutation: {};
   Query: {};
-  Seed: Types.Seed;
+  Seed: Seed;
+  SeedType: Omit<Types.SeedType, 'seeds'> & { seeds: Array<ResolversParentTypes['Seed']> };
   String: Types.Scalars['String']['output'];
 };
 
@@ -110,6 +115,10 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime';
 }
 
+export interface JsonObjectScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSONObject'], any> {
+  name: 'JSONObject';
+}
+
 export type MutationResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createCampaign?: Resolver<ResolversTypes['Campaign'], ParentType, ContextType, RequireFields<Types.MutationCreateCampaignArgs, 'name'>>;
@@ -121,6 +130,8 @@ export type QueryResolvers<ContextType = ArchivistGraphQLContext, ParentType ext
   campaigns?: Resolver<Array<ResolversTypes['Campaign']>, ParentType, ContextType>;
   seed?: Resolver<Types.Maybe<ResolversTypes['Seed']>, ParentType, ContextType, RequireFields<Types.QuerySeedArgs, 'id'>>;
   seeds?: Resolver<Array<ResolversTypes['Seed']>, ParentType, ContextType>;
+  seedsByType?: Resolver<Array<ResolversTypes['Seed']>, ParentType, ContextType, RequireFields<Types.QuerySeedsByTypeArgs, 'type'>>;
+  seedsByTypes?: Resolver<ResolversTypes['JSONObject'], ParentType, ContextType, RequireFields<Types.QuerySeedsByTypesArgs, 'types'>>;
 };
 
 export type SeedResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Seed'] = ResolversParentTypes['Seed']> = {
@@ -133,11 +144,19 @@ export type SeedResolvers<ContextType = ArchivistGraphQLContext, ParentType exte
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SeedTypeResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['SeedType'] = ResolversParentTypes['SeedType']> = {
+  seeds?: Resolver<Array<ResolversTypes['Seed']>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = ArchivistGraphQLContext> = {
   Campaign?: CampaignResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
+  JSONObject?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Seed?: SeedResolvers<ContextType>;
+  SeedType?: SeedTypeResolvers<ContextType>;
 };
 

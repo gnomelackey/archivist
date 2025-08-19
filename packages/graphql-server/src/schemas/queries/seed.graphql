@@ -1,4 +1,6 @@
 extend type Query {
     seeds: [Seed!]!
     seed(id: ID!): Seed
+    seedsByType(type: String!): [Seed!]!
+    seedsByTypes(types: [String!]!): JSONObject!
 }

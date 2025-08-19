@@ -6,3 +6,8 @@ type Seed {
   createdAt: DateTime!
   updatedAt: DateTime!
 }
+
+type SeedType {
+  type: String!
+  seeds: [Seed!]!
+}

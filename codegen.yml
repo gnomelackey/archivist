@@ -24,6 +24,7 @@ generates:
       mappers:
         Campaign: "@repo/db#Campaign"
         User: "@repo/db#User"
+        Seed: "@repo/db#Seed"
       resolverTypeWrapperSignature: "Promise<T> | T | import('@repo/db').PrismaPromise<T>"
 
   packages/clients/src/graphql/types/:

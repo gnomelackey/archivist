@@ -1,3 +1,5 @@
+import { Seed } from "@repo/db";
+
 import { ArchivistGraphQLResolvers } from "./types";
 
 export const resolvers: ArchivistGraphQLResolvers = {
@@ -7,10 +9,10 @@ export const resolvers: ArchivistGraphQLResolvers = {
     },
     campaign: (_, args, context) => {
       if (!args.id) throw new Error("Error: Missing Campaign ID.");
-      if (!context.user) throw new Error("Error: Invalid User.");
+      if (!context.userId) throw new Error("Error: Invalid Token.");
 
       return context.prisma.campaign.findUnique({
-        where: { id: args.id, userId: context.user.id },
+        where: { id: args.id, userId: context.userId },
       });
     },
     seeds: (_, __, context) => {
@@ -18,24 +20,53 @@ export const resolvers: ArchivistGraphQLResolvers = {
     },
     seed: (_, args, context) => {
       if (!args.id) throw new Error("Error: Missing Seed ID.");
-      if (!context.user) throw new Error("Error: Invalid User.");
+      if (!context.userId) throw new Error("Error: Invalid Token.");
 
       return context.prisma.seed.findUnique({
-        where: { id: args.id, userId: context.user.id },
+        where: { id: args.id, userId: context.userId },
       });
+    },
+    seedsByType: (_, args, context) => {
+      if (!args.type) throw new Error("Error: Missing Seed Type.");
+      if (!context.userId) throw new Error("Error: Invalid Token.");
+
+      return context.prisma.seed.findMany({
+        where: { type: args.type, userId: context.userId },
+      });
+    },
+    seedsByTypes: (_, args, context) => {
+      if (!args.types) throw new Error("Error: Missing Seed Types.");
+      if (!context.userId) throw new Error("Error: Invalid Token.");
+
+      return context.prisma.seed
+        .findMany({
+          where: { type: { in: args.types }, userId: context.userId },
+        })
+        .then((data) => {
+          if (!data) {
+            throw new Error("Error: No seeds found for the provided types.");
+          }
+
+          return data.reduce((acc: Record<string, Array<Seed>>, seed) => {
+            const updatedMap = { ...acc };
+            if (!updatedMap[seed.type]) updatedMap[seed.type] = [seed];
+            else updatedMap[seed.type]!.push(seed);
+            return updatedMap;
+          }, {});
+        });
     },
   },
   Mutation: {
     createCampaign: (_, args, context) => {
-      const { id } = context.user;
+      const { userId } = context;
 
-      if (!id) throw new Error("Error: Invalid User.");
+      if (!userId) throw new Error("Error: Invalid Token.");
 
       return context.prisma.campaign.create({
         data: {
           name: args.name,
           description: args.description,
-          user: { connect: { id } },
+          user: { connect: { id: userId } },
         },
       });
     },

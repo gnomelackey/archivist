@@ -42,9 +42,26 @@ export type Query = {
   _empty?: Maybe<Scalars['String']['output']>;
   campaign?: Maybe<Campaign>;
   campaigns: Array<Campaign>;
+  seed?: Maybe<Seed>;
+  seeds: Array<Seed>;
 };
 
 
 export type QueryCampaignArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QuerySeedArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type Seed = {
+  __typename?: 'Seed';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  user: Scalars['String']['output'];
+  value: Scalars['String']['output'];
 };

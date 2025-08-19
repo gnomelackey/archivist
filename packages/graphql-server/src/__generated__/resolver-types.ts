@@ -80,6 +80,7 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Types.Scalars['ID']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
+  Seed: ResolverTypeWrapper<Types.Seed>;
   String: ResolverTypeWrapper<Types.Scalars['String']['output']>;
 };
 
@@ -91,6 +92,7 @@ export type ResolversParentTypes = {
   ID: Types.Scalars['ID']['output'];
   Mutation: {};
   Query: {};
+  Seed: Types.Seed;
   String: Types.Scalars['String']['output'];
 };
 
@@ -117,6 +119,18 @@ export type QueryResolvers<ContextType = ArchivistGraphQLContext, ParentType ext
   _empty?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   campaign?: Resolver<Types.Maybe<ResolversTypes['Campaign']>, ParentType, ContextType, RequireFields<Types.QueryCampaignArgs, 'id'>>;
   campaigns?: Resolver<Array<ResolversTypes['Campaign']>, ParentType, ContextType>;
+  seed?: Resolver<Types.Maybe<ResolversTypes['Seed']>, ParentType, ContextType, RequireFields<Types.QuerySeedArgs, 'id'>>;
+  seeds?: Resolver<Array<ResolversTypes['Seed']>, ParentType, ContextType>;
+};
+
+export type SeedResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Seed'] = ResolversParentTypes['Seed']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = ArchivistGraphQLContext> = {
@@ -124,5 +138,6 @@ export type Resolvers<ContextType = ArchivistGraphQLContext> = {
   DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Seed?: SeedResolvers<ContextType>;
 };
 

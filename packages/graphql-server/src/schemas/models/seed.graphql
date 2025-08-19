@@ -1,0 +1,8 @@
+type Seed {
+  id: String!
+  type: String!
+  value: String!
+  user: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

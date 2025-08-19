@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 
+import { useQuery } from "@apollo/client";
 import Chance from "chance";
 
 import { FactionFormSideBar } from "./FactionSidebar";
@@ -9,7 +10,6 @@ import {
   FactionRelationsTooltip,
   type FactionToolTipProps,
 } from "./FactionRelationsTooltip";
-import { NAMES, RACES } from "./constants";
 import type { Point, Rectangle } from "./types";
 import {
   buildRectangle,
@@ -26,6 +26,8 @@ import {
 const chance = new Chance();
 
 export const FactionBoard = () => {
+  const { data } = useQuery(GET_CAMPAIGN_QUERY, { variables: { id } });
+
   const [isDrawing, setIsDrawing] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });

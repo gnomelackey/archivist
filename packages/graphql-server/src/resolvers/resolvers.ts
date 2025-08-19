@@ -7,9 +7,21 @@ export const resolvers: ArchivistGraphQLResolvers = {
     },
     campaign: (_, args, context) => {
       if (!args.id) throw new Error("Error: Missing Campaign ID.");
+      if (!context.user) throw new Error("Error: Invalid User.");
 
       return context.prisma.campaign.findUnique({
-        where: { id: args.id },
+        where: { id: args.id, userId: context.user.id },
+      });
+    },
+    seeds: (_, __, context) => {
+      return context.prisma.seed.findMany();
+    },
+    seed: (_, args, context) => {
+      if (!args.id) throw new Error("Error: Missing Seed ID.");
+      if (!context.user) throw new Error("Error: Invalid User.");
+
+      return context.prisma.seed.findUnique({
+        where: { id: args.id, userId: context.user.id },
       });
     },
   },
@@ -29,6 +41,11 @@ export const resolvers: ArchivistGraphQLResolvers = {
     },
   },
   Campaign: {
+    user: (parent) => {
+      return parent.userId;
+    },
+  },
+  Seed: {
     user: (parent) => {
       return parent.userId;
     },

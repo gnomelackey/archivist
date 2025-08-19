@@ -1,0 +1,4 @@
+extend type Query {
+    seeds: [Seed!]!
+    seed(id: ID!): Seed
+}

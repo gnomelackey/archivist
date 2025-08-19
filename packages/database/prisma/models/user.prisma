@@ -9,4 +9,5 @@ model User {
 
   campaigns    Campaign[]
   sessions     Session[]
+  seeds        Seed[]
 }

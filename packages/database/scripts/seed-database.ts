@@ -1,0 +1,255 @@
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+
+const prisma = new PrismaClient();
+
+const campaigns = [
+  { name: "Mork Borg", description: "Mork Borg " },
+  { name: "Mausritter", description: "Mausritter " },
+  { name: "Shadowdark", description: "Shadowdark " },
+];
+
+const seeds = [
+  { type: "race", value: "Human" },
+  { type: "race", value: "Elf" },
+  { type: "race", value: "Dwarf" },
+  { type: "race", value: "Half-Orc" },
+  { type: "race", value: "Goblin" },
+  { type: "race", value: "Halfling" },
+  { type: "race", value: "Multiracial" },
+  { type: "adjective", value: "Ancient" },
+  { type: "adjective", value: "Mighty" },
+  { type: "adjective", value: "Forgotten" },
+  { type: "adjective", value: "Noble" },
+  { type: "adjective", value: "Fierce" },
+  { type: "adjective", value: "Mysterious" },
+  { type: "adjective", value: "Sacred" },
+  { type: "adjective", value: "Fallen" },
+  { type: "adjective", value: "Golden" },
+  { type: "adjective", value: "Dark" },
+  { type: "adjective", value: "Eternal" },
+  { type: "adjective", value: "Crimson" },
+  { type: "adjective", value: "Silent" },
+  { type: "adjective", value: "Brave" },
+  { type: "adjective", value: "Cunning" },
+  { type: "adjective", value: "Proud" },
+  { type: "adjective", value: "Wild" },
+  { type: "adjective", value: "Wise" },
+  { type: "adjective", value: "Ruthless" },
+  { type: "adjective", value: "Hidden" },
+  { type: "adjective", value: "Loyal" },
+  { type: "adjective", value: "Vengeful" },
+  { type: "adjective", value: "Peaceful" },
+  { type: "adjective", value: "Savage" },
+  { type: "adjective", value: "Divine" },
+  { type: "adjective", value: "Cursed" },
+  { type: "adjective", value: "Blessed" },
+  { type: "adjective", value: "Shadow" },
+  { type: "adjective", value: "Iron" },
+  { type: "adjective", value: "Silver" },
+  { type: "adjective", value: "Stone" },
+  { type: "adjective", value: "Fire" },
+  { type: "adjective", value: "Ice" },
+  { type: "adjective", value: "Storm" },
+  { type: "adjective", value: "Blood" },
+  { type: "adjective", value: "Steel" },
+  { type: "adjective", value: "Frost" },
+  { type: "adjective", value: "Thunder" },
+  { type: "adjective", value: "Wind" },
+  { type: "adjective", value: "Earth" },
+  { type: "adjective", value: "Moon" },
+  { type: "adjective", value: "Star" },
+  { type: "adjective", value: "Sun" },
+  { type: "adjective", value: "Lost" },
+  { type: "adjective", value: "Free" },
+  { type: "adjective", value: "United" },
+  { type: "adjective", value: "Broken" },
+  { type: "adjective", value: "Rising" },
+  { type: "adjective", value: "Shattered" },
+  { type: "adjective", value: "Exiled" },
+  { type: "adjective", value: "Wandering" },
+  { type: "faction", value: "Order" },
+  { type: "faction", value: "Brotherhood" },
+  { type: "faction", value: "Guild" },
+  { type: "faction", value: "Legion" },
+  { type: "faction", value: "Empire" },
+  { type: "faction", value: "Kingdom" },
+  { type: "faction", value: "Republic" },
+  { type: "faction", value: "Alliance" },
+  { type: "faction", value: "Coalition" },
+  { type: "faction", value: "Federation" },
+  { type: "faction", value: "Clan" },
+  { type: "faction", value: "Tribe" },
+  { type: "faction", value: "House" },
+  { type: "faction", value: "Dynasty" },
+  { type: "faction", value: "Cult" },
+  { type: "faction", value: "Sect" },
+  { type: "faction", value: "Circle" },
+  { type: "faction", value: "Council" },
+  { type: "faction", value: "Assembly" },
+  { type: "faction", value: "Syndicate" },
+  { type: "faction", value: "Cartel" },
+  { type: "faction", value: "Company" },
+  { type: "faction", value: "Corporation" },
+  { type: "faction", value: "Consortium" },
+  { type: "faction", value: "Band" },
+  { type: "faction", value: "Pack" },
+  { type: "faction", value: "Horde" },
+  { type: "faction", value: "Warband" },
+  { type: "faction", value: "Raiders" },
+  { type: "faction", value: "Mercenaries" },
+  { type: "faction", value: "Guards" },
+  { type: "faction", value: "Watch" },
+  { type: "faction", value: "Militia" },
+  { type: "faction", value: "Rebellion" },
+  { type: "faction", value: "Resistance" },
+  { type: "faction", value: "Underground" },
+  { type: "faction", value: "Network" },
+  { type: "faction", value: "Society" },
+  { type: "faction", value: "Lodge" },
+  { type: "faction", value: "Covenant" },
+  { type: "faction", value: "Pact" },
+  { type: "faction", value: "Union" },
+  { type: "faction", value: "Conclave" },
+  { type: "faction", value: "Cabal" },
+  { type: "faction", value: "Inquisition" },
+  { type: "faction", value: "Crusade" },
+  { type: "faction", value: "Pilgrims" },
+  { type: "faction", value: "Monastery" },
+  { type: "faction", value: "Temple" },
+  { type: "faction", value: "Church" },
+  { type: "faction", value: "Disciples" },
+  { type: "faction", value: "Followers" },
+  { type: "faction", value: "Servants" },
+  { type: "faction", value: "Champions" },
+  { type: "faction", value: "Guardians" },
+  { type: "faction", value: "Protectors" },
+  { type: "faction", value: "Defenders" },
+  { type: "faction", value: "Sentinels" },
+  { type: "noun", value: "Dragon" },
+  { type: "noun", value: "Phoenix" },
+  { type: "noun", value: "Griffin" },
+  { type: "noun", value: "Wyrm" },
+  { type: "noun", value: "Raven" },
+  { type: "noun", value: "Wolf" },
+  { type: "noun", value: "Bear" },
+  { type: "noun", value: "Eagle" },
+  { type: "noun", value: "Serpent" },
+  { type: "noun", value: "Spider" },
+  { type: "noun", value: "Skull" },
+  { type: "noun", value: "Bone" },
+  { type: "noun", value: "Crown" },
+  { type: "noun", value: "Throne" },
+  { type: "noun", value: "Sword" },
+  { type: "noun", value: "Blade" },
+  { type: "noun", value: "Shield" },
+  { type: "noun", value: "Hammer" },
+  { type: "noun", value: "Axe" },
+  { type: "noun", value: "Spear" },
+  { type: "noun", value: "Tower" },
+  { type: "noun", value: "Keep" },
+  { type: "noun", value: "Citadel" },
+  { type: "noun", value: "Fortress" },
+  { type: "noun", value: "Castle" },
+  { type: "noun", value: "Gate" },
+  { type: "noun", value: "Bridge" },
+  { type: "noun", value: "Path" },
+  { type: "noun", value: "Vale" },
+  { type: "noun", value: "Glen" },
+  { type: "noun", value: "Grove" },
+  { type: "noun", value: "Thorn" },
+  { type: "noun", value: "Rose" },
+  { type: "noun", value: "Flame" },
+  { type: "noun", value: "Ember" },
+  { type: "noun", value: "Ash" },
+  { type: "noun", value: "Dawn" },
+  { type: "noun", value: "Dusk" },
+  { type: "noun", value: "Night" },
+  { type: "noun", value: "Shadow" },
+  { type: "noun", value: "Light" },
+  { type: "noun", value: "Crystal" },
+  { type: "noun", value: "Gem" },
+  { type: "noun", value: "Stone" },
+  { type: "noun", value: "Rock" },
+  { type: "noun", value: "Mountain" },
+  { type: "noun", value: "Peak" },
+  { type: "noun", value: "Claw" },
+  { type: "noun", value: "Fang" },
+  { type: "noun", value: "Wing" },
+  { type: "noun", value: "Talon" },
+  { type: "noun", value: "Horn" },
+  { type: "noun", value: "Eye" },
+  { type: "noun", value: "Heart" },
+  { type: "noun", value: "Soul" },
+  { type: "noun", value: "Spirit" },
+  { type: "noun", value: "Wraith" },
+  { type: "noun", value: "Specter" },
+  { type: "noun", value: "Phantom" },
+  { type: "noun", value: "Shade" },
+  { type: "noun", value: "Blight" },
+  { type: "noun", value: "Plague" },
+  { type: "noun", value: "Curse" },
+  { type: "noun", value: "Hex" },
+  { type: "noun", value: "Rune" },
+  { type: "noun", value: "Sigil" },
+  { type: "noun", value: "Mark" },
+  { type: "noun", value: "Seal" },
+];
+
+async function main() {
+  console.log("Clearing existing data...");
+
+  await prisma.user.deleteMany();
+  await prisma.campaign.deleteMany();
+  await prisma.faction.deleteMany();
+  await prisma.map.deleteMany();
+  await prisma.seed.deleteMany();
+
+  console.log("Existing data cleared.");
+
+  const email = process.env.SEED_ADMIN_EMAIL ?? "admin@gmail.com";
+  const name = process.env.SEED_ADMIN_NAME ?? "admin";
+  const password = process.env.SEED_ADMIN_PASSWORD ?? "password";
+
+  console.log("Adding admin user...");
+
+  const adminUser = await prisma.user.create({
+    data: {
+      email: email,
+      name: name,
+      passwordHash: await bcrypt.hash(password, 10),
+    },
+  });
+
+  console.log("Admin user added!");
+  console.log("Adding campaign data...");
+
+  await prisma.campaign.createMany({
+    data: campaigns.map((campaign) => ({
+      ...campaign,
+      userId: adminUser.id,
+    })),
+  });
+
+  console.log("Campaign data added!");
+  console.log("Adding seed data...");
+
+  await prisma.seed.createMany({
+    data: seeds.map((seed) => ({
+      ...seed,
+      userId: adminUser.id,
+    })),
+  });
+
+  console.log("Seed data added!");
+  console.log("Database seeded successfully!");
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

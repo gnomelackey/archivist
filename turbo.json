@@ -12,13 +12,21 @@
     "NODE_ENV",
     "NEXT_PUBLIC_API_URL",
     "NEXT_PUBLIC_GRAPHQL_URL",
-    "NEXT_PUBLIC_WEBSOCKET_URL"
+    "NEXT_PUBLIC_WEBSOCKET_URL",
+    "SEED_ADMIN_EMAIL",
+    "SEED_ADMIN_NAME",
+    "SEED_ADMIN_PASSWORD"
   ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "prisma/schema.prisma"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "prisma/schema.prisma"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]

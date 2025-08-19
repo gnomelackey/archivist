@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
 import { useQuery } from "@apollo/client";
 import { GET_SEEDS_BY_TYPES_QUERY } from "@repo/clients";
+import Chance from "chance";
 
 import { FactionFormSideBar } from "./FactionSidebar";
 import {
@@ -23,13 +24,43 @@ import {
   FactionNameTooltipData,
 } from "./FactionNameTooltip";
 
+const chance = new Chance();
+
+type SeedData = {
+  createdAt: string;
+  id: string;
+  type: string;
+  updatedAt: string;
+  userId: string;
+  value: string;
+};
+
+type SeedsByTypes = {
+  seedsByTypes: {
+    race: SeedData[];
+    noun: SeedData[];
+    faction: SeedData[];
+    adjective: SeedData[];
+  };
+};
+
 export const FactionBoard = () => {
-  const { data } = useQuery(GET_SEEDS_BY_TYPES_QUERY, {
+  const { data } = useQuery<SeedsByTypes>(GET_SEEDS_BY_TYPES_QUERY, {
     variables: { types: ["race", "noun", "faction", "adjective"] },
   });
 
-  // TODO: Remove this console when Typeaheads are used
-  console.log(data);
+  const { races, nouns, factions, adjectives } = useMemo(() => {
+    if (!data?.seedsByTypes) {
+      return { races: [], nouns: [], factions: [], adjectives: [] };
+    }
+
+    return {
+      races: data.seedsByTypes.race ?? [],
+      nouns: data.seedsByTypes.noun ?? [],
+      factions: data.seedsByTypes.faction ?? [],
+      adjectives: data.seedsByTypes.adjective ?? [],
+    };
+  }, [data]);
 
   const [isDrawing, setIsDrawing] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
@@ -67,7 +98,9 @@ export const FactionBoard = () => {
     setStartPoint(world);
     setCurrentRect(
       buildRectangle(ctx, world.x, world.y, 0, 0, {
-        name: "",
+        noun: "",
+        faction: "",
+        adjective: "",
         race: "",
         color: "#ff6b6b",
       })
@@ -136,7 +169,9 @@ export const FactionBoard = () => {
 
       setCurrentRect(
         buildRectangle(ctx, x, y, width, height, {
-          name: "",
+          noun: "",
+          adjective: "",
+          faction: "",
           race: "",
           color: "#ff6b6b",
         })
@@ -168,8 +203,24 @@ export const FactionBoard = () => {
     }
 
     const usedColors = rectangles.map((rect) => rect.color);
-    const name = ""; // NAMES[chance.integer({ min: 0, max: NAMES.length - 1 })]!;
-    const race = ""; //RACES[chance.integer({ min: 0, max: RACES.length - 1 })]!;
+
+    const nounsMax = nouns?.length ? nouns.length - 1 : 0;
+    const adjectivesMax = adjectives?.length ? adjectives.length - 1 : 0;
+    const racesMax = races?.length ? races.length - 1 : 0;
+    const factionsMax = factions?.length ? factions.length - 1 : 0;
+
+    const nounsIndex = chance.integer({ min: 0, max: nounsMax });
+    const adjectivesIndex = chance.integer({ min: 0, max: adjectivesMax });
+    const racesIndex = chance.integer({ min: 0, max: racesMax });
+    const factionsIndex = chance.integer({ min: 0, max: factionsMax });
+
+    const seeds = {
+      noun: nouns[nounsIndex]?.value ?? "",
+      adjective: adjectives[adjectivesIndex]?.value ?? "",
+      race: races[racesIndex]?.value ?? "",
+      faction: factions[factionsIndex]?.value ?? "",
+      color: getUniqueRandomColor(usedColors),
+    };
 
     const newRect = buildRectangle(
       ctx,
@@ -177,7 +228,7 @@ export const FactionBoard = () => {
       currentRect.y,
       currentRect.width,
       currentRect.height,
-      { name, race, color: getUniqueRandomColor(usedColors) }
+      seeds
     );
 
     const newTooltips = rectangles.reduce<Array<FactionToolTipProps>>(
@@ -236,7 +287,17 @@ export const FactionBoard = () => {
     setIsDrawing(false);
     setStartPoint(null);
     setCurrentRect(null);
-  }, [isPanning, currentRect, isDrawing, rectangles, panOffset]);
+  }, [
+    isPanning,
+    currentRect,
+    isDrawing,
+    rectangles,
+    nouns,
+    adjectives,
+    races,
+    factions,
+    panOffset,
+  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

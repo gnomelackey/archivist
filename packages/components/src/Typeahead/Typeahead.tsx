@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 
 import { Input } from "../Input";
-import type { InputProps } from "../Input/types";
+import type { TypeaheadOption, TypeaheadProps } from "./types";
 
 export const Typeahead = ({
   options,
@@ -9,30 +9,21 @@ export const Typeahead = ({
   onTypeChange,
   onSelect,
   ...props
-}: {
-  options: Array<{ id: string; label: string; value: any }>;
-  onSelect?: (option: { id: string; label: string; value: any }) => void;
-  onTypeChange?: (ev: React.ChangeEvent<HTMLInputElement>) => void;
-} & InputProps) => {
+}: TypeaheadProps) => {
   const inputRef = useRef<HTMLDivElement | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<{
-    id: string;
-    label: string;
-    value: any;
-  } | null>(null);
+  const [selected, setSelected] = useState<TypeaheadOption | null>(null);
   const [typedValue, setTypedValue] = useState("");
 
-  const filteredOptions = useMemo(
-    () =>
-      !selected || selected.label !== typedValue
-        ? options.filter((option) =>
-            option.label.toLowerCase().includes(typedValue.toLowerCase())
-          )
-        : options,
-    [selected, typedValue, options]
-  );
+  const filteredOptions = useMemo(() => {
+    const shouldFilter = !selected || selected.label !== typedValue;
+    if (!shouldFilter) return options;
+    const parsedTypedValue = typedValue.toLowerCase();
+    return options.filter(({ label }) =>
+      label.toLowerCase().includes(parsedTypedValue)
+    );
+  }, [selected, typedValue, options]);
 
   const showOptions = isOpen && filteredOptions.length > 0;
   const showEmptyMessage = isOpen && !showOptions;
@@ -47,7 +38,7 @@ export const Typeahead = ({
     setTypedValue(ev.target.value);
   };
 
-  const handleSelect = (option: { id: string; label: string; value: any }) => {
+  const handleSelect = (option: TypeaheadOption) => {
     setIsOpen(false);
     onSelect?.(option);
     setSelected(option);
@@ -84,8 +75,8 @@ export const Typeahead = ({
                 key={option.id}
                 className="p-2 hover:cursor-pointer hover:bg-palette-500 hover:text-palette-100"
               >
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => handleSelect(option)}
                   className="w-full text-left"
                 >

@@ -7,3 +7,4 @@ export * from "./Modal";
 export * from "./Portal";
 export * from "./TextArea";
 export * from "./Tooltip";
+export * from "./Typeahead";

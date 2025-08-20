@@ -25,19 +25,22 @@ generates:
         Campaign: "@repo/db#Campaign"
         User: "@repo/db#User"
         Seed: "@repo/db#Seed"
+        Faction: "@repo/db#Faction"
       resolverTypeWrapperSignature: "Promise<T> | T | import('@repo/db').PrismaPromise<T>"
 
   packages/clients/src/graphql/types/:
     schema: "packages/graphql-server/src/schemas/**/*.graphql"
-    documents: 
+    documents:
       - "packages/clients/src/graphql/**/*.ts"
     preset: client
+    presetConfig:
+      fragmentMasking: false
     config:
       enumsAsTypes: true
       useIndexSignature: true
       useTypeImports: true
 
-  packages/clients/src/graphql/types/index.ts:
+  packages/clients/src/graphql/index.ts:
     plugins:
-    - add:
-        content: "export * from \"./fragment-masking\"\nexport * from \"./gql\"\nexport * from \"./graphql\""
+      - add:
+          content: "export * from \"./client\";\nexport * from \"./mutations\";\nexport * from \"./queries\";\nexport * from \"./types\";\nexport type { Campaign, Faction, Seed, Maybe, Scalars } from \"./types/graphql\";"

@@ -26,10 +26,23 @@ export type Campaign = {
   user: Scalars['String']['output'];
 };
 
+export type Faction = {
+  __typename?: 'Faction';
+  campaign: Scalars['String']['output'];
+  color: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  race: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']['output']>;
   createCampaign: Campaign;
+  createFaction: Faction;
   createSeed: Seed;
 };
 
@@ -37,6 +50,15 @@ export type Mutation = {
 export type MutationCreateCampaignArgs = {
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+};
+
+
+export type MutationCreateFactionArgs = {
+  campaign: Scalars['ID']['input'];
+  color: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  race: Scalars['String']['input'];
 };
 
 
@@ -50,6 +72,8 @@ export type Query = {
   _empty?: Maybe<Scalars['String']['output']>;
   campaign?: Maybe<Campaign>;
   campaigns: Array<Campaign>;
+  faction?: Maybe<Faction>;
+  factions: Array<Faction>;
   seed?: Maybe<Seed>;
   seeds: Array<Seed>;
   seedsByType: Array<Seed>;
@@ -59,6 +83,16 @@ export type Query = {
 
 export type QueryCampaignArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionsArgs = {
+  campaign: Scalars['ID']['input'];
 };
 
 

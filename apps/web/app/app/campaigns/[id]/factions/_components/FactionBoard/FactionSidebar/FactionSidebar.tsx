@@ -1,21 +1,45 @@
 import { Button } from "@repo/components";
+import { useMutation } from "@apollo/client";
+import { CREATE_FACTION_MUTATION } from "@repo/clients";
+import { useParams } from "next/navigation";
 
 import { FactionForm } from "./FactionForm";
 import type { FactionSideBarProps } from "./types";
+import { FactionFormFields } from "./FactionForm/types";
 
 export const FactionFormSideBar = ({
   factions,
   onRemove,
   onFactionChange,
-  onColorChange,
 }: FactionSideBarProps) => {
-  const handleCreate = (name: string, description: string) => {
-    console.log("Create faction:", name, description);
+  const { id: campaignId } = useParams();
+
+  const [createFaction] = useMutation(CREATE_FACTION_MUTATION);
+
+  const handleCreate = (faction: FactionFormFields) => {
+    createFaction({
+      variables: {
+        name: faction.name,
+        race: faction.race,
+        campaign: campaignId,
+        description: faction.description,
+        color: faction.color,
+      },
+    });
+  };
+
+  const handleCreateAll = () => {
+    factions.forEach(handleCreate);
   };
 
   const formCTAs = factions?.length
     ? [
-        <Button key="faction-create-all" className="w-full" variant="fill">
+        <Button
+          key="faction-create-all"
+          className="w-full"
+          variant="fill"
+          onClick={handleCreateAll}
+        >
           Create All
         </Button>,
         <Button
@@ -50,9 +74,8 @@ export const FactionFormSideBar = ({
             key={faction.id}
             faction={faction}
             onRemove={onRemove}
-            onCreate={handleCreate}
+            onSave={handleCreate}
             onFactionChange={onFactionChange}
-            onColorChange={onColorChange}
           />
         ))}
       </div>

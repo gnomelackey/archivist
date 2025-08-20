@@ -1,4 +1,4 @@
 extend type Query {
-    campaigns: [Campaign!]!
-    campaign(id: ID!): Campaign
+  campaigns: [Campaign!]!
+  campaign(id: ID!): Campaign
 }

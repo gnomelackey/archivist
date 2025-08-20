@@ -1,10 +1,14 @@
 FROM node:24
+
+RUN corepack enable
+
 WORKDIR /app
 
 COPY . .
 
-WORKDIR /app/apps/web
 RUN npm install
+
+WORKDIR /app/apps/web
 RUN npm run build
 
 EXPOSE 3000

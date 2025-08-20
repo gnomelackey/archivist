@@ -8,4 +8,7 @@ export type {
   Campaign,
   User,
   Seed,
+  Faction,
+  Map,
+  Session,
 } from "@prisma/client";

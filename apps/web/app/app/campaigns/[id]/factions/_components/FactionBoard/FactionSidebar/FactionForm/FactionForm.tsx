@@ -1,7 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
 import { useMutation, useQuery } from "@apollo/client";
-import { CREATE_SEED_MUTATION, GET_SEEDS_BY_TYPES_QUERY } from "@repo/clients";
+import {
+  CREATE_SEED_MUTATION,
+  GET_SEEDS_BY_TYPES_QUERY,
+  SeedsByTypes,
+} from "@repo/clients";
 import {
   Button,
   Input,
@@ -12,29 +16,11 @@ import {
 
 import type { FactionFormProps } from "./types";
 
-type SeedData = {
-  createdAt: string;
-  id: string;
-  type: string;
-  updatedAt: string;
-  userId: string;
-  value: string;
-};
-
-type SeedsByTypes = {
-  seedsByTypes: {
-    race: SeedData[];
-    noun: SeedData[];
-    faction: SeedData[];
-    adjective: SeedData[];
-  };
-};
-
 export const FactionForm = ({
   faction,
+  onSave,
   onRemove,
   onFactionChange,
-  onColorChange,
 }: FactionFormProps) => {
   const { data, refetch } = useQuery<SeedsByTypes>(GET_SEEDS_BY_TYPES_QUERY, {
     variables: { types: ["race"] },
@@ -45,8 +31,6 @@ export const FactionForm = ({
       refetch();
     },
   });
-
-  const [description, setDescription] = useState<string>("");
 
   const raceOptions = useMemo(
     () =>
@@ -69,6 +53,14 @@ export const FactionForm = ({
 
   const handleChangeName = (ev: React.ChangeEvent<HTMLInputElement>) => {
     onFactionChange({ ...faction, name: ev.target.value });
+  };
+
+  const handleColorChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    onFactionChange({ ...faction, color: ev.target.value });
+  };
+
+  const handleDescriptionChange = (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onFactionChange({ ...faction, description: ev.target.value });
   };
 
   const handleChangeRace = (option: TypeaheadOption) => {
@@ -96,8 +88,8 @@ export const FactionForm = ({
       <TextArea
         placeholder="Description"
         rows={1}
-        value={description || ""}
-        onChange={(e) => setDescription(e.target.value)}
+        value={faction.description ?? ""}
+        onChange={handleDescriptionChange}
       />
       <div className="flex gap-2 items-center">
         <button
@@ -112,7 +104,7 @@ export const FactionForm = ({
           type="color"
           hidden
           value={faction.color}
-          onChange={(ev) => onColorChange(faction.id, ev.target.value)}
+          onChange={handleColorChange}
         />
         <div className="flex gap-2 flex-1">
           <Button
@@ -127,9 +119,7 @@ export const FactionForm = ({
             type="button"
             variant="fill"
             className="flex-1"
-            onClick={() => {
-              console.log("save!");
-            }}
+            onClick={() => onSave(faction)}
           >
             Save
           </Button>

@@ -1,12 +1,14 @@
 FROM node:24
 
+RUN corepack enable
+
 WORKDIR /app
 
 COPY . .
 
-WORKDIR /app/packages/graphql-server
-
 RUN npm install
+
+WORKDIR /app/packages/graphql-server
 RUN npm run build
 
 EXPOSE 4002

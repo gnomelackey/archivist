@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
 import { useQuery } from "@apollo/client";
-import { GET_SEEDS_BY_TYPES_QUERY } from "@repo/clients";
+import { GET_SEEDS_BY_TYPES_QUERY, type SeedsByTypes } from "@repo/clients";
 import Chance from "chance";
 
 import { FactionFormSideBar } from "./FactionSidebar";
@@ -11,39 +11,21 @@ import {
   FactionRelationsTooltip,
   type FactionToolTipProps,
 } from "./FactionRelationsTooltip";
-import type { Point, Rectangle } from "./types";
 import {
-  buildRectangle,
+  FactionNameTooltip,
+  FactionNameTooltipData,
+} from "./FactionNameTooltip";
+import type { FactionBoardPoint, FactionCard } from "./types";
+import {
+  buildFactionCard,
   getContrastTextColor,
   getFactionDisplayText,
   getMousePosition,
   getUniqueRandomColor,
   worldToScreen,
 } from "./utils";
-import {
-  FactionNameTooltip,
-  FactionNameTooltipData,
-} from "./FactionNameTooltip";
 
 const chance = new Chance();
-
-type SeedData = {
-  createdAt: string;
-  id: string;
-  type: string;
-  updatedAt: string;
-  userId: string;
-  value: string;
-};
-
-type SeedsByTypes = {
-  seedsByTypes: {
-    race: SeedData[];
-    noun: SeedData[];
-    faction: SeedData[];
-    adjective: SeedData[];
-  };
-};
 
 export const FactionBoard = () => {
   const { data } = useQuery<SeedsByTypes>(GET_SEEDS_BY_TYPES_QUERY, {
@@ -65,13 +47,15 @@ export const FactionBoard = () => {
 
   const [isDrawing, setIsDrawing] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
+
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
-  const [panStart, setPanStart] = useState<Point | null>(null);
-  const [rectangles, setRectangles] = useState<Array<Rectangle>>([]);
+
+  const [cards, setCards] = useState<Array<FactionCard>>([]);
   const [tooltips, setTooltips] = useState<Array<FactionToolTipProps>>([]);
   const [nameTooltip, setNameTooltip] = useState<FactionNameTooltipData>(null);
-  const [startPoint, setStartPoint] = useState<Point | null>(null);
-  const [currentRect, setCurrentRect] = useState<Rectangle | null>(null);
+  const [panStart, setPanStart] = useState<FactionBoardPoint | null>(null);
+  const [startPoint, setStartPoint] = useState<FactionBoardPoint | null>(null);
+  const [currentCard, setCurrentCard] = useState<FactionCard | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -94,17 +78,12 @@ export const FactionBoard = () => {
     }
 
     const { world } = positions;
+    const seeds = { noun: "", faction: "", adjective: "", race: "" };
+    const color = "#ff6b6b";
 
     setIsDrawing(true);
     setStartPoint(world);
-    setCurrentRect(
-      buildRectangle(ctx, world.x, world.y, 0, 0, "#ff6b6b", {
-        noun: "",
-        faction: "",
-        adjective: "",
-        race: "",
-      })
-    );
+    setCurrentCard(buildFactionCard(ctx, world.x, world.y, 0, 0, color, seeds));
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -131,8 +110,8 @@ export const FactionBoard = () => {
     if (!isDrawing) {
       const { world } = positions;
 
-      for (let i = rectangles.length - 1; i >= 0; i--) {
-        const r = rectangles[i];
+      for (let i = cards.length - 1; i >= 0; i--) {
+        const r = cards[i];
 
         const isHovered =
           r &&
@@ -167,14 +146,10 @@ export const FactionBoard = () => {
       const width = Math.abs(world.x - startPoint.x);
       const height = Math.abs(world.y - startPoint.y);
 
-      setCurrentRect(
-        buildRectangle(ctx, x, y, width, height, "#ff6b6b", {
-          noun: "",
-          adjective: "",
-          faction: "",
-          race: "",
-        })
-      );
+      const seeds = { noun: "", faction: "", adjective: "", race: "" };
+      const color = "#ff6b6b";
+
+      setCurrentCard(buildFactionCard(ctx, x, y, width, height, color, seeds));
     }
   };
 
@@ -191,17 +166,17 @@ export const FactionBoard = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const { width = 0, height = 0 } = currentRect || {};
+    const { width = 0, height = 0 } = currentCard || {};
     const isTooSmall = width < 100 || height < 100;
 
-    if (!isDrawing || !currentRect || isTooSmall) {
+    if (!isDrawing || !currentCard || isTooSmall) {
       setIsDrawing(false);
       setStartPoint(null);
-      setCurrentRect(null);
+      setCurrentCard(null);
       return;
     }
 
-    const usedColors = rectangles.map((rect) => rect.color);
+    const usedColors = cards.map((card) => card.data.color);
 
     const nounsMax = nouns?.length ? nouns.length - 1 : 0;
     const adjectivesMax = adjectives?.length ? adjectives.length - 1 : 0;
@@ -220,33 +195,33 @@ export const FactionBoard = () => {
       faction: factions[factionsIndex]?.value ?? "",
     };
 
-    const newRect = buildRectangle(
+    const newCard = buildFactionCard(
       ctx,
-      currentRect.x,
-      currentRect.y,
-      currentRect.width,
-      currentRect.height,
+      currentCard.x,
+      currentCard.y,
+      currentCard.width,
+      currentCard.height,
       getUniqueRandomColor(usedColors),
       seeds
     );
 
-    const newTooltips = rectangles.reduce<Array<FactionToolTipProps>>(
-      (acc, rectangle) => {
-        const oldRectRight = rectangle.x + rectangle.width;
-        const newRectRight = newRect.x + newRect.width;
-        const oldRectBottom = rectangle.y + rectangle.height;
-        const newRectBottom = newRect.y + newRect.height;
+    const newTooltips = cards.reduce<Array<FactionToolTipProps>>(
+      (acc, card) => {
+        const oldCardRight = card.x + card.width;
+        const newCardRight = newCard.x + newCard.width;
+        const oldCardBottom = card.y + card.height;
+        const newCardBottom = newCard.y + newCard.height;
 
         if (
-          rectangle.x < newRectRight &&
-          oldRectRight > newRect.x &&
-          rectangle.y < newRectBottom &&
-          oldRectBottom > newRect.y
+          card.x < newCardRight &&
+          oldCardRight > newCard.x &&
+          card.y < newCardBottom &&
+          oldCardBottom > newCard.y
         ) {
-          const overlapLeft = Math.max(rectangle.x, newRect.x);
-          const overlapTop = Math.max(rectangle.y, newRect.y);
-          const overlapRight = Math.min(oldRectRight, newRectRight);
-          const overlapBottom = Math.min(oldRectBottom, newRectBottom);
+          const overlapLeft = Math.max(card.x, newCard.x);
+          const overlapTop = Math.max(card.y, newCard.y);
+          const overlapRight = Math.min(oldCardRight, newCardRight);
+          const overlapBottom = Math.min(oldCardBottom, newCardBottom);
 
           const overlapWidth = overlapRight - overlapLeft;
           const overlapHeight = overlapBottom - overlapTop;
@@ -265,7 +240,7 @@ export const FactionBoard = () => {
           return [
             ...acc,
             {
-              id: `tooltip-${rectangle.id}-${newRect.id}`,
+              id: `tooltip-${card.id}-${newCard.id}`,
               x: screenPos.x,
               y: screenPos.y,
               onClick: (id: string, relationship: "conflict" | "alliance") => {
@@ -281,16 +256,16 @@ export const FactionBoard = () => {
       []
     );
 
-    setRectangles((prev) => [...prev, newRect]);
+    setCards((prev) => [...prev, newCard]);
     setTooltips((prev) => [...prev, ...newTooltips]);
     setIsDrawing(false);
     setStartPoint(null);
-    setCurrentRect(null);
+    setCurrentCard(null);
   }, [
     isPanning,
-    currentRect,
+    currentCard,
     isDrawing,
-    rectangles,
+    cards,
     nouns,
     adjectives,
     races,
@@ -312,53 +287,53 @@ export const FactionBoard = () => {
     ctx.save();
     ctx.translate(panOffset.x, panOffset.y);
 
-    rectangles.forEach((rect) => {
-      const borderColor = rect.color + "FF";
-      const fillColor = rect.color + "40";
+    cards.forEach((card) => {
+      const borderColor = card.data.color + "FF";
+      const fillColor = card.data.color + "40";
 
       ctx.fillStyle = fillColor;
-      ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+      ctx.fillRect(card.x, card.y, card.width, card.height);
 
       ctx.strokeStyle = borderColor;
       ctx.lineWidth = 2;
-      ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+      ctx.strokeRect(card.x, card.y, card.width, card.height);
 
       ctx.fillStyle = borderColor;
-      ctx.fillRect(rect.x - 1, rect.y - 26, rect.width + 2, 25);
+      ctx.fillRect(card.x - 1, card.y - 26, card.width + 2, 25);
 
       ctx.font = "16px sans-serif";
 
       ctx.lineWidth = 3;
-      ctx.fillStyle = getContrastTextColor(rect.color);
-      ctx.fillText(rect.label, rect.x + 10, rect.y - 6);
+      ctx.fillStyle = getContrastTextColor(card.data.color);
+      ctx.fillText(card.label, card.x + 10, card.y - 6);
     });
 
-    const { height = 0, width = 0 } = currentRect || {};
-    const hasSize = currentRect && width > 0 && height > 0;
+    const { height = 0, width = 0 } = currentCard || {};
+    const hasSize = currentCard && width > 0 && height > 0;
 
     if (isDrawing && hasSize) {
-      ctx.fillStyle = currentRect.color + "4D";
-      ctx.strokeStyle = currentRect.color;
+      ctx.fillStyle = currentCard.data.color + "4D";
+      ctx.strokeStyle = currentCard.data.color;
       ctx.fillRect(
-        currentRect.x,
-        currentRect.y,
-        currentRect.width,
-        currentRect.height
+        currentCard.x,
+        currentCard.y,
+        currentCard.width,
+        currentCard.height
       );
 
       ctx.lineWidth = 2;
       ctx.setLineDash([5, 5]);
       ctx.strokeRect(
-        currentRect.x,
-        currentRect.y,
-        currentRect.width,
-        currentRect.height
+        currentCard.x,
+        currentCard.y,
+        currentCard.width,
+        currentCard.height
       );
       ctx.setLineDash([]);
     }
 
     ctx.restore();
-  }, [rectangles, currentRect, isDrawing, tooltips, panOffset]);
+  }, [cards, currentCard, isDrawing, tooltips, panOffset]);
 
   return (
     <div className="relative w-full h-full">
@@ -397,35 +372,32 @@ export const FactionBoard = () => {
           const ctx = canvas.getContext("2d");
           if (!ctx) return;
 
-          setRectangles((prev) =>
-            prev.map((rect) => {
-              const isRectangle = rect.id === faction.id;
-              if (!isRectangle) return rect;
+          setCards((prev) =>
+            prev.map((card) => {
+              const isFaction = card.id === faction.id;
+              if (!isFaction) return card;
 
-              const updatedRect = { ...rect };
-              updatedRect.data = { ...updatedRect.data, ...faction };
+              const updatedCard = { ...card };
 
-              const width = updatedRect.width;
-              const fullName = `${faction.name} (${faction.race})`;
-              const label = getFactionDisplayText(ctx, fullName, width);
+              if (updatedCard.data.name !== faction.name) {
+                const width = updatedCard.width;
+                const fullName = `${faction.name} (${faction.race})`;
+                updatedCard.label = getFactionDisplayText(ctx, fullName, width);
+              }
 
-              return { ...updatedRect, label };
+              updatedCard.data = { ...updatedCard.data, ...faction };
+
+              return updatedCard;
             })
-          );
-        }}
-        onColorChange={(id: string, color: string) => {
-          setRectangles((prev) =>
-            prev.map((rect) => (rect.id === id ? { ...rect, color } : rect))
           );
         }}
         onRemove={(id) => {
           setTooltips((prev) => prev.filter((t) => !t.id.includes(id)));
-          setRectangles((prev) => prev.filter((rect) => rect.id !== id));
+          setCards((prev) => prev.filter((card) => card.id !== id));
         }}
-        factions={rectangles.map((rect) => ({
-          ...rect.data,
-          id: rect.id,
-          color: rect.color,
+        factions={cards.map((card) => ({
+          ...card.data,
+          id: card.id,
         }))}
       />
     </div>

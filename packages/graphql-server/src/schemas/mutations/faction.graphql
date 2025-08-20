@@ -1,0 +1,9 @@
+extend type Mutation {
+  createFaction(
+    campaign: ID!
+    name: String!
+    race: String!
+    color: String!
+    description: String
+  ): Faction!
+}

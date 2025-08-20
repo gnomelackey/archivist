@@ -27,6 +27,8 @@ model Campaign {
 model Faction {
   id          String   @id @default(cuid())
   name        String
+  race        String
+  color       String
   description String?
 
   createdAt   DateTime @default(now())

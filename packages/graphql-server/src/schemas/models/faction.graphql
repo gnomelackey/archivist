@@ -1,0 +1,10 @@
+type Faction {
+  id: String!
+  name: String!
+  race: String!
+  color: String!
+  description: String
+  campaign: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

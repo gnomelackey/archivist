@@ -7,9 +7,8 @@ export type FactionFormFields = {
 };
 
 export type FactionFormProps = {
-  onColorChange: (id: string, color: string) => void;
   onRemove: (id: string) => void;
   onFactionChange: (faction: FactionFormFields) => void;
-  onCreate: (faction: any) => void;
+  onSave: (faction: FactionFormFields) => void;
   faction: FactionFormFields;
 };

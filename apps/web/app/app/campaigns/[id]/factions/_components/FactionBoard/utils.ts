@@ -1,6 +1,6 @@
 import Chance from "chance";
 
-import type { Rectangle } from "./types";
+import type { FactionCard } from "./types";
 
 const chance = new Chance();
 
@@ -92,7 +92,7 @@ export const getFactionDisplayText = (
   return displayText;
 };
 
-export const buildRectangle = (
+export const buildFactionCard = (
   ctx: CanvasRenderingContext2D | null,
   x: number,
   y: number,
@@ -105,8 +105,8 @@ export const buildRectangle = (
     adjective: string;
     race: string;
   }
-): Rectangle => {
-  if (!ctx) throw new Error("Canvas context is required to build rectangle");
+): FactionCard => {
+  if (!ctx) throw new Error("Canvas context is required to build faction card");
 
   const id = `temp-${Date.now()}`;
 
@@ -116,12 +116,13 @@ export const buildRectangle = (
 
   const data = {
     name,
+    color,
     race: seeds.race,
+    description: "",
   };
 
   return {
     data,
-    color,
     id,
     x,
     y,

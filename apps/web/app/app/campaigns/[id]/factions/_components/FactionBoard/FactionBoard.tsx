@@ -14,8 +14,8 @@ import {
 import type { Point, Rectangle } from "./types";
 import {
   buildRectangle,
-  generateRectangleLabels,
   getContrastTextColor,
+  getFactionDisplayText,
   getMousePosition,
   getUniqueRandomColor,
   worldToScreen,
@@ -147,7 +147,7 @@ export const FactionBoard = () => {
 
           setNameTooltip({
             id: r.id,
-            label: r.originalLabel,
+            label: `${r.data.name} (${r.data.race})`,
             x: screenPos.x,
             y: screenPos.y,
           });
@@ -405,13 +405,11 @@ export const FactionBoard = () => {
               const updatedRect = { ...rect };
               updatedRect.data = { ...updatedRect.data, ...faction };
 
-              const { label, originalLabel } = generateRectangleLabels(
-                ctx,
-                updatedRect.width,
-                updatedRect.data
-              );
+              const width = updatedRect.width;
+              const fullName = `${faction.name} (${faction.race})`;
+              const label = getFactionDisplayText(ctx, fullName, width);
 
-              return { ...updatedRect, label, originalLabel };
+              return { ...updatedRect, label };
             })
           );
         }}

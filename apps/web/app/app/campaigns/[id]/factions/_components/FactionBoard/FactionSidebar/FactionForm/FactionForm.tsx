@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_SEED_MUTATION, GET_SEEDS_BY_TYPES_QUERY } from "@repo/clients";
@@ -33,7 +33,6 @@ type SeedsByTypes = {
 export const FactionForm = ({
   faction,
   onRemove,
-  onCreate,
   onFactionChange,
   onColorChange,
 }: FactionFormProps) => {
@@ -47,18 +46,7 @@ export const FactionForm = ({
     },
   });
 
-  const [factionName, setFactionName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [factionRace, setFactionRace] = useState<TypeaheadOption | null>(null);
-
-  const handleCreateRace = (value: string) => {
-    if (!value) return;
-    createSeed({ variables: { type: "race", value } });
-  };
-
-  const handleChangeRace = (option: TypeaheadOption) => {
-    onFactionChange({ ...faction, race: option.label });
-  };
 
   const raceOptions = useMemo(
     () =>
@@ -70,21 +58,30 @@ export const FactionForm = ({
     [data]
   );
 
-  useEffect(() => {
-    const selectedRace =
-      raceOptions.find((opt) => opt.label === faction.race) || null;
+  const factionRace = useMemo(() => {
+    return raceOptions.find((opt) => opt.label === faction.race) ?? null;
+  }, [raceOptions, faction.race]);
 
-    setFactionName(faction.name || "");
-    setFactionRace(selectedRace);
-  }, [faction, raceOptions]);
+  const handleCreateRace = (value: string) => {
+    if (!value) return;
+    createSeed({ variables: { type: "race", value } });
+  };
+
+  const handleChangeName = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    onFactionChange({ ...faction, name: ev.target.value });
+  };
+
+  const handleChangeRace = (option: TypeaheadOption) => {
+    onFactionChange({ ...faction, race: option.label });
+  };
 
   return (
     <form className="flex flex-col gap-2">
       <div className="flex flex-1 gap-2">
         <Input
           placeholder="Faction Name"
-          value={factionName || ""}
-          onChange={(e) => setFactionName(e.target.value)}
+          value={faction.name ?? ""}
+          onChange={handleChangeName}
         />
         <Typeahead
           options={raceOptions}
@@ -94,12 +91,6 @@ export const FactionForm = ({
           value={factionRace}
           onSelect={handleChangeRace}
           onNew={handleCreateRace}
-          onChange={(e) => {
-            const selectedRace =
-              raceOptions.find((opt) => opt.value === e.target.value) || null;
-
-            setFactionRace(selectedRace);
-          }}
         />
       </div>
       <TextArea
@@ -137,8 +128,7 @@ export const FactionForm = ({
             variant="fill"
             className="flex-1"
             onClick={() => {
-              const name = factionName;
-              if (name) onCreate(name, "");
+              console.log("save!");
             }}
           >
             Save

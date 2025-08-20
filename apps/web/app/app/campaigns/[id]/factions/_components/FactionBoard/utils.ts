@@ -49,7 +49,7 @@ export const getUniqueRandomColor = (usedColors: string[]): string => {
   return newColor;
 };
 
-const getFactionDisplayText = (
+export const getFactionDisplayText = (
   ctx: CanvasRenderingContext2D,
   text: string,
   width: number
@@ -92,22 +92,6 @@ const getFactionDisplayText = (
   return displayText;
 };
 
-export const generateRectangleLabels = (
-  ctx: CanvasRenderingContext2D | null,
-  width: number,
-  seeds: Rectangle["data"]
-): { originalLabel: string; label: string } => {
-  if (!ctx) throw new Error("Canvas context is required to build rectangle");
-
-  const name = `${seeds.faction} of the ${seeds.adjective} ${seeds.noun}`;
-  const nameWithRace = `${name} (${seeds.race})`;
-
-  return {
-    originalLabel: nameWithRace,
-    label: getFactionDisplayText(ctx, nameWithRace, width),
-  };
-};
-
 export const buildRectangle = (
   ctx: CanvasRenderingContext2D | null,
   x: number,
@@ -115,18 +99,23 @@ export const buildRectangle = (
   width: number,
   height: number,
   color: string,
-  seeds: Rectangle["data"]
+  seeds: {
+    noun: string;
+    faction: string;
+    adjective: string;
+    race: string;
+  }
 ): Rectangle => {
   if (!ctx) throw new Error("Canvas context is required to build rectangle");
 
   const id = `temp-${Date.now()}`;
 
-  const { label, originalLabel } = generateRectangleLabels(ctx, width, seeds);
+  const name = `${seeds.faction} of the ${seeds.adjective} ${seeds.noun}`;
+  const fullname = `${seeds.faction} of the ${seeds.adjective} ${seeds.noun} (${seeds.race})`;
+  const label = getFactionDisplayText(ctx, fullname, width);
 
   const data = {
-    noun: seeds.noun,
-    faction: seeds.faction,
-    adjective: seeds.adjective,
+    name,
     race: seeds.race,
   };
 
@@ -138,7 +127,6 @@ export const buildRectangle = (
     y,
     width,
     height,
-    originalLabel,
     label,
   };
 };

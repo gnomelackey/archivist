@@ -14,6 +14,7 @@ import {
 import type { Point, Rectangle } from "./types";
 import {
   buildRectangle,
+  generateRectangleLabels,
   getContrastTextColor,
   getMousePosition,
   getUniqueRandomColor,
@@ -97,12 +98,11 @@ export const FactionBoard = () => {
     setIsDrawing(true);
     setStartPoint(world);
     setCurrentRect(
-      buildRectangle(ctx, world.x, world.y, 0, 0, {
+      buildRectangle(ctx, world.x, world.y, 0, 0, "#ff6b6b", {
         noun: "",
         faction: "",
         adjective: "",
         race: "",
-        color: "#ff6b6b",
       })
     );
   };
@@ -168,12 +168,11 @@ export const FactionBoard = () => {
       const height = Math.abs(world.y - startPoint.y);
 
       setCurrentRect(
-        buildRectangle(ctx, x, y, width, height, {
+        buildRectangle(ctx, x, y, width, height, "#ff6b6b", {
           noun: "",
           adjective: "",
           faction: "",
           race: "",
-          color: "#ff6b6b",
         })
       );
     }
@@ -219,7 +218,6 @@ export const FactionBoard = () => {
       adjective: adjectives[adjectivesIndex]?.value ?? "",
       race: races[racesIndex]?.value ?? "",
       faction: factions[factionsIndex]?.value ?? "",
-      color: getUniqueRandomColor(usedColors),
     };
 
     const newRect = buildRectangle(
@@ -228,6 +226,7 @@ export const FactionBoard = () => {
       currentRect.y,
       currentRect.width,
       currentRect.height,
+      getUniqueRandomColor(usedColors),
       seeds
     );
 
@@ -331,7 +330,7 @@ export const FactionBoard = () => {
 
       ctx.lineWidth = 3;
       ctx.fillStyle = getContrastTextColor(rect.color);
-      ctx.fillText(rect.label, rect.x + 4, rect.y - 6);
+      ctx.fillText(rect.label, rect.x + 10, rect.y - 6);
     });
 
     const { height = 0, width = 0 } = currentRect || {};
@@ -391,6 +390,31 @@ export const FactionBoard = () => {
         />
       ))}
       <FactionFormSideBar
+        onFactionChange={(faction) => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return;
+
+          setRectangles((prev) =>
+            prev.map((rect) => {
+              const isRectangle = rect.id === faction.id;
+              if (!isRectangle) return rect;
+
+              const updatedRect = { ...rect };
+              updatedRect.data = { ...updatedRect.data, ...faction };
+
+              const { label, originalLabel } = generateRectangleLabels(
+                ctx,
+                updatedRect.width,
+                updatedRect.data
+              );
+
+              return { ...updatedRect, label, originalLabel };
+            })
+          );
+        }}
         onColorChange={(id: string, color: string) => {
           setRectangles((prev) =>
             prev.map((rect) => (rect.id === id ? { ...rect, color } : rect))
@@ -401,9 +425,8 @@ export const FactionBoard = () => {
           setRectangles((prev) => prev.filter((rect) => rect.id !== id));
         }}
         factions={rectangles.map((rect) => ({
+          ...rect.data,
           id: rect.id,
-          name: rect.name!,
-          race: rect.race!,
           color: rect.color,
         }))}
       />

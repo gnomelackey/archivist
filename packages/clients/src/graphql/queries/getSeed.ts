@@ -6,9 +6,6 @@ export const GET_SEED_QUERY = gql`
       id
       type
       value
-      user
-      createdAt
-      updatedAt
     }
   }
 `;

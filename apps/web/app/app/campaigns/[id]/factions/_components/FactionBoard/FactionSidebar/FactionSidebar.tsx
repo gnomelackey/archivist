@@ -6,6 +6,7 @@ import type { FactionSideBarProps } from "./types";
 export const FactionFormSideBar = ({
   factions,
   onRemove,
+  onFactionChange,
   onColorChange,
 }: FactionSideBarProps) => {
   const handleCreate = (name: string, description: string) => {
@@ -50,6 +51,7 @@ export const FactionFormSideBar = ({
             faction={faction}
             onRemove={onRemove}
             onCreate={handleCreate}
+            onFactionChange={onFactionChange}
             onColorChange={onColorChange}
           />
         ))}

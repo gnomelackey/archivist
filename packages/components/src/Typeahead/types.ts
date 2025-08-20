@@ -8,8 +8,10 @@ export type TypeaheadOption = {
 };
 
 export type TypeaheadProps = {
+  value?: TypeaheadOption | null;
   options: TypeaheadOption[];
+  onNew?: (value: string) => void;
   onSelect?: (option: TypeaheadOption) => void;
   onFocus?: (ev: React.FocusEvent<HTMLInputElement>) => void;
   onTypeChange?: (ev: React.ChangeEvent<HTMLInputElement>) => void;
-} & InputProps;
+} & Omit<InputProps, 'onSelect' | 'onFocus' | 'value'>;

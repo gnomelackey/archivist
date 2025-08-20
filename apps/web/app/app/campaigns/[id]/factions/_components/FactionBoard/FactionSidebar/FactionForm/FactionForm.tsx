@@ -1,23 +1,82 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { Button, Input, TextArea } from "@repo/components";
+import { useMutation, useQuery } from "@apollo/client";
+import { CREATE_SEED_MUTATION, GET_SEEDS_BY_TYPES_QUERY } from "@repo/clients";
+import {
+  Button,
+  Input,
+  TextArea,
+  Typeahead,
+  TypeaheadOption,
+} from "@repo/components";
+
 import type { FactionFormProps } from "./types";
+
+type SeedData = {
+  createdAt: string;
+  id: string;
+  type: string;
+  updatedAt: string;
+  userId: string;
+  value: string;
+};
+
+type SeedsByTypes = {
+  seedsByTypes: {
+    race: SeedData[];
+    noun: SeedData[];
+    faction: SeedData[];
+    adjective: SeedData[];
+  };
+};
 
 export const FactionForm = ({
   faction,
   onRemove,
   onCreate,
+  onFactionChange,
   onColorChange,
 }: FactionFormProps) => {
+  const { data, refetch } = useQuery<SeedsByTypes>(GET_SEEDS_BY_TYPES_QUERY, {
+    variables: { types: ["race"] },
+  });
+
+  const [createSeed] = useMutation(CREATE_SEED_MUTATION, {
+    onCompleted: () => {
+      refetch();
+    },
+  });
+
   const [factionName, setFactionName] = useState<string>("");
-  const [factionRace, setFactionRace] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [factionRace, setFactionRace] = useState<TypeaheadOption | null>(null);
+
+  const handleCreateRace = (value: string) => {
+    if (!value) return;
+    createSeed({ variables: { type: "race", value } });
+  };
+
+  const handleChangeRace = (option: TypeaheadOption) => {
+    onFactionChange({ ...faction, race: option.label });
+  };
+
+  const raceOptions = useMemo(
+    () =>
+      data?.seedsByTypes.race.map((option) => ({
+        id: option.id,
+        label: option.value,
+        value: option.id,
+      })) ?? [],
+    [data]
+  );
 
   useEffect(() => {
+    const selectedRace =
+      raceOptions.find((opt) => opt.label === faction.race) || null;
+
     setFactionName(faction.name || "");
-    setFactionRace(faction.race || "");
-    setDescription(faction.description || "");
-  }, [faction]);
+    setFactionRace(selectedRace);
+  }, [faction, raceOptions]);
 
   return (
     <form className="flex flex-col gap-2">
@@ -27,12 +86,20 @@ export const FactionForm = ({
           value={factionName || ""}
           onChange={(e) => setFactionName(e.target.value)}
         />
-        <Input
+        <Typeahead
+          options={raceOptions}
           fullWidth={false}
           className="w-30"
           placeholder="Race"
-          value={factionRace || ""}
-          onChange={(e) => setFactionRace(e.target.value)}
+          value={factionRace}
+          onSelect={handleChangeRace}
+          onNew={handleCreateRace}
+          onChange={(e) => {
+            const selectedRace =
+              raceOptions.find((opt) => opt.value === e.target.value) || null;
+
+            setFactionRace(selectedRace);
+          }}
         />
       </div>
       <TextArea

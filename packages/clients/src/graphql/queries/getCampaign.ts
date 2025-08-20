@@ -6,9 +6,6 @@ export const GET_CAMPAIGN_QUERY = gql`
       id
       name
       description
-      user
-      createdAt
-      updatedAt
     }
   }
 `;

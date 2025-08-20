@@ -1,5 +1,6 @@
 import Palette from "@repo/theme/palette";
 
+import { AddIcon } from "./Icons/AddIcon";
 import { HideIcon } from "./Icons/HideIcon";
 import { ShowIcon } from "./Icons/ShowIcon";
 import { SkullIcon } from "./Icons/SkullIcon";
@@ -20,6 +21,7 @@ export const Iconography = ({
   ...props
 }: IconographyProps) => {
   const Icon = {
+    add: AddIcon,
     show: ShowIcon,
     hide: HideIcon,
     skull: SkullIcon,

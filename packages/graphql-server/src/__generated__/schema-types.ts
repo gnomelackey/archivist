@@ -30,12 +30,19 @@ export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']['output']>;
   createCampaign: Campaign;
+  createSeed: Seed;
 };
 
 
 export type MutationCreateCampaignArgs = {
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+};
+
+
+export type MutationCreateSeedArgs = {
+  type: Scalars['String']['input'];
+  value: Scalars['String']['input'];
 };
 
 export type Query = {

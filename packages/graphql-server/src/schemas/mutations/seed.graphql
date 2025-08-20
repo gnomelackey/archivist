@@ -1,0 +1,3 @@
+extend type Mutation {
+    createSeed(type: String!, value: String!): Seed!
+}

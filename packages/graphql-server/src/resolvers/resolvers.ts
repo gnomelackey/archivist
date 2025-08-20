@@ -47,12 +47,22 @@ export const resolvers: ArchivistGraphQLResolvers = {
             throw new Error("Error: No seeds found for the provided types.");
           }
 
-          return data.reduce((acc: Record<string, Array<Seed>>, seed) => {
-            const updatedMap = { ...acc };
-            if (!updatedMap[seed.type]) updatedMap[seed.type] = [seed];
-            else updatedMap[seed.type]!.push(seed);
-            return updatedMap;
-          }, {});
+          return data.reduce(
+            (acc: Record<string, Array<Partial<Seed>>>, seed) => {
+              const updatedMap = { ...acc };
+
+              const updatedSeed = {
+                id: seed.id,
+                type: seed.type,
+                value: seed.value,
+              };
+
+              if (!updatedMap[seed.type]) updatedMap[seed.type] = [updatedSeed];
+              else updatedMap[seed.type]!.push(updatedSeed);
+              return updatedMap;
+            },
+            {}
+          );
         });
     },
   },
@@ -66,6 +76,19 @@ export const resolvers: ArchivistGraphQLResolvers = {
         data: {
           name: args.name,
           description: args.description,
+          user: { connect: { id: userId } },
+        },
+      });
+    },
+    createSeed: (_, args, context) => {
+      const { userId } = context;
+
+      if (!userId) throw new Error("Error: Invalid Token.");
+
+      return context.prisma.seed.create({
+        data: {
+          type: args.type,
+          value: args.value,
           user: { connect: { id: userId } },
         },
       });

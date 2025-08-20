@@ -54,7 +54,7 @@ const getFactionDisplayText = (
   text: string,
   width: number
 ): string => {
-  const maxWidth = width - 8;
+  const maxWidth = width - 18;
 
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -92,45 +92,69 @@ const getFactionDisplayText = (
   return displayText;
 };
 
+export const generateRectangleLabels = (
+  ctx: CanvasRenderingContext2D | null,
+  width: number,
+  seeds: Rectangle["data"]
+): { originalLabel: string; label: string } => {
+  if (!ctx) throw new Error("Canvas context is required to build rectangle");
+
+  const name = `${seeds.faction} of the ${seeds.adjective} ${seeds.noun}`;
+  const nameWithRace = `${name} (${seeds.race})`;
+
+  return {
+    originalLabel: nameWithRace,
+    label: getFactionDisplayText(ctx, nameWithRace, width),
+  };
+};
+
 export const buildRectangle = (
   ctx: CanvasRenderingContext2D | null,
   x: number,
   y: number,
   width: number,
   height: number,
-  seeds: {
-    noun: string;
-    faction: string;
-    adjective: string;
-    race: string;
-    color: string;
-  }
+  color: string,
+  seeds: Rectangle["data"]
 ): Rectangle => {
   if (!ctx) throw new Error("Canvas context is required to build rectangle");
 
   const id = `temp-${Date.now()}`;
-  const originalLabel = `${seeds.faction} of the ${seeds.adjective} ${seeds.noun} (${seeds.race})`;
+
+  const { label, originalLabel } = generateRectangleLabels(ctx, width, seeds);
+
+  const data = {
+    noun: seeds.noun,
+    faction: seeds.faction,
+    adjective: seeds.adjective,
+    race: seeds.race,
+  };
 
   return {
-    color: seeds.color,
+    data,
+    color,
     id,
     x,
     y,
     width,
     height,
     originalLabel,
-    label: getFactionDisplayText(ctx, originalLabel, width),
+    label,
   };
 };
 
 function normalizeHex(hex: string) {
   let h = hex.trim().replace(/^#/, "");
-  if (h.length === 3)
+
+  if (h.length === 3) {
     h = h
       .split("")
       .map((c) => c + c)
       .join("");
+  }
+
   if (h.length !== 6) throw new Error("Invalid hex: " + hex);
+
   return "#" + h.toUpperCase();
 }
 

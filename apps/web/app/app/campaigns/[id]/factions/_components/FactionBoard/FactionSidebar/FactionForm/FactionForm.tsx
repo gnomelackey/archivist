@@ -1,21 +1,15 @@
-import React, { useMemo } from "react";
+import React from "react";
 
-import { useMutation, useQuery } from "@apollo/client";
-import {
-  CREATE_SEED_MUTATION,
-  GET_SEEDS_BY_TYPES_QUERY,
-  SeedsByTypes,
-} from "@repo/clients";
 import {
   Button,
   Iconography,
   Input,
   TextArea,
-  Typeahead,
   TypeaheadOption,
 } from "@repo/components";
 
 import type { FactionFormProps } from "./types";
+import { RaceTypeAhead } from "./RaceTypeAhead";
 
 export const FactionForm = ({
   faction,
@@ -23,35 +17,6 @@ export const FactionForm = ({
   onRemove,
   onFactionChange,
 }: FactionFormProps) => {
-  const { data, refetch } = useQuery<SeedsByTypes>(GET_SEEDS_BY_TYPES_QUERY, {
-    variables: { types: ["race"] },
-  });
-
-  const [createSeed] = useMutation(CREATE_SEED_MUTATION, {
-    onCompleted: () => {
-      refetch();
-    },
-  });
-
-  const raceOptions = useMemo(
-    () =>
-      data?.seedsByTypes.race.map((option) => ({
-        id: option.id,
-        label: option.value,
-        value: option.id,
-      })) ?? [],
-    [data]
-  );
-
-  const factionRace = useMemo(() => {
-    return raceOptions.find((opt) => opt.label === faction.data.race) ?? null;
-  }, [raceOptions, faction.data.race]);
-
-  const handleCreateRace = (value: string) => {
-    if (!value) return;
-    createSeed({ variables: { type: "race", value } });
-  };
-
   const handleChangeName = (ev: React.ChangeEvent<HTMLInputElement>) => {
     onFactionChange({
       ...faction,
@@ -90,15 +55,7 @@ export const FactionForm = ({
           value={faction.data.name ?? ""}
           onChange={handleChangeName}
         />
-        <Typeahead
-          options={raceOptions}
-          fullWidth={false}
-          className="w-30"
-          placeholder="Race"
-          value={factionRace}
-          onSelect={handleChangeRace}
-          onNew={handleCreateRace}
-        />
+        <RaceTypeAhead faction={faction} onChange={handleChangeRace} />
       </div>
       <TextArea
         placeholder="Description"

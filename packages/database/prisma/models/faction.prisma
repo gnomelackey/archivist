@@ -1,13 +1,15 @@
 model Faction {
-  id          String   @id @default(cuid())
-  name        String
-  race        String
-  color       String
-  description String?
+  id            String      @id @default(cuid())
+  name          String
+  race          String
+  color         String
+  description   String?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
-  campaignId  String
-  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  coordinates   Coordinates[]
+
+  campaignId    String
+  campaign      Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }

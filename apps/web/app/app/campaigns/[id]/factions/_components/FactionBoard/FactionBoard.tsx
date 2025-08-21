@@ -3,8 +3,14 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
 import { useQuery } from "@apollo/client";
-import { GET_SEEDS_BY_TYPES_QUERY, type SeedsByTypes } from "@repo/clients";
+import {
+  Faction,
+  GET_FACTIONS_QUERY,
+  GET_SEEDS_BY_TYPES_QUERY,
+  type SeedsByTypes,
+} from "@repo/clients";
 import Chance from "chance";
+import { useParams } from "next/navigation";
 
 import { FactionFormSideBar } from "./FactionSidebar";
 import {
@@ -28,22 +34,33 @@ import {
 const chance = new Chance();
 
 export const FactionBoard = () => {
-  const { data } = useQuery<SeedsByTypes>(GET_SEEDS_BY_TYPES_QUERY, {
+  const { id: campaign } = useParams();
+
+  const { data: factions } = useQuery<Array<Faction>>(GET_FACTIONS_QUERY, {
+    variables: { campaign },
+  });
+
+  const { data: seeds } = useQuery<SeedsByTypes>(GET_SEEDS_BY_TYPES_QUERY, {
     variables: { types: ["race", "noun", "faction", "adjective"] },
   });
 
-  const { races, nouns, factions, adjectives } = useMemo(() => {
-    if (!data?.seedsByTypes) {
+  const {
+    races,
+    nouns,
+    factions: factionNames,
+    adjectives,
+  } = useMemo(() => {
+    if (!seeds) {
       return { races: [], nouns: [], factions: [], adjectives: [] };
     }
 
     return {
-      races: data.seedsByTypes.race ?? [],
-      nouns: data.seedsByTypes.noun ?? [],
-      factions: data.seedsByTypes.faction ?? [],
-      adjectives: data.seedsByTypes.adjective ?? [],
+      races: seeds.seedsByTypes.race ?? [],
+      nouns: seeds.seedsByTypes.noun ?? [],
+      factions: seeds.seedsByTypes.faction ?? [],
+      adjectives: seeds.seedsByTypes.adjective ?? [],
     };
-  }, [data]);
+  }, [seeds]);
 
   const [isDrawing, setIsDrawing] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
@@ -58,6 +75,30 @@ export const FactionBoard = () => {
   const [currentCard, setCurrentCard] = useState<FactionCard | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    setCards(() => {
+      if (!factions) return [];
+
+      return factions.map((faction) => {
+        return buildFactionCard(
+          ctx,
+          faction.x,
+          faction.y,
+          faction.width,
+          faction.height,
+          color,
+          seeds
+        );
+      });
+    });
+  }, [factions, canvasRef]);
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (event.target !== canvasRef.current) return;
@@ -181,7 +222,7 @@ export const FactionBoard = () => {
     const nounsMax = nouns?.length ? nouns.length - 1 : 0;
     const adjectivesMax = adjectives?.length ? adjectives.length - 1 : 0;
     const racesMax = races?.length ? races.length - 1 : 0;
-    const factionsMax = factions?.length ? factions.length - 1 : 0;
+    const factionsMax = factionNames?.length ? factionNames.length - 1 : 0;
 
     const nounsIndex = chance.integer({ min: 0, max: nounsMax });
     const adjectivesIndex = chance.integer({ min: 0, max: adjectivesMax });
@@ -192,7 +233,7 @@ export const FactionBoard = () => {
       noun: nouns[nounsIndex]?.value ?? "",
       adjective: adjectives[adjectivesIndex]?.value ?? "",
       race: races[racesIndex]?.value ?? "",
-      faction: factions[factionsIndex]?.value ?? "",
+      faction: factionNames[factionsIndex]?.value ?? "",
     };
 
     const newCard = buildFactionCard(
@@ -269,7 +310,7 @@ export const FactionBoard = () => {
     nouns,
     adjectives,
     races,
-    factions,
+    factionNames,
     panOffset,
   ]);
 

@@ -121,15 +121,7 @@ export const buildFactionCard = (
     description: "",
   };
 
-  return {
-    data,
-    id,
-    x,
-    y,
-    width,
-    height,
-    label,
-  };
+  return { data, id, x, y, width, height, label };
 };
 
 function normalizeHex(hex: string) {

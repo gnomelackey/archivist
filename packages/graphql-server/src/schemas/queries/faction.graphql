@@ -1,4 +1,6 @@
 extend type Query {
-  factions(campaign: ID!): [Faction!]!
+  factionWithCoordinates(id: ID!, location: String!): Faction!
+  factionsWithCoordinates(campaign: ID!, location: String!): [Faction!]!
   faction(id: ID!): Faction
+  factions(campaign: ID!): [Faction!]!
 }

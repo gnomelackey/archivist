@@ -1,6 +1,7 @@
 import Chance from "chance";
 
 import type { FactionCard } from "./types";
+import { Faction } from "@repo/clients";
 
 const chance = new Chance();
 
@@ -94,6 +95,29 @@ export const getFactionDisplayText = (
 
 export const buildFactionCard = (
   ctx: CanvasRenderingContext2D | null,
+  faction: Faction
+): FactionCard => {
+  if (!ctx) throw new Error("Canvas context is required to build faction card");
+  if (!faction) throw new Error("Faction is required to build faction card");
+
+  const coordinates = faction.coordinates?.[0];
+  if (!coordinates) throw new Error("Faction must have coordinates");
+
+  const fullname = `${faction.name} (${faction.race})`;
+  const label = getFactionDisplayText(ctx, fullname, coordinates.width);
+
+  const data = {
+    name: faction.name,
+    color: faction.color,
+    race: faction.race,
+    description: faction.description ?? "",
+  };
+
+  return { ...coordinates, id: faction.id, label, data, isTemporary: false };
+};
+
+export const buildTemporaryFactionCard = (
+  ctx: CanvasRenderingContext2D | null,
   x: number,
   y: number,
   width: number,
@@ -121,7 +145,7 @@ export const buildFactionCard = (
     description: "",
   };
 
-  return { data, id, x, y, width, height, label };
+  return { data, id, x, y, width, height, label, isTemporary: true };
 };
 
 function normalizeHex(hex: string) {

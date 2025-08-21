@@ -5,10 +5,10 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import {
   Faction,
-  GET_FACTIONS_QUERY,
+  GET_FACTIONS_WITH_COORDINATES,
   GET_SEEDS_BY_TYPES_QUERY,
-  type SeedsByTypes,
 } from "@repo/clients";
+import { CoordinateLocationEnum } from "@repo/enums";
 import Chance from "chance";
 import { useParams } from "next/navigation";
 
@@ -24,6 +24,7 @@ import {
 import type { FactionBoardPoint, FactionCard } from "./types";
 import {
   buildFactionCard,
+  buildTemporaryFactionCard,
   getContrastTextColor,
   getFactionDisplayText,
   getMousePosition,
@@ -36,13 +37,18 @@ const chance = new Chance();
 export const FactionBoard = () => {
   const { id: campaign } = useParams();
 
-  const { data: factions } = useQuery<Array<Faction>>(GET_FACTIONS_QUERY, {
-    variables: { campaign },
+  const { data } = useQuery(GET_FACTIONS_WITH_COORDINATES, {
+    variables: { campaign, location: CoordinateLocationEnum.FACTION_BOARD },
   });
 
-  const { data: seeds } = useQuery<SeedsByTypes>(GET_SEEDS_BY_TYPES_QUERY, {
+  const { data: seeds } = useQuery(GET_SEEDS_BY_TYPES_QUERY, {
     variables: { types: ["race", "noun", "faction", "adjective"] },
   });
+
+  const factions: Array<Faction> = useMemo(
+    () => data?.factionsWithCoordinates ?? [],
+    [data]
+  );
 
   const {
     races,
@@ -75,42 +81,14 @@ export const FactionBoard = () => {
   const [currentCard, setCurrentCard] = useState<FactionCard | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    setCards(() => {
-      if (!factions) return [];
-
-      return factions.map((faction) => {
-        return buildFactionCard(
-          ctx,
-          faction.x,
-          faction.y,
-          faction.width,
-          faction.height,
-          color,
-          seeds
-        );
-      });
-    });
-  }, [factions, canvasRef]);
+  const canvas = canvasRef.current;
+  const ctx = canvas?.getContext("2d");
 
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (event.target !== canvasRef.current) return;
 
     const positions = getMousePosition(event, canvasRef.current, panOffset);
-    if (!positions) return;
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!positions || !ctx) return;
 
     if (event.button === 2 || event.button === 1 || event.shiftKey) {
       setIsPanning(true);
@@ -124,11 +102,12 @@ export const FactionBoard = () => {
 
     setIsDrawing(true);
     setStartPoint(world);
-    setCurrentCard(buildFactionCard(ctx, world.x, world.y, 0, 0, color, seeds));
+    setCurrentCard(
+      buildTemporaryFactionCard(ctx, world.x, world.y, 0, 0, color, seeds)
+    );
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
     if (!canvas) return;
 
     const positions = getMousePosition(event, canvas, panOffset);
@@ -177,10 +156,7 @@ export const FactionBoard = () => {
       }
 
       if (nameTooltip) setNameTooltip(null);
-    } else if (startPoint) {
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
+    } else if (ctx && startPoint) {
       const { world } = positions;
       const x = Math.min(startPoint.x, world.x);
       const y = Math.min(startPoint.y, world.y);
@@ -190,7 +166,9 @@ export const FactionBoard = () => {
       const seeds = { noun: "", faction: "", adjective: "", race: "" };
       const color = "#ff6b6b";
 
-      setCurrentCard(buildFactionCard(ctx, x, y, width, height, color, seeds));
+      setCurrentCard(
+        buildTemporaryFactionCard(ctx, x, y, width, height, color, seeds)
+      );
     }
   };
 
@@ -201,10 +179,6 @@ export const FactionBoard = () => {
       return;
     }
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const { width = 0, height = 0 } = currentCard || {};
@@ -236,7 +210,7 @@ export const FactionBoard = () => {
       faction: factionNames[factionsIndex]?.value ?? "",
     };
 
-    const newCard = buildFactionCard(
+    const newCard = buildTemporaryFactionCard(
       ctx,
       currentCard.x,
       currentCard.y,
@@ -304,6 +278,7 @@ export const FactionBoard = () => {
     setCurrentCard(null);
   }, [
     isPanning,
+    ctx,
     currentCard,
     isDrawing,
     cards,
@@ -315,13 +290,18 @@ export const FactionBoard = () => {
   ]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-
+    if (!factions?.length) return;
     if (!ctx) return;
+
+    const updatedCards = factions.map((faction) =>
+      buildFactionCard(ctx, faction)
+    );
+
+    setCards(updatedCards);
+  }, [factions, canvasRef, ctx]);
+
+  useEffect(() => {
+    if (!canvas || !ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -374,7 +354,7 @@ export const FactionBoard = () => {
     }
 
     ctx.restore();
-  }, [cards, currentCard, isDrawing, tooltips, panOffset]);
+  }, [cards, currentCard, isDrawing, tooltips, panOffset, canvas, ctx]);
 
   return (
     <div className="relative w-full h-full">
@@ -407,11 +387,7 @@ export const FactionBoard = () => {
       ))}
       <FactionFormSideBar
         onFactionChange={(faction) => {
-          const canvas = canvasRef.current;
-          if (!canvas) return;
-
-          const ctx = canvas.getContext("2d");
-          if (!ctx) return;
+          if (!canvas || !ctx) return;
 
           setCards((prev) =>
             prev.map((card) => {
@@ -420,9 +396,9 @@ export const FactionBoard = () => {
 
               const updatedCard = { ...card };
 
-              if (updatedCard.data.name !== faction.name) {
+              if (updatedCard.data.name !== faction.data.name) {
                 const width = updatedCard.width;
-                const fullName = `${faction.name} (${faction.race})`;
+                const fullName = `${faction.data.name} (${faction.data.race})`;
                 updatedCard.label = getFactionDisplayText(ctx, fullName, width);
               }
 
@@ -436,10 +412,7 @@ export const FactionBoard = () => {
           setTooltips((prev) => prev.filter((t) => !t.id.includes(id)));
           setCards((prev) => prev.filter((card) => card.id !== id));
         }}
-        factions={cards.map((card) => ({
-          ...card.data,
-          id: card.id,
-        }))}
+        factions={cards}
       />
     </div>
   );

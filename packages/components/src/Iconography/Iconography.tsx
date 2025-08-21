@@ -8,6 +8,8 @@ import { ClearIcon } from "./Icons/ClearIcon";
 import { SaveIcon } from "./Icons/SaveIcon";
 
 import type { IconographyProps } from "./types";
+import { BannerCheckIcon } from "./Icons/BannerCheckIcon";
+import { BannerMinusIcon } from "./Icons/BannerMinusIcon";
 
 /**
  * This component renders different icons based on the `name` prop.
@@ -22,6 +24,8 @@ export const Iconography = ({
 }: IconographyProps) => {
   const Icon = {
     add: AddIcon,
+    bannerCheck: BannerCheckIcon,
+    bannerMinus: BannerMinusIcon,
     show: ShowIcon,
     hide: HideIcon,
     skull: SkullIcon,

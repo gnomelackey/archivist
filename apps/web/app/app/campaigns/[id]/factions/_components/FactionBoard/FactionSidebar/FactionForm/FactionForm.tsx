@@ -8,6 +8,7 @@ import {
 } from "@repo/clients";
 import {
   Button,
+  Iconography,
   Input,
   TextArea,
   Typeahead,
@@ -43,8 +44,8 @@ export const FactionForm = ({
   );
 
   const factionRace = useMemo(() => {
-    return raceOptions.find((opt) => opt.label === faction.race) ?? null;
-  }, [raceOptions, faction.race]);
+    return raceOptions.find((opt) => opt.label === faction.data.race) ?? null;
+  }, [raceOptions, faction.data.race]);
 
   const handleCreateRace = (value: string) => {
     if (!value) return;
@@ -52,19 +53,33 @@ export const FactionForm = ({
   };
 
   const handleChangeName = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    onFactionChange({ ...faction, name: ev.target.value });
+    onFactionChange({
+      ...faction,
+      data: { ...faction.data, name: ev.target.value },
+    });
   };
 
   const handleColorChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    onFactionChange({ ...faction, color: ev.target.value });
+    onFactionChange({
+      ...faction,
+      data: { ...faction.data, color: ev.target.value },
+    });
   };
 
-  const handleDescriptionChange = (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onFactionChange({ ...faction, description: ev.target.value });
+  const handleDescriptionChange = (
+    ev: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    onFactionChange({
+      ...faction,
+      data: { ...faction.data, description: ev.target.value },
+    });
   };
 
   const handleChangeRace = (option: TypeaheadOption) => {
-    onFactionChange({ ...faction, race: option.label });
+    onFactionChange({
+      ...faction,
+      data: { ...faction.data, race: option.label },
+    });
   };
 
   return (
@@ -72,7 +87,7 @@ export const FactionForm = ({
       <div className="flex flex-1 gap-2">
         <Input
           placeholder="Faction Name"
-          value={faction.name ?? ""}
+          value={faction.data.name ?? ""}
           onChange={handleChangeName}
         />
         <Typeahead
@@ -88,13 +103,18 @@ export const FactionForm = ({
       <TextArea
         placeholder="Description"
         rows={1}
-        value={faction.description ?? ""}
+        value={faction.data.description ?? ""}
         onChange={handleDescriptionChange}
       />
       <div className="flex gap-2 items-center">
+        {!faction.isTemporary ? (
+          <Iconography name="bannerCheck" size={1.75} />
+        ) : (
+          <Iconography name="bannerMinus" size={1.75} color={200} />
+        )}
         <button
           className={`w-10 rounded h-10 flex-shrink-0 hover:cursor-pointer`}
-          style={{ backgroundColor: faction.color }}
+          style={{ backgroundColor: faction.data.color }}
           onClick={() =>
             window.document.getElementById(`${faction.id}-color-input`)?.click()
           }
@@ -103,7 +123,7 @@ export const FactionForm = ({
           id={`${faction.id}-color-input`}
           type="color"
           hidden
-          value={faction.color}
+          value={faction.data.color}
           onChange={handleColorChange}
         />
         <div className="flex gap-2 flex-1">
@@ -111,18 +131,20 @@ export const FactionForm = ({
             type="button"
             variant="outline"
             mode="secondary"
-            onClick={() => onRemove(faction.id)}
+            onClick={() => onRemove(faction)}
           >
             Remove
           </Button>
-          <Button
-            type="button"
-            variant="fill"
-            className="flex-1"
-            onClick={() => onSave(faction)}
-          >
-            Save
-          </Button>
+          {faction.isTemporary ? (
+            <Button
+              type="button"
+              variant="fill"
+              className="flex-1"
+              onClick={() => onSave(faction)}
+            >
+              Save
+            </Button>
+          ) : null}
         </div>
       </div>
     </form>

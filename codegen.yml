@@ -23,9 +23,10 @@ generates:
       useTypeImports: true
       mappers:
         Campaign: "@repo/db#Campaign"
-        User: "@repo/db#User"
-        Seed: "@repo/db#Seed"
+        Coordinates: "@repo/db#Coordinates"
         Faction: "@repo/db#Faction"
+        Seed: "@repo/db#Seed"
+        User: "@repo/db#User"
       resolverTypeWrapperSignature: "Promise<T> | T | import('@repo/db').PrismaPromise<T>"
 
   packages/clients/src/graphql/types/:

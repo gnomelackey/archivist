@@ -2,13 +2,14 @@ import { PrismaClient } from "@prisma/client";
 export const prisma = new PrismaClient();
 
 export type {
+  Campaign,
+  Coordinates,
+  Faction,
+  Map,
   Prisma,
   PrismaClient,
   PrismaPromise,
-  Campaign,
-  User,
   Seed,
-  Faction,
-  Map,
   Session,
+  User,
 } from "@prisma/client";

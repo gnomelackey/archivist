@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_FACTION_MUTATION = gql`
-  mutation CreateFaction($campaign: ID!, $faction: FactionInput!) {
-    createFaction(campaign: $campaign, faction: $faction) {
+export const CREATE_FACTIONS_MUTATION = gql`
+  mutation CreateFactions($campaign: ID!, $factions: [FactionInput!]!) {
+    createFactions(campaign: $campaign, factions: $factions) {
       id
       name
       race

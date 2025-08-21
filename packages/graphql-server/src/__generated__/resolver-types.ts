@@ -1,6 +1,6 @@
 import type * as Types from './schema-types';
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import type { Campaign, User, Seed, Faction } from '@repo/db';
+import type { Campaign, Coordinates, Faction, Seed, User } from '@repo/db';
 import type { ArchivistGraphQLContext } from '../context';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
@@ -77,8 +77,12 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Types.Scalars['Boolean']['output']>;
   Campaign: ResolverTypeWrapper<Campaign>;
+  Coordinates: ResolverTypeWrapper<Coordinates>;
+  CoordinatesInput: Types.CoordinatesInput;
   DateTime: ResolverTypeWrapper<Types.Scalars['DateTime']['output']>;
   Faction: ResolverTypeWrapper<Faction>;
+  FactionInput: Types.FactionInput;
+  Float: ResolverTypeWrapper<Types.Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Types.Scalars['ID']['output']>;
   JSONObject: ResolverTypeWrapper<Types.Scalars['JSONObject']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -92,8 +96,12 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Types.Scalars['Boolean']['output'];
   Campaign: Campaign;
+  Coordinates: Coordinates;
+  CoordinatesInput: Types.CoordinatesInput;
   DateTime: Types.Scalars['DateTime']['output'];
   Faction: Faction;
+  FactionInput: Types.FactionInput;
+  Float: Types.Scalars['Float']['output'];
   ID: Types.Scalars['ID']['output'];
   JSONObject: Types.Scalars['JSONObject']['output'];
   Mutation: {};
@@ -113,6 +121,19 @@ export type CampaignResolvers<ContextType = ArchivistGraphQLContext, ParentType 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CoordinatesResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Coordinates'] = ResolversParentTypes['Coordinates']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  faction?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  height?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  location?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  width?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  x?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  y?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
@@ -120,6 +141,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type FactionResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Faction'] = ResolversParentTypes['Faction']> = {
   campaign?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   color?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  coordinates?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['Coordinates']>>>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   description?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -136,8 +158,11 @@ export interface JsonObjectScalarConfig extends GraphQLScalarTypeConfig<Resolver
 export type MutationResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createCampaign?: Resolver<ResolversTypes['Campaign'], ParentType, ContextType, RequireFields<Types.MutationCreateCampaignArgs, 'name'>>;
-  createFaction?: Resolver<ResolversTypes['Faction'], ParentType, ContextType, RequireFields<Types.MutationCreateFactionArgs, 'campaign' | 'color' | 'name' | 'race'>>;
+  createFaction?: Resolver<ResolversTypes['Faction'], ParentType, ContextType, RequireFields<Types.MutationCreateFactionArgs, 'campaign' | 'faction'>>;
+  createFactions?: Resolver<Array<ResolversTypes['Faction']>, ParentType, ContextType, RequireFields<Types.MutationCreateFactionsArgs, 'campaign' | 'factions'>>;
   createSeed?: Resolver<ResolversTypes['Seed'], ParentType, ContextType, RequireFields<Types.MutationCreateSeedArgs, 'type' | 'value'>>;
+  removeFaction?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<Types.MutationRemoveFactionArgs, 'campaign' | 'faction'>>;
+  removeFactions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<Types.MutationRemoveFactionsArgs, 'campaign' | 'factions'>>;
 };
 
 export type QueryResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -145,7 +170,9 @@ export type QueryResolvers<ContextType = ArchivistGraphQLContext, ParentType ext
   campaign?: Resolver<Types.Maybe<ResolversTypes['Campaign']>, ParentType, ContextType, RequireFields<Types.QueryCampaignArgs, 'id'>>;
   campaigns?: Resolver<Array<ResolversTypes['Campaign']>, ParentType, ContextType>;
   faction?: Resolver<Types.Maybe<ResolversTypes['Faction']>, ParentType, ContextType, RequireFields<Types.QueryFactionArgs, 'id'>>;
+  factionWithCoordinates?: Resolver<ResolversTypes['Faction'], ParentType, ContextType, RequireFields<Types.QueryFactionWithCoordinatesArgs, 'id' | 'location'>>;
   factions?: Resolver<Array<ResolversTypes['Faction']>, ParentType, ContextType, RequireFields<Types.QueryFactionsArgs, 'campaign'>>;
+  factionsWithCoordinates?: Resolver<Array<ResolversTypes['Faction']>, ParentType, ContextType, RequireFields<Types.QueryFactionsWithCoordinatesArgs, 'campaign' | 'location'>>;
   seed?: Resolver<Types.Maybe<ResolversTypes['Seed']>, ParentType, ContextType, RequireFields<Types.QuerySeedArgs, 'id'>>;
   seeds?: Resolver<Array<ResolversTypes['Seed']>, ParentType, ContextType>;
   seedsByType?: Resolver<Array<ResolversTypes['Seed']>, ParentType, ContextType, RequireFields<Types.QuerySeedsByTypeArgs, 'type'>>;
@@ -170,6 +197,7 @@ export type SeedTypeResolvers<ContextType = ArchivistGraphQLContext, ParentType 
 
 export type Resolvers<ContextType = ArchivistGraphQLContext> = {
   Campaign?: CampaignResolvers<ContextType>;
+  Coordinates?: CoordinatesResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   Faction?: FactionResolvers<ContextType>;
   JSONObject?: GraphQLScalarType;

@@ -6,8 +6,8 @@ export const GET_FACTION_QUERY = gql`
       id
       name
       race
-      description
       color
+      description
     }
   }
 `;

@@ -5,6 +5,7 @@ export interface FactionCard {
   y: number;
   width: number;
   height: number;
+  isTemporary: boolean;
   data: {
     name: string;
     race: string;

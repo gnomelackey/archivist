@@ -1,0 +1,19 @@
+input CoordinatesInput {
+  x: Float!
+  y: Float!
+  width: Float!
+  height: Float!
+  location: String!
+}
+
+type Coordinates {
+  id: String!
+  x: Float!
+  y: Float!
+  width: Float!
+  height: Float!
+  location: String!
+  faction: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

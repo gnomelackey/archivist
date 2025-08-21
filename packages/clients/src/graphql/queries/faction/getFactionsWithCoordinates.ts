@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_FACTION_MUTATION = gql`
-  mutation CreateFaction($campaign: ID!, $faction: FactionInput!) {
-    createFaction(campaign: $campaign, faction: $faction) {
+export const GET_FACTIONS_WITH_COORDINATES = gql`
+  query GetFactionsWithCoordinates($campaign: ID!, $location: String!) {
+    factionsWithCoordinates(campaign: $campaign, location: $location) {
       id
       name
       race
@@ -14,7 +14,6 @@ export const CREATE_FACTION_MUTATION = gql`
         y
         width
         height
-        location
       }
     }
   }

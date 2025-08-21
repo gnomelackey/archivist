@@ -1,7 +1,7 @@
-import type { FactionFormFields } from "./FactionForm/types";
+import type { FactionCard } from "../types";
 
 export type FactionSideBarProps = {
-  onFactionChange: (faction: FactionFormFields) => void;
+  onFactionChange: (faction: FactionCard) => void;
   onRemove: (id: string) => void;
-  factions: Array<FactionFormFields>;
+  factions: Array<FactionCard>;
 };

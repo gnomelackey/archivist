@@ -1,3 +1,11 @@
+input FactionInput {
+  name: String!
+  race: String!
+  color: String!
+  description: String
+  coordinates: CoordinatesInput
+}
+
 type Faction {
   id: String!
   name: String!
@@ -5,6 +13,7 @@ type Faction {
   color: String!
   description: String
   campaign: String!
+  coordinates: [Coordinates]
   createdAt: DateTime!
   updatedAt: DateTime!
 }

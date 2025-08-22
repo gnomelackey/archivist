@@ -1,5 +1,8 @@
+import { IconographyProps } from "../Iconography/types";
+
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
-  variant?: 'fill' | 'outline';
+  variant?: "fill" | "outline";
   fullWidth?: boolean;
+  icon?: IconographyProps;
 };

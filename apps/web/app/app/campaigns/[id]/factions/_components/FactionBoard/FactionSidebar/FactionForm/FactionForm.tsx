@@ -60,7 +60,7 @@ export const FactionForm = ({
       </div>
       <TextArea
         placeholder="Description"
-        rows={1}
+        rows={2}
         value={faction.data.description ?? ""}
         onChange={handleDescriptionChange}
       />

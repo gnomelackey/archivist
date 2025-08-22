@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import type { InputProps } from "./types";
 import { IconButton } from "../IconButton";
+import { Iconography } from "../Iconography";
 
 export const Input = ({
   label,
@@ -9,6 +10,7 @@ export const Input = ({
   variant = "outline",
   type = "text",
   fullWidth = true,
+  icon,
   ...props
 }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,17 +46,23 @@ export const Input = ({
   const showHideButton = isPassword ? (
     <div className="absolute inset-y-0 right-0 flex items-center pr-2">
       <IconButton
-        size={2}
+        size={icon?.size ?? 2}
         type="button"
-        icon={showPassword ? "hide" : "show"}
+        icon={icon?.name ?? (showPassword ? "hide" : "show")}
         aria-label={showPassword ? "Hide password" : "Show password"}
         onClick={() => setShowPassword(!showPassword)}
       />
     </div>
+  ) : icon ? (
+    <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+      <Iconography {...icon} />
+    </div>
   ) : null;
 
   return (
-    <div className={`flex flex-col input-group ${fullWidthClass} ${variantClassName}`}>
+    <div
+      className={`flex flex-col input-group ${fullWidthClass} ${variantClassName}`}
+    >
       {labelText}
       <div className={`relative ${fullWidthClass}`}>
         <input

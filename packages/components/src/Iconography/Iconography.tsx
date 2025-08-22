@@ -6,10 +6,11 @@ import { ShowIcon } from "./Icons/ShowIcon";
 import { SkullIcon } from "./Icons/SkullIcon";
 import { ClearIcon } from "./Icons/ClearIcon";
 import { SaveIcon } from "./Icons/SaveIcon";
-
-import type { IconographyProps } from "./types";
 import { BannerCheckIcon } from "./Icons/BannerCheckIcon";
 import { BannerMinusIcon } from "./Icons/BannerMinusIcon";
+import { SearchIcon } from "./Icons/SearchIcon";
+
+import type { IconographyProps } from "./types";
 
 /**
  * This component renders different icons based on the `name` prop.
@@ -28,8 +29,9 @@ export const Iconography = ({
     bannerMinus: BannerMinusIcon,
     show: ShowIcon,
     hide: HideIcon,
-    skull: SkullIcon,
     save: SaveIcon,
+    search: SearchIcon,
+    skull: SkullIcon,
     clear: ClearIcon,
   }[name];
 

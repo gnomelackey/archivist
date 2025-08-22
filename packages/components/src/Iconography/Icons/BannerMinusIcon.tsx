@@ -6,7 +6,7 @@ import type { IconProps } from "./types";
  * Vectors and icons by <a href="https://www.svgrepo.com/author/Bootstrap" target="_blank">Bootstrap</a> in MIT License via <a href="https://www.svgrepo.com/" target="_blank">SVG Repo</a>
  * @param size - size of the icon in rem
  * @param color - color of the icon
- * @returns JSX Element representing the Hide icon
+ * @returns JSX Element representing the Banner Minus icon
  */
 export const BannerMinusIcon = ({
   size = 1,

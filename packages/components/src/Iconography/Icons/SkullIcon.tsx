@@ -6,7 +6,7 @@ import type { IconProps } from "./types";
  * Vectors and icons by <a href="https://github.com/nagoshiashumari/Rpg-Awesome?ref=svgrepo.com" target="_blank">Nagoshiashumari</a> in GPL License via <a href="https://www.svgrepo.com/" target="_blank">SVG Repo</a>
  * @param size - size of the icon in rem
  * @param color - color of the icon
- * @returns JSX Element representing the Hide icon
+ * @returns JSX Element representing the Skull icon
  */
 export const SkullIcon = ({ size = 1, color = Palette[100] }: IconProps) => (
   <svg

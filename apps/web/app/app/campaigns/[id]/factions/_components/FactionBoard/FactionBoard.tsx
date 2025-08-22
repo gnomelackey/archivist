@@ -451,16 +451,12 @@ export const FactionBoard = () => {
         onReset={() => {
           if (!canvas || !ctx) return;
 
+          setTooltips([]);
+
           setCards((prev) =>
             prev.reduce<Array<FactionCard>>((acc, card, index) => {
               const faction = factions[card.position];
-
               if (!faction) return acc;
-
-              setTooltips((t) =>
-                t.filter((tip) => !tip.id.includes(faction.id))
-              );
-
               return [...acc, buildFactionCard(ctx, faction, index)];
             }, [])
           );

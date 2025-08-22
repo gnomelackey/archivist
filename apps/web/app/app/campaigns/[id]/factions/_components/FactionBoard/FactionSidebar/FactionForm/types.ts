@@ -3,7 +3,7 @@ import type { FactionCard } from "../../types";
 
 export type FactionFormProps = {
   onRemove: (id: string) => void;
-  onFactionChange: (faction: FactionCard) => void;
+  onChange: (faction: FactionCard) => void;
   onSave: (faction: Faction) => void;
   faction: FactionCard;
 };

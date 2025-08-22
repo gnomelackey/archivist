@@ -16,17 +16,17 @@ export const FactionForm = ({
   faction,
   onSave,
   onRemove,
-  onFactionChange,
+  onChange,
 }: FactionFormProps) => {
   const handleChangeName = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    onFactionChange({
+    onChange({
       ...faction,
       data: { ...faction.data, name: ev.target.value },
     });
   };
 
   const handleColorChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    onFactionChange({
+    onChange({
       ...faction,
       data: { ...faction.data, color: ev.target.value },
     });
@@ -35,14 +35,14 @@ export const FactionForm = ({
   const handleDescriptionChange = (
     ev: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    onFactionChange({
+    onChange({
       ...faction,
       data: { ...faction.data, description: ev.target.value },
     });
   };
 
   const handleChangeRace = (option: TypeaheadOption) => {
-    onFactionChange({
+    onChange({
       ...faction,
       data: { ...faction.data, race: option.label },
     });

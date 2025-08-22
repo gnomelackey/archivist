@@ -93,9 +93,33 @@ export const getFactionDisplayText = (
   return displayText;
 };
 
+export const hasFactionChanged = (
+  faction: FactionCard,
+  original?: Faction
+): boolean => {
+  if (!faction.data || !original) return false;
+
+  const { name, color, race, description } = faction.data;
+
+  const {
+    name: originalName,
+    color: originalColor,
+    race: originalRace,
+    description: originalDescription,
+  } = original;
+
+  return (
+    name !== originalName ||
+    color !== originalColor ||
+    race !== originalRace ||
+    description !== originalDescription
+  );
+};
+
 export const buildFactionCard = (
   ctx: CanvasRenderingContext2D | null,
-  faction: Faction
+  faction: Faction,
+  position: number
 ): FactionCard => {
   if (!ctx) throw new Error("Canvas context is required to build faction card");
   if (!faction) throw new Error("Faction is required to build faction card");
@@ -113,7 +137,7 @@ export const buildFactionCard = (
     description: faction.description ?? "",
   };
 
-  return { ...coordinates, id: faction.id, label, data, isTemporary: false };
+  return { ...coordinates, id: faction.id, label, data, position, isTemporary: false };
 };
 
 export const buildTemporaryFactionCard = (
@@ -123,6 +147,7 @@ export const buildTemporaryFactionCard = (
   width: number,
   height: number,
   color: string,
+  position: number,
   seeds: {
     noun: string;
     faction: string;
@@ -145,7 +170,7 @@ export const buildTemporaryFactionCard = (
     description: "",
   };
 
-  return { data, id, x, y, width, height, label, isTemporary: true };
+  return { data, id, x, y, width, height, label, position, isTemporary: true };
 };
 
 function normalizeHex(hex: string) {

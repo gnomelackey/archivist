@@ -29,6 +29,7 @@ import {
   getFactionDisplayText,
   getMousePosition,
   getUniqueRandomColor,
+  hasFactionChanged,
   worldToScreen,
 } from "./utils";
 
@@ -87,8 +88,8 @@ export const FactionBoard = () => {
   useEffect(() => {
     if (!ctx) return;
 
-    const updatedCards = factions.map((faction) =>
-      buildFactionCard(ctx, faction)
+    const updatedCards = factions.map((faction, index) =>
+      buildFactionCard(ctx, faction, index)
     );
 
     setCards(updatedCards);
@@ -169,7 +170,16 @@ export const FactionBoard = () => {
     setIsDrawing(true);
     setStartPoint(world);
     setCurrentCard(
-      buildTemporaryFactionCard(ctx, world.x, world.y, 0, 0, color, seeds)
+      buildTemporaryFactionCard(
+        ctx,
+        world.x,
+        world.y,
+        0,
+        0,
+        color,
+        cards.length + 1,
+        seeds
+      )
     );
   };
 
@@ -233,7 +243,16 @@ export const FactionBoard = () => {
       const color = "#ff6b6b";
 
       setCurrentCard(
-        buildTemporaryFactionCard(ctx, x, y, width, height, color, seeds)
+        buildTemporaryFactionCard(
+          ctx,
+          x,
+          y,
+          width,
+          height,
+          color,
+          cards.length + 1,
+          seeds
+        )
       );
     }
   };
@@ -283,6 +302,7 @@ export const FactionBoard = () => {
       currentCard.width,
       currentCard.height,
       getUniqueRandomColor(usedColors),
+      cards.length + 1,
       seeds
     );
 
@@ -385,25 +405,33 @@ export const FactionBoard = () => {
         />
       ))}
       <FactionFormSideBar
-        onFieldChange={(faction) => {
+        onChange={(faction) => {
           if (!canvas || !ctx) return;
 
           setCards((prev) =>
-            prev.map((card) => {
+            prev.map((card, index) => {
               const isFaction = card.id === faction.id;
+
               if (!isFaction) return card;
 
               const updatedCard = { ...card };
+              const updateCardName =
+                updatedCard.data.name !== faction.data.name ||
+                updatedCard.data.race !== faction.data.race;
 
-              if (updatedCard.data.name !== faction.data.name) {
+              if (updateCardName) {
                 const width = updatedCard.width;
                 const fullName = `${faction.data.name} (${faction.data.race})`;
                 updatedCard.label = getFactionDisplayText(ctx, fullName, width);
               }
 
-              updatedCard.data = { ...updatedCard.data, ...faction };
+              const isTemporary = hasFactionChanged(faction, factions[index]);
 
-              return { ...updatedCard, isTemporary: true };
+              return {
+                ...updatedCard,
+                data: { ...updatedCard.data, ...faction.data },
+                isTemporary,
+              };
             })
           );
         }}
@@ -418,6 +446,23 @@ export const FactionBoard = () => {
 
               return { ...card, id: faction.id, isTemporary: false };
             })
+          );
+        }}
+        onReset={() => {
+          if (!canvas || !ctx) return;
+
+          setCards((prev) =>
+            prev.reduce<Array<FactionCard>>((acc, card, index) => {
+              const faction = factions[card.position];
+
+              if (!faction) return acc;
+
+              setTooltips((t) =>
+                t.filter((tip) => !tip.id.includes(faction.id))
+              );
+
+              return [...acc, buildFactionCard(ctx, faction, index)];
+            }, [])
           );
         }}
         onRemove={(id) => {

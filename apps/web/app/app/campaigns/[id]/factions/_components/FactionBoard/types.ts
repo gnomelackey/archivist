@@ -1,3 +1,10 @@
+interface FactionCardData {
+  name: string;
+  race: string;
+  color: string;
+  description?: string;
+}
+
 export interface FactionCard {
   id: string;
   label: string;
@@ -6,12 +13,8 @@ export interface FactionCard {
   width: number;
   height: number;
   isTemporary: boolean;
-  data: {
-    name: string;
-    race: string;
-    color: string;
-    description?: string;
-  }
+  position: number;
+  data: FactionCardData;
 }
 
 export interface FactionBoardPoint {

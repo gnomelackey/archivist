@@ -1,16 +1,25 @@
 import { Button } from "@repo/components";
 import { useMutation } from "@apollo/client";
-import { CREATE_FACTIONS_MUTATION } from "@repo/clients";
+import {
+  CREATE_FACTIONS_MUTATION,
+  GET_FACTIONS_WITH_COORDINATES,
+} from "@repo/clients";
 import { CoordinateLocationEnum } from "@repo/enums";
 import { useParams } from "next/navigation";
 
 import type { SaveAllButtonProps } from "./types";
-import type { FactionCard } from "../types";
+import type { FactionCard } from "../../../types";
 
-export const SaveAllButton = ({ factions, onSave, show }: SaveAllButtonProps) => {
+export const SaveAllButton = ({
+  factions,
+  onSave,
+  show,
+}: SaveAllButtonProps) => {
   const { id: campaignId } = useParams();
 
-  const [createFactions] = useMutation(CREATE_FACTIONS_MUTATION);
+  const [createFactions] = useMutation(CREATE_FACTIONS_MUTATION, {
+    refetchQueries: [GET_FACTIONS_WITH_COORDINATES],
+  });
 
   if (!show) return null;
 
@@ -51,7 +60,7 @@ export const SaveAllButton = ({ factions, onSave, show }: SaveAllButtonProps) =>
       variant="fill"
       onClick={handleCreateAll}
     >
-      Create All
+      Save All
     </Button>
   );
 };

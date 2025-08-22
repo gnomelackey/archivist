@@ -44,4 +44,4 @@ generates:
   packages/clients/src/graphql/index.ts:
     plugins:
       - add:
-          content: "export * from \"./client\";\nexport * from \"./mutations\";\nexport * from \"./queries\";\nexport * from \"./types\";\nexport type { Campaign, Faction, Seed, Maybe, Scalars } from \"./types/graphql\";"
+          content: "export * from \"./client\";\nexport * from \"./mutations\";\nexport * from \"./queries\";\nexport * from \"./types\";\nexport * from \"./types/graphql\";"

@@ -1,16 +1,21 @@
 import { Button } from "@repo/components";
 import { useMutation } from "@apollo/client";
-import { CREATE_FACTION_MUTATION } from "@repo/clients";
+import {
+  CREATE_FACTION_MUTATION,
+  GET_FACTIONS_WITH_COORDINATES,
+} from "@repo/clients";
 import { useParams } from "next/navigation";
 
-import type { SaveButtonProps } from "../../types";
+import type { SaveButtonProps } from "./types";
 import type { FactionCard } from "../../../types";
 import { CoordinateLocationEnum } from "@repo/enums";
 
 export const SaveButton = ({ faction, onSave, show }: SaveButtonProps) => {
   const { id: campaignId } = useParams();
 
-  const [createFaction] = useMutation(CREATE_FACTION_MUTATION);
+  const [createFaction] = useMutation(CREATE_FACTION_MUTATION, {
+    refetchQueries: [GET_FACTIONS_WITH_COORDINATES],
+  });
 
   if (!show) return null;
 

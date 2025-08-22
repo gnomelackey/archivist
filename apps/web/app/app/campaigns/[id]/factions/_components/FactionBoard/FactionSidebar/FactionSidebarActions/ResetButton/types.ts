@@ -1,7 +1,7 @@
 import type { FactionCard } from "../../../types";
 
-export type RemoveAllTemporaryButtonProps = {
-  onRemove: (id: string) => void;
+export type ResetButtonProps = {
+  onReset: (id: string) => void;
   factions: Array<FactionCard>;
   show: boolean;
 };

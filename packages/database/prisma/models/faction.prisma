@@ -12,4 +12,6 @@ model Faction {
 
   campaignId    String
   campaign      Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@unique([name, race])
 }

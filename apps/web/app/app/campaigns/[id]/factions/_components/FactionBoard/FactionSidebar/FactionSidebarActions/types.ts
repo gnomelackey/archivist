@@ -1,9 +1,9 @@
 import type { Faction } from "@repo/clients";
 
-import type { FactionCard } from "../types";
+import { FactionCard } from "../../types";
 
-export type FactionSideBarProps = {
-  onFieldChange: (faction: FactionCard) => void;
+export type FactionFormSideBarActionsProps = {
+  show: boolean;
   onSave: (faction: Faction) => void;
   onRemove: (id: string) => void;
   factions: Array<FactionCard>;

@@ -84,6 +84,72 @@ export const FactionBoard = () => {
   const canvas = canvasRef.current;
   const ctx = canvas?.getContext("2d");
 
+  useEffect(() => {
+    if (!ctx) return;
+
+    const updatedCards = factions.map((faction) =>
+      buildFactionCard(ctx, faction)
+    );
+
+    setCards(updatedCards);
+  }, [factions, ctx]);
+
+  useEffect(() => {
+    if (!canvas || !ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.translate(panOffset.x, panOffset.y);
+
+    cards.forEach((card) => {
+      const borderColor = card.data.color + "FF";
+      const fillColor = card.data.color + "40";
+
+      ctx.fillStyle = fillColor;
+      ctx.fillRect(card.x, card.y, card.width, card.height);
+
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(card.x, card.y, card.width, card.height);
+
+      ctx.fillStyle = borderColor;
+      ctx.fillRect(card.x - 1, card.y - 26, card.width + 2, 25);
+
+      ctx.font = "16px sans-serif";
+
+      ctx.lineWidth = 3;
+      ctx.fillStyle = getContrastTextColor(card.data.color);
+      ctx.fillText(card.label, card.x + 10, card.y - 6);
+    });
+
+    const { height = 0, width = 0 } = currentCard || {};
+    const hasSize = currentCard && width > 0 && height > 0;
+
+    if (isDrawing && hasSize) {
+      ctx.fillStyle = currentCard.data.color + "4D";
+      ctx.strokeStyle = currentCard.data.color;
+      ctx.fillRect(
+        currentCard.x,
+        currentCard.y,
+        currentCard.width,
+        currentCard.height
+      );
+
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.strokeRect(
+        currentCard.x,
+        currentCard.y,
+        currentCard.width,
+        currentCard.height
+      );
+      ctx.setLineDash([]);
+    }
+
+    ctx.restore();
+  }, [cards, currentCard, isDrawing, tooltips, panOffset, canvas, ctx]);
+
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (event.target !== canvasRef.current) return;
 
@@ -289,73 +355,6 @@ export const FactionBoard = () => {
     panOffset,
   ]);
 
-  useEffect(() => {
-    if (!factions?.length) return;
-    if (!ctx) return;
-
-    const updatedCards = factions.map((faction) =>
-      buildFactionCard(ctx, faction)
-    );
-
-    setCards(updatedCards);
-  }, [factions, canvasRef, ctx]);
-
-  useEffect(() => {
-    if (!canvas || !ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.save();
-    ctx.translate(panOffset.x, panOffset.y);
-
-    cards.forEach((card) => {
-      const borderColor = card.data.color + "FF";
-      const fillColor = card.data.color + "40";
-
-      ctx.fillStyle = fillColor;
-      ctx.fillRect(card.x, card.y, card.width, card.height);
-
-      ctx.strokeStyle = borderColor;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(card.x, card.y, card.width, card.height);
-
-      ctx.fillStyle = borderColor;
-      ctx.fillRect(card.x - 1, card.y - 26, card.width + 2, 25);
-
-      ctx.font = "16px sans-serif";
-
-      ctx.lineWidth = 3;
-      ctx.fillStyle = getContrastTextColor(card.data.color);
-      ctx.fillText(card.label, card.x + 10, card.y - 6);
-    });
-
-    const { height = 0, width = 0 } = currentCard || {};
-    const hasSize = currentCard && width > 0 && height > 0;
-
-    if (isDrawing && hasSize) {
-      ctx.fillStyle = currentCard.data.color + "4D";
-      ctx.strokeStyle = currentCard.data.color;
-      ctx.fillRect(
-        currentCard.x,
-        currentCard.y,
-        currentCard.width,
-        currentCard.height
-      );
-
-      ctx.lineWidth = 2;
-      ctx.setLineDash([5, 5]);
-      ctx.strokeRect(
-        currentCard.x,
-        currentCard.y,
-        currentCard.width,
-        currentCard.height
-      );
-      ctx.setLineDash([]);
-    }
-
-    ctx.restore();
-  }, [cards, currentCard, isDrawing, tooltips, panOffset, canvas, ctx]);
-
   return (
     <div className="relative w-full h-full">
       <canvas
@@ -386,7 +385,7 @@ export const FactionBoard = () => {
         />
       ))}
       <FactionFormSideBar
-        onFactionChange={(faction) => {
+        onFieldChange={(faction) => {
           if (!canvas || !ctx) return;
 
           setCards((prev) =>
@@ -404,7 +403,20 @@ export const FactionBoard = () => {
 
               updatedCard.data = { ...updatedCard.data, ...faction };
 
-              return updatedCard;
+              return { ...updatedCard, isTemporary: true };
+            })
+          );
+        }}
+        onSave={(faction) => {
+          setCards((prev) =>
+            prev.map((card) => {
+              const isFaction =
+                card.data.name === faction.name &&
+                card.data.race === faction.race;
+
+              if (!isFaction) return card;
+
+              return { ...card, id: faction.id, isTemporary: false };
             })
           );
         }}

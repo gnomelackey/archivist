@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-  Button,
   Iconography,
   Input,
   TextArea,
@@ -10,6 +9,8 @@ import {
 
 import type { FactionFormProps } from "./types";
 import { RaceTypeAhead } from "./RaceTypeAhead";
+import { SaveButton } from "./SaveButton";
+import { RemoveButton } from "./RemoveButton";
 
 export const FactionForm = ({
   faction,
@@ -84,24 +85,12 @@ export const FactionForm = ({
           onChange={handleColorChange}
         />
         <div className="flex gap-2 flex-1">
-          <Button
-            type="button"
-            variant="outline"
-            mode="secondary"
-            onClick={() => onRemove(faction)}
-          >
-            Remove
-          </Button>
-          {faction.isTemporary ? (
-            <Button
-              type="button"
-              variant="fill"
-              className="flex-1"
-              onClick={() => onSave(faction)}
-            >
-              Save
-            </Button>
-          ) : null}
+          <RemoveButton faction={faction} onRemove={onRemove} show />
+          <SaveButton
+            faction={faction}
+            onSave={onSave}
+            show={faction.isTemporary}
+          />
         </div>
       </div>
     </form>

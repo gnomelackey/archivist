@@ -1,20 +1,20 @@
 .btn-outline-primary {
-  @apply font-bold text-palette-100 bg-transparent border-3 rounded;
+  @apply font-bold text-primary-fg border-primary bg-transparent border-3 rounded;
 }
 .btn-outline-secondary {
-  @apply font-bold text-palette-200 bg-transparent border-3 rounded;
+  @apply font-bold text-secondary-fg border-secondary bg-transparent border-3 rounded;
 }
 
 .btn-fill-primary {
-  @apply text-palette-400 bg-palette-100 rounded;
+  @apply text-primary-fg bg-primary-400 rounded;
 }
 .btn-fill-secondary {
-  @apply text-palette-100 bg-palette-400 rounded;
+  @apply text-secondary-fg bg-secondary-400 rounded;
 }
 
 .btn-text-primary {
-  @apply text-palette-100 bg-transparent rounded;
+  @apply text-primary-600 bg-transparent;
 }
 .btn-text-secondary {
-  @apply text-palette-200 bg-transparent rounded;
+  @apply text-secondary-600 bg-transparent;
 }

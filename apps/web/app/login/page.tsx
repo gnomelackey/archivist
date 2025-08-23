@@ -7,7 +7,7 @@ export default function Login() {
       <LoginForm />
       <p>
         {`Don't have an account? `}
-        <Link className="text-palette-200" href="/register" prefetch>
+        <Link className="text-error-600" href="/register" prefetch>
           Register
         </Link>
       </p>

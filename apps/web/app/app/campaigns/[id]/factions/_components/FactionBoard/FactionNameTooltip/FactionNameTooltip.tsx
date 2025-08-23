@@ -33,7 +33,7 @@ export const FactionNameTooltip = ({
     <>
       <div
         ref={measureRef}
-        className="absolute bg-gray-200 p-2 rounded shadow text-palette-300 flex flex-col gap-2 whitespace-nowrap"
+        className="absolute p-2 rounded shadow flex flex-col gap-2 whitespace-nowrap"
         style={{
           left: OFF_SCREEN_POSITION,
           top: OFF_SCREEN_POSITION,

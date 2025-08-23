@@ -8,7 +8,7 @@ export default function Register() {
       <RegisterForm />
       <p>
         {`Already have an account? `}
-        <Link className="text-palette-200" href="/login" prefetch>
+        <Link className="text-error-600" href="/login" prefetch>
           Login
         </Link>
       </p>

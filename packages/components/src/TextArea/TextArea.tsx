@@ -5,24 +5,24 @@ import type { TextAreaProps } from "./types";
 export const TextArea = ({
   label,
   variant = "outline",
-  className,
+  className = "",
   ...props
 }: TextAreaProps) => {
   const htmlFor = useMemo(
-    () => (label ? `input-${label}` : undefined),
+    () => (label ? `textarea-${label}` : undefined),
     [label]
   );
 
   const variantClasses = {
-    fill: "textarea-fill",
-    outline: "textarea-outline",
+    fill: "field-fill",
+    outline: "field-outline",
   }[variant];
 
   const classes = `w-full p-2 rounded textarea ${className}`;
 
   const labelText = label ? (
     <label
-      className="text-palette-100 mb-1 text-lg font-semibold focus:text-palette-200"
+      className="text-palette mb-1 text-lg font-semibold focus:text-palette-500"
       htmlFor={htmlFor}
     >
       {label}
@@ -30,7 +30,7 @@ export const TextArea = ({
   ) : null;
 
   return (
-    <div className={`flex flex-col textarea-group ${variantClasses}`}>
+    <div className={`flex flex-col field-group ${variantClasses}`}>
       {labelText}
       <textarea id={htmlFor} className={classes} {...props} />
     </div>

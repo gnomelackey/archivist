@@ -2,16 +2,13 @@
 @import "@repo/theme/styles";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
   --appbar-height: 48px; /* Adjust based on your actual AppBar height */
   --full-appbar-height: 88px; /* Adjust based on your actual AppBar height */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-bg-default);
   }
 }
 
@@ -22,8 +19,7 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  background: var(--color-bg-default);
 }
 
 * {

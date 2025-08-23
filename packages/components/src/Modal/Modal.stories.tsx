@@ -14,7 +14,7 @@ export const Playground: Story = {
   args: {
     title: "This is a modal header",
     open: true,
-    children: <h2 className="text-palette-100">This is modal content</h2>,
+    children: <h2 className="text-primary-surfaceFg">This is modal content</h2>,
     footer: (
       <div className="flex justify-end space-x-2 w-full">
         <Button mode="secondary">Cancel</Button>

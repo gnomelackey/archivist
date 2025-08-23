@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react-webpack5";
-import Palette from "@repo/theme/palette";
+import Theme from "@repo/theme";
 
 import "../styles/index.css";
 
@@ -7,7 +7,7 @@ const preview: Preview = {
   parameters: {
     backgrounds: {
       options: {
-        dark: { name: "dark", value: Palette[600] },
+        dark: { name: "dark", value: Theme.backgrounds.DEFAULT },
       },
     },
   },

@@ -1,4 +1,4 @@
-import Palette from "@repo/theme/palette";
+import Theme from "@repo/theme";
 
 import { AddIcon } from "./Icons/AddIcon";
 import { HideIcon } from "./Icons/HideIcon";
@@ -20,7 +20,8 @@ import type { IconographyProps } from "./types";
  */
 export const Iconography = ({
   name,
-  color = 100,
+  variant = "primary",
+  color = "DEFAULT",
   ...props
 }: IconographyProps) => {
   const Icon = {
@@ -35,7 +36,8 @@ export const Iconography = ({
     clear: ClearIcon,
   }[name];
 
-  const themeColor = Palette[color];
+  const themeVariant = Theme[variant] ?? Theme.primary;
+  const themeColor = themeVariant[color as keyof typeof themeVariant];
 
   return <Icon color={themeColor} {...props} />;
 };

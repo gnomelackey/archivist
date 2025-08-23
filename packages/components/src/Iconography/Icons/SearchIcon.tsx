@@ -1,4 +1,4 @@
-import Palette from "@repo/theme/palette";
+import Theme from "@repo/theme";
 
 import type { IconProps } from "./types";
 
@@ -9,7 +9,10 @@ import type { IconProps } from "./types";
  * @param color - color of the icon
  * @returns JSX Element representing the Search icon
  */
-export const SearchIcon = ({ size = 1, color = Palette[100] }: IconProps) => (
+export const SearchIcon = ({
+  size = 1,
+  color = Theme.primary.DEFAULT,
+}: IconProps) => (
   <svg
     fill={color}
     width={`${size}rem`}

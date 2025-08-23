@@ -5,7 +5,7 @@ import { Adornment } from "./Adornment";
 
 export const Input = ({
   label,
-  className,
+  className = "",
   variant = "outline",
   type = "text",
   fullWidth = true,
@@ -20,13 +20,13 @@ export const Input = ({
   );
 
   const variantClassName = {
-    fill: "input-fill",
-    outline: "input-outline",
+    fill: "field-fill",
+    outline: "field-outline",
   }[variant];
 
   const fullWidthClass = fullWidth ? "w-full" : "";
-
-  const classes = `${fullWidthClass} p-2 rounded input ${className}`;
+  const fieldPopulatedClass = props.value ? "field-populated" : "";
+  const classes = `${fullWidthClass} p-2 rounded input ${fieldPopulatedClass} ${className}`;
 
   const isPassword = type === "password";
   const hasIcon = Boolean(isPassword || icon);
@@ -36,7 +36,7 @@ export const Input = ({
 
   const labelText = label ? (
     <label
-      className="text-palette-100 mb-1 text-lg font-semibold focus:text-palette-200"
+      className="text-primary mb-1 text-lg font-semibold focus:text-primary"
       htmlFor={htmlFor}
     >
       {label}
@@ -45,7 +45,7 @@ export const Input = ({
 
   return (
     <div
-      className={`flex flex-col input-group ${fullWidthClass} ${variantClassName}`}
+      className={`flex flex-col field-group ${fullWidthClass} ${variantClassName}`}
     >
       {labelText}
       <div className={`relative ${fullWidthClass}`}>

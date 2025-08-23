@@ -22,14 +22,14 @@ export const CampaignList = () => {
         {campaigns.map((campaign: Campaign) => (
           <Link
             key={campaign.id}
-            className="text-transparent w-50 h-50 p-4 rounded flex flex-col justify-end border border-palette-100 bg-palette-600"
+            className="text-transparent w-50 h-50 p-4 rounded flex flex-col justify-end border border-primary bg-primary-100"
             href="/app/campaigns/[id]"
             as={`/app/campaigns/${campaign.id}`}
           >
-            <h6 className="text-sm font-semibold text-palette-200 w-42 text-ellipsis overflow-hidden">
+            <h6 className="text-sm font-semibold text-primary-600 w-42 text-ellipsis overflow-hidden">
               {campaign.name}
             </h6>
-            <p className="text-sm text-palette-100">{campaign.description}</p>
+            <p className="text-sm text-primary-fg">{campaign.description}</p>
           </Link>
         ))}
       </div>

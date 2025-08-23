@@ -1,0 +1,23 @@
+.field-group:focus-within label {
+  @apply text-primary;
+}
+
+.field:focus,
+.field-populated {
+  @apply border-primary border;
+  outline: none;
+}
+
+.field-outline {
+  input,
+  textarea {
+    @apply bg-transparent border rounded text-primary-fg border-primary;
+  }
+}
+
+.field-fill {
+  input,
+  textarea {
+    @apply bg-primary-bg rounded text-primary-fg border border-primary;
+  }
+}

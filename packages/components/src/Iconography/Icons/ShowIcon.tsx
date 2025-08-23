@@ -1,4 +1,4 @@
-import Palette from "@repo/theme/palette";
+import Theme from "@repo/theme";
 
 import type { IconProps } from "./types";
 
@@ -10,7 +10,7 @@ import type { IconProps } from "./types";
  */
 export const ShowIcon = ({
   size = 1,
-  color = Palette[100],
+  color = Theme.primary.DEFAULT,
 }: IconProps) => (
   <svg
     fill={color}

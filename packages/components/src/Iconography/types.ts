@@ -1,9 +1,10 @@
-import Palette from "@repo/theme/palette";
+import type { PaletteKey, VariantKey } from "@repo/theme";
 
 import type { IconProps } from "./Icons/types";
 
 export type IconographyProps = Omit<IconProps, "color"> & {
-  color?: keyof typeof Palette;
+  color?: PaletteKey;
+  variant?: VariantKey;
   name:
     | "add"
     | "show"

@@ -42,7 +42,7 @@ export const FactionFormSideBar = ({
 
   return (
     <div
-      className="fixed flex flex-col justify-between left-0 bg-palette-600 shadow-lg border-r border-palette-100 z-40 overflow-y-auto"
+      className="fixed flex flex-col justify-between left-0 bg-bg shadow-lg border-r border-primary-border z-40 overflow-y-auto"
       style={{
         width: "400px",
         top: "var(--full-appbar-height, 88px)",
@@ -50,7 +50,7 @@ export const FactionFormSideBar = ({
       }}
     >
       <div>
-        <div className="sticky flex flex-col gap-2 top-0 bg-palette-600 p-6 pt-6 border-b border-palette-100 z-10">
+        <div className="sticky flex flex-col gap-2 top-0 bg-bg p-6 pt-6 border-b border-primary-border z-10">
           <Input placeholder="Filter factions..." icon={{ name: "search" }} onChange={handleFilter} value={query} />
         </div>
         <div className="px-6 pt-16 pb-24 flex flex-col gap-6">

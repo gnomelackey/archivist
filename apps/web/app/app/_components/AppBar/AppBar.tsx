@@ -46,8 +46,8 @@ export const AppBar = () => {
   const getActiveLinkClass = useCallback(
     (href: string) =>
       currentPath.startsWith(href)
-        ? "text-palette-200 font-semibold"
-        : "text-palette-100",
+        ? "text-primary-fg font-semibold underline!"
+        : "text-primary-fg",
     [currentPath]
   );
 
@@ -64,13 +64,13 @@ export const AppBar = () => {
   return (
     <header
       className="
-        sticky top-0 z-50 border-b border-palette-100
-        bg-white/70 dark:bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:backdrop-blur
+        sticky top-0 z-50 border-b border-primary-border
+        color-bg-default backdrop-blur supports-[backdrop-filter]:backdrop-blur
       "
     >
       <div className="block w-full">
         <div className="flex items-center justify-between py-2 max-w-7xl m-auto">
-          <h1 className="text-lg font-semibold text-palette-100">Archivist</h1>
+          <h1 className="text-lg font-semibold text-primary-fg">Archivist</h1>
           <nav className="flex space-x-4">
             {navigationLinks.map((link) => (
               <Link
@@ -83,12 +83,12 @@ export const AppBar = () => {
             ))}
           </nav>
 
-          <Button type="button" variant="text" onClick={handleLogout}>
+          <Button className="text-primary-fg!" type="button" variant="text" onClick={handleLogout}>
             Logout
           </Button>
         </div>
         {isSubPathSelected ? (
-          <div className="w-full bg-palette-600">
+          <div className="w-full bg-primary-100">
             <div className="flex items-center justify-center py-2 max-w-7xl m-auto">
               <nav className="flex space-x-4">
                 {subNavigationLinks(currentPath, id as string)?.map((link) => (

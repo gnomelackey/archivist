@@ -37,7 +37,7 @@ export const Modal = ({
   }[size];
 
   const footerContent = footer ? (
-    <div id={`${title}-modal-footer`} className="bg-palette-100 px-6 py-4 mt-10 rounded-b-2xl flex align-middle">
+    <div id={`${title}-modal-footer`} className="bg-primary-100 px-6 py-4 mt-10 rounded-b-2xl flex align-middle">
       {footer}
     </div>
   ) : null;
@@ -48,9 +48,9 @@ export const Modal = ({
       <div id={`${title}-modal-content`} className="relative flex items-center justify-center h-full">
         <motion.div {...modalAnimation}>
           <div
-            className={`bg-palette-500 rounded-2xl shadow-lg border border-palette-100 ${sizeClass}`}
+            className={`bg-primary-bg rounded-2xl shadow-lg border border-primary ${sizeClass}`}
           >
-            <h2 className="text-xl text-palette-100 pt-6 px-6 pb-0 font-bold mb-4 uppercase">
+            <h2 className="text-xl text-primary-surfaceFg pt-6 px-6 pb-0 font-bold mb-4 uppercase">
               {title}
             </h2>
             <div className="p-6">{children}</div>

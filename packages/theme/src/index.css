@@ -1,0 +1,74 @@
+/**
+ * How to use the theme colors:
+ *
+ * 100 - 600: common shades to use throughout the app
+ * default: the main brand color
+ * bg: solid fills (buttons, chips)
+ * fg: text/icons on primary.bg
+ * surfaceBg: tinted surfaces (cards, alerts, tooltips)
+ * surfaceFg: tinted surface text/icons
+ * border: outlines, dividers
+ */
+@theme {
+  --color-bg-default: #0b0d12;
+  --color-primary-100: #120f17;
+  --color-primary-200: #1b1623;
+  --color-primary-300: #261e35;
+  --color-primary-400: #372851;
+  --color-primary-500: #4f3a7a;
+  --color-primary-600: #6b50b9;
+  --color-primary: #4f3a7a;
+  --color-primary-bg: #4f3a7a;
+  --color-primary-fg: #f4f1ff;
+  --color-primary-surfaceBg: #261e35;
+  --color-primary-surfaceFg: #e6e2ff;
+  --color-primary-border: #372851;
+  --color-secondary-100: #120e09;
+  --color-secondary-200: #1a160e;
+  --color-secondary-300: #271e12;
+  --color-secondary-400: #3a2c16;
+  --color-secondary-500: #533e18;
+  --color-secondary-600: #7a5a17;
+  --color-secondary: #533e18;
+  --color-secondary-bg: #533e18;
+  --color-secondary-fg: #fff7ed;
+  --color-secondary-surfaceBg: #271e12;
+  --color-secondary-surfaceFg: #ffeedd;
+  --color-secondary-border: #3a2c16;
+  --color-success-100: #0a1513;
+  --color-success-200: #0f221e;
+  --color-success-300: #153730;
+  --color-success-400: #1d5249;
+  --color-success-500: #246e61;
+  --color-success-600: #2c8a78;
+  --color-success: #246e61;
+  --color-success-bg: #246e61;
+  --color-success-fg: #f0fffb;
+  --color-success-surfaceBg: #153730;
+  --color-success-surfaceFg: #e6fffa;
+  --color-success-border: #1d5249;
+  --color-error-100: #150a10;
+  --color-error-200: #23121b;
+  --color-error-300: #3a1b2c;
+  --color-error-400: #55233f;
+  --color-error-500: #722a53;
+  --color-error-600: #96356c;
+  --color-error: #722a53;
+  --color-error-bg: #722a53;
+  --color-error-fg: #fff1f7;
+  --color-error-surfaceBg: #3a1b2c;
+  --color-error-surfaceFg: #ffe8f2;
+  --color-error-border: #55233f;
+  --color-info-100: #091017;
+  --color-info-200: #0d1822;
+  --color-info-300: #132637;
+  --color-info-400: #1a3a53;
+  --color-info-500: #215071;
+  --color-info-600: #2b6a95;
+  --color-info: #215071;
+  --color-info-bg: #215071;
+  --color-info-fg: #f1f8ff;
+  --color-info-surfaceBg: #132637;
+  --color-info-surfaceFg: #eaf4ff;
+  --color-info-border: #1a3a53;
+}

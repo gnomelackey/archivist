@@ -8,7 +8,7 @@ const TooltipComponent = (
 ) => (
   <div
     ref={ref}
-    className={`absolute bg-gray-200 p-2 rounded shadow text-palette-300 tooltip flex flex-col gap-2 z-50 ${className}`}
+    className={`absolute bg-primary-surfaceFg p-2 rounded shadow text-primary-surfaceBg tooltip flex flex-col gap-2 z-50 ${className}`}
     style={{
       left: x - width / 2,
       top: y - (height + 8),

@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 
 import type { InputProps } from "./types";
-import { IconButton } from "../IconButton";
-import { Iconography } from "../Iconography";
+import { Adornment } from "./Adornment";
 
 export const Input = ({
   label,
@@ -30,9 +29,10 @@ export const Input = ({
   const classes = `${fullWidthClass} p-2 rounded input ${className}`;
 
   const isPassword = type === "password";
+  const hasIcon = Boolean(isPassword || icon);
   const passwordType = showPassword ? "text" : "password";
   const inputType = isPassword ? passwordType : type;
-  const inputClasses = isPassword ? `${classes} pr-10` : classes;
+  const inputClasses = hasIcon ? `pr-11! ${classes}` : classes;
 
   const labelText = label ? (
     <label
@@ -41,22 +41,6 @@ export const Input = ({
     >
       {label}
     </label>
-  ) : null;
-
-  const showHideButton = isPassword ? (
-    <div className="absolute inset-y-0 right-0 flex items-center pr-2">
-      <IconButton
-        size={icon?.size ?? 2}
-        type="button"
-        icon={icon?.name ?? (showPassword ? "hide" : "show")}
-        aria-label={showPassword ? "Hide password" : "Show password"}
-        onClick={() => setShowPassword(!showPassword)}
-      />
-    </div>
-  ) : icon ? (
-    <div className="absolute inset-y-0 right-0 flex items-center pr-2">
-      <Iconography {...icon} />
-    </div>
   ) : null;
 
   return (
@@ -71,7 +55,12 @@ export const Input = ({
           className={inputClasses}
           {...props}
         />
-        {showHideButton}
+        <Adornment
+          button={isPassword}
+          icon={icon}
+          show={showPassword}
+          setShow={setShowPassword}
+        />
       </div>
     </div>
   );

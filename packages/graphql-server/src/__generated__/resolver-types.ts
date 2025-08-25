@@ -144,9 +144,11 @@ export type FactionResolvers<ContextType = ArchivistGraphQLContext, ParentType e
   coordinates?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['Coordinates']>>>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   description?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  goals?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['Seed']>>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   race?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  resources?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['Seed']>>>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

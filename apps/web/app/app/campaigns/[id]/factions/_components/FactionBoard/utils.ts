@@ -97,22 +97,36 @@ export const hasFactionChanged = (
   faction: FactionCard,
   original?: Faction
 ): boolean => {
-  if (!faction.data || !original) return false;
+  if (!faction.data) return false;
+  if (!original) return true;
 
-  const { name, color, race, description } = faction.data;
+  const {
+    name,
+    color,
+    race,
+    description,
+    resources = [],
+    goals = [],
+  } = faction.data;
 
   const {
     name: originalName,
     color: originalColor,
     race: originalRace,
     description: originalDescription,
+    resources: originalResources = [],
+    goals: originalGoals = [],
   } = original;
 
   return (
     name !== originalName ||
     color !== originalColor ||
     race !== originalRace ||
-    description !== originalDescription
+    description !== originalDescription ||
+    resources.length !== originalResources?.length ||
+    goals.length !== originalGoals?.length ||
+    resources.some((r) => originalResources?.every((o) => o?.id !== r.id)) ||
+    goals.some((g) => originalGoals?.every((o) => o?.id !== g.id))
   );
 };
 
@@ -130,14 +144,37 @@ export const buildFactionCard = (
   const fullname = `${faction.name} (${faction.race})`;
   const label = getFactionDisplayText(ctx, fullname, coordinates.width);
 
+  const resources =
+    faction.resources?.map((r) => ({
+      id: r!.id,
+      value: r!.id,
+      label: r!.value,
+    })) ?? [];
+
+  const goals =
+    faction.goals?.map((g) => ({
+      id: g!.id,
+      value: g!.id,
+      label: g!.value,
+    })) ?? [];
+
   const data = {
     name: faction.name,
     color: faction.color,
     race: faction.race,
     description: faction.description ?? "",
+    resources,
+    goals,
   };
 
-  return { ...coordinates, id: faction.id, label, data, position, isTemporary: false };
+  return {
+    ...coordinates,
+    id: faction.id,
+    label,
+    data,
+    position,
+    isTemporary: false,
+  };
 };
 
 export const buildTemporaryFactionCard = (

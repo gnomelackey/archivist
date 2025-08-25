@@ -7,14 +7,34 @@ const insertFaction = async (
   faction: FactionInput,
   campaign: string
 ) => {
+  const descriptorIds = faction.descriptors || [];
+
+  const descriptors =
+    descriptorIds.length > 0
+      ? { descriptors: { connect: descriptorIds.map((id) => ({ id })) } }
+      : {};
+
   return context.prisma.faction
-    .create({
-      data: {
+    .upsert({
+      where: {
+        name_race: { name: faction.name, race: faction.race },
+        campaignId: campaign,
+      },
+      create: {
         name: faction.name,
         description: faction.description,
         race: faction.race,
         color: faction.color,
         campaign: { connect: { id: campaign } },
+        ...descriptors,
+      },
+      update: {
+        name: faction.name,
+        description: faction.description,
+        race: faction.race,
+        color: faction.color,
+        campaign: { connect: { id: campaign } },
+        ...descriptors,
       },
     })
     .then(async (model) => {

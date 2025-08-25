@@ -17,7 +17,6 @@ export const FactionQueries: ArchivistGraphQLResolvers["Query"] = {
     );
 
     if (!coordinates?.length) {
-      console.log(`Error: Coordinates not found for faction ${faction.id}`);
       return { ...faction, coordinates: [] };
     }
 
@@ -42,7 +41,6 @@ export const FactionQueries: ArchivistGraphQLResolvers["Query"] = {
         );
 
         if (!coordinates?.length) {
-          console.log(`Error: Coordinates not found for faction ${faction.id}`);
           return { ...faction, coordinates: [] };
         }
 

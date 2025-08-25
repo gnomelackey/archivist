@@ -54,9 +54,11 @@ export type Faction = {
   coordinates?: Maybe<Array<Maybe<Coordinates>>>;
   createdAt: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  goals?: Maybe<Array<Maybe<Seed>>>;
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
   race: Scalars['String']['output'];
+  resources?: Maybe<Array<Maybe<Seed>>>;
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -64,6 +66,7 @@ export type FactionInput = {
   color: Scalars['String']['input'];
   coordinates?: InputMaybe<CoordinatesInput>;
   description?: InputMaybe<Scalars['String']['input']>;
+  descriptors?: InputMaybe<Array<Scalars['String']['input']>>;
   name: Scalars['String']['input'];
   race: Scalars['String']['input'];
 };

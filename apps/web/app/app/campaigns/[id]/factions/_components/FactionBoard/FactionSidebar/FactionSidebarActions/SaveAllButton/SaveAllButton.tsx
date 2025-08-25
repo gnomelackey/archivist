@@ -4,11 +4,10 @@ import {
   CREATE_FACTIONS_MUTATION,
   GET_FACTIONS_WITH_COORDINATES,
 } from "@repo/clients";
-import { CoordinateLocationEnum } from "@repo/enums";
 import { useParams } from "next/navigation";
 
 import type { SaveAllButtonProps } from "./types";
-import type { FactionCard } from "../../../types";
+import { handleFactionMapping } from "../../utils";
 
 export const SaveAllButton = ({
   factions,
@@ -22,20 +21,6 @@ export const SaveAllButton = ({
   });
 
   if (!show) return null;
-
-  const handleFactionMapping = (faction: FactionCard) => ({
-    name: faction.data.name,
-    race: faction.data.race,
-    description: faction.data.description,
-    color: faction.data.color,
-    coordinates: {
-      x: faction.x,
-      y: faction.y,
-      width: faction.width,
-      height: faction.height,
-      location: CoordinateLocationEnum.FACTION_BOARD,
-    },
-  });
 
   const handleCreateAll = () => {
     const temporaryCards = factions.filter((f) => f.isTemporary);

@@ -9,4 +9,24 @@ export const FactionReferences: ArchivistGraphQLResolvers["Faction"] = {
       where: { factionId: parent.id },
     });
   },
+  resources: (parent, _, context) => {
+    return context.prisma.seed.findMany({
+      where: {
+        factions: {
+          some: { id: parent.id }
+        },
+        type: "resource"
+      },
+    });
+  },
+  goals: (parent, _, context) => {
+    return context.prisma.seed.findMany({
+      where: {
+        factions: {
+          some: { id: parent.id }
+        },
+        type: "goal"
+      },
+    });
+  },
 };

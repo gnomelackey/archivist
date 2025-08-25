@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 
 import type { SaveButtonProps } from "./types";
 import type { FactionCard } from "../../../types";
-import { CoordinateLocationEnum } from "@repo/enums";
+import { handleFactionMapping } from "../../utils";
 
 export const SaveButton = ({ faction, onSave, show }: SaveButtonProps) => {
   const { id: campaignId } = useParams();
@@ -18,20 +18,6 @@ export const SaveButton = ({ faction, onSave, show }: SaveButtonProps) => {
   });
 
   if (!show) return null;
-
-  const handleFactionMapping = (faction: FactionCard) => ({
-    name: faction.data.name,
-    race: faction.data.race,
-    description: faction.data.description,
-    color: faction.data.color,
-    coordinates: {
-      x: faction.x,
-      y: faction.y,
-      width: faction.width,
-      height: faction.height,
-      location: CoordinateLocationEnum.FACTION_BOARD,
-    },
-  });
 
   const handleCreate = (faction: FactionCard) => {
     createFaction({

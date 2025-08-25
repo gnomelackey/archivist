@@ -5,6 +5,13 @@ import { Faction } from "@repo/clients";
 
 const chance = new Chance();
 
+/**
+ * Converts screen coordinates to world coordinates by subtracting pan offset
+ * @param screenX - The x coordinate in screen space
+ * @param screenY - The y coordinate in screen space  
+ * @param panOffset - The current pan offset of the viewport
+ * @returns World coordinates as {x, y}
+ */
 export const screenToWorld = (
   screenX: number,
   screenY: number,
@@ -14,6 +21,13 @@ export const screenToWorld = (
   y: screenY - panOffset.y,
 });
 
+/**
+ * Converts world coordinates to screen coordinates by adding pan offset
+ * @param worldX - The x coordinate in world space
+ * @param worldY - The y coordinate in world space
+ * @param panOffset - The current pan offset of the viewport
+ * @returns Screen coordinates as {x, y}
+ */
 export const worldToScreen = (
   worldX: number,
   worldY: number,
@@ -23,6 +37,13 @@ export const worldToScreen = (
   y: worldY + panOffset.y,
 });
 
+/**
+ * Gets mouse position in both screen and world coordinates from a React mouse event
+ * @param event - React mouse event from canvas interaction
+ * @param canvas - The HTML canvas element
+ * @param panOffset - The current pan offset of the viewport
+ * @returns Object containing screen and world coordinates, or null if canvas is unavailable
+ */
 export const getMousePosition = (
   event: React.MouseEvent<HTMLCanvasElement>,
   canvas: HTMLCanvasElement,
@@ -40,6 +61,11 @@ export const getMousePosition = (
   };
 };
 
+/**
+ * Generates a unique random hex color that hasn't been used before
+ * @param usedColors - Array of hex color strings that have already been used
+ * @returns A unique hex color string
+ */
 export const getUniqueRandomColor = (usedColors: string[]): string => {
   let newColor: string;
 
@@ -50,6 +76,13 @@ export const getUniqueRandomColor = (usedColors: string[]): string => {
   return newColor;
 };
 
+/**
+ * Truncates text to fit within a specified width, adding ellipsis if needed
+ * @param ctx - Canvas 2D rendering context for text measurement
+ * @param text - The text to display
+ * @param width - The maximum width available for the text
+ * @returns Truncated text with ellipsis if necessary, original text if it fits
+ */
 export const getFactionDisplayText = (
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -93,6 +126,12 @@ export const getFactionDisplayText = (
   return displayText;
 };
 
+/**
+ * Checks if a faction card has been modified compared to its original faction data
+ * @param faction - The current faction card to check
+ * @param original - The original faction data to compare against
+ * @returns True if the faction has been changed, false otherwise
+ */
 export const hasFactionChanged = (
   faction: FactionCard,
   original?: Faction
@@ -130,6 +169,14 @@ export const hasFactionChanged = (
   );
 };
 
+/**
+ * Creates a faction card from faction data with proper canvas text measurement
+ * @param ctx - Canvas 2D rendering context for text measurement
+ * @param faction - The faction data to build a card from
+ * @param position - The position/index of this card in the collection
+ * @returns A complete FactionCard object ready for rendering
+ * @throws Error if ctx, faction, or faction coordinates are missing
+ */
 export const buildFactionCard = (
   ctx: CanvasRenderingContext2D | null,
   faction: Faction,
@@ -177,6 +224,19 @@ export const buildFactionCard = (
   };
 };
 
+/**
+ * Creates a temporary faction card for drawing operations with generated seed data
+ * @param ctx - Canvas 2D rendering context for text measurement
+ * @param x - X coordinate for the card
+ * @param y - Y coordinate for the card
+ * @param width - Width of the card
+ * @param height - Height of the card
+ * @param color - Hex color for the card
+ * @param position - The position/index of this card in the collection
+ * @param seeds - Object containing seed values for name generation
+ * @returns A temporary FactionCard object marked as temporary
+ * @throws Error if ctx is missing
+ */
 export const buildTemporaryFactionCard = (
   ctx: CanvasRenderingContext2D | null,
   x: number,
@@ -210,6 +270,12 @@ export const buildTemporaryFactionCard = (
   return { data, id, x, y, width, height, label, position, isTemporary: true };
 };
 
+/**
+ * Normalizes a hex color string to standard 6-character uppercase format
+ * @param hex - Hex color string with or without # prefix, 3 or 6 characters
+ * @returns Normalized hex color string in format #RRGGBB
+ * @throws Error if the hex string is invalid
+ */
 function normalizeHex(hex: string) {
   let h = hex.trim().replace(/^#/, "");
 
@@ -225,6 +291,11 @@ function normalizeHex(hex: string) {
   return "#" + h.toUpperCase();
 }
 
+/**
+ * Converts a hex color string to RGB values
+ * @param hex - Hex color string in any valid format
+ * @returns RGB object with r, g, b properties (0-255 range)
+ */
 function hexToRgb(hex: string) {
   const h = normalizeHex(hex).slice(1);
 
@@ -235,12 +306,22 @@ function hexToRgb(hex: string) {
   };
 }
 
+/**
+ * Converts sRGB color value to linear color space for luminance calculation
+ * @param c - Color value in sRGB space (0-255)
+ * @returns Linear color value (0-1 range)
+ */
 function srgbToLinear(c: number) {
   const cs = c / 255;
 
   return cs <= 0.04045 ? cs / 12.92 : Math.pow((cs + 0.055) / 1.055, 2.4);
 }
 
+/**
+ * Calculates the relative luminance of an RGB color using WCAG formula
+ * @param rgb - RGB color object with r, g, b properties
+ * @returns Relative luminance value (0-1 range)
+ */
 function luminance({ r, g, b }: { r: number; g: number; b: number }) {
   const R = srgbToLinear(r),
     G = srgbToLinear(g),
@@ -249,6 +330,12 @@ function luminance({ r, g, b }: { r: number; g: number; b: number }) {
   return 0.2126 * R + 0.7152 * G + 0.0722 * B;
 }
 
+/**
+ * Calculates the contrast ratio between two hex colors
+ * @param a - First hex color string
+ * @param b - Second hex color string
+ * @returns Contrast ratio (1:1 to 21:1 range)
+ */
 function contrastRatioHex(a: string, b: string) {
   const L1 = luminance(hexToRgb(a));
   const L2 = luminance(hexToRgb(b));
@@ -257,6 +344,12 @@ function contrastRatioHex(a: string, b: string) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
+/**
+ * Determines the best contrasting text color (white or black) for a given background color
+ * @param hex - Background hex color string
+ * @param minRatio - Minimum acceptable contrast ratio (default: 4.5 for WCAG AA compliance)
+ * @returns "#FFF" for white text or "#000" for black text
+ */
 export function getContrastTextColor(hex: string, minRatio = 4.5) {
   const shouldBeContrastWhite = contrastRatioHex(hex, "#FFF") >= minRatio;
   return shouldBeContrastWhite ? "#FFF" : "#000";

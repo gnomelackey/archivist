@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 
 import { useQuery } from "@apollo/client";
 import {
@@ -9,7 +9,6 @@ import {
   GET_SEEDS_BY_TYPES_QUERY,
 } from "@repo/clients";
 import { CoordinateLocationEnum } from "@repo/enums";
-import Chance from "chance";
 import { useParams } from "next/navigation";
 
 import { FactionFormSideBar } from "./FactionSidebar";
@@ -17,26 +16,21 @@ import {
   FactionRelationsTooltip,
   type FactionToolTipProps,
 } from "./FactionRelationsTooltip";
-import {
-  FactionNameTooltip,
-  FactionNameTooltipData,
-} from "./FactionNameTooltip";
-import type { FactionBoardPoint, FactionCard } from "./types";
-import {
-  buildFactionCard,
-  buildTemporaryFactionCard,
-  getContrastTextColor,
-  getFactionDisplayText,
-  getMousePosition,
-  getUniqueRandomColor,
-  hasFactionChanged,
-  worldToScreen,
-} from "./utils";
+import { FactionNameTooltip } from "./FactionNameTooltip";
+import { useFactionBoardManager } from "./useFactionBoardManager";
+import { useDrawingLogic } from "./useDrawingLogic/useDrawingLogic";
+import { getFactionDisplayText, hasFactionChanged } from "./utils";
+import type { FactionCard } from "./types";
 
-const chance = new Chance();
+const CANVAS_DIMENSIONS = { width: 1200, height: 800 };
 
 export const FactionBoard = () => {
   const { id: campaign } = useParams();
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const [canvasDimensions, setCanvasDimensions] = useState(CANVAS_DIMENSIONS);
+  const [tooltips, setTooltips] = useState<Array<FactionToolTipProps>>([]);
 
   const { data } = useQuery(GET_FACTIONS_WITH_COORDINATES, {
     variables: { campaign, location: CoordinateLocationEnum.FACTION_BOARD },
@@ -47,16 +41,14 @@ export const FactionBoard = () => {
   });
 
   const factions: Array<Faction> = useMemo(
-    () => data?.factionsWithCoordinates ?? [],
+    () => {
+      const result = data?.factionsWithCoordinates ?? [];
+      return result;
+    },
     [data]
   );
 
-  const {
-    races,
-    nouns,
-    factions: factionNames,
-    adjectives,
-  } = useMemo(() => {
+  const seedsData = useMemo(() => {
     if (!seeds) {
       return { races: [], nouns: [], factions: [], adjectives: [] };
     }
@@ -67,326 +59,142 @@ export const FactionBoard = () => {
       factions: seeds.seedsByTypes.faction ?? [],
       adjectives: seeds.seedsByTypes.adjective ?? [],
     };
-  }, [seeds]);
+    }, [seeds]);
 
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [isPanning, setIsPanning] = useState(false);
+  const drawingCompletionRef = useRef<((drawnCard: FactionCard, ctx: CanvasRenderingContext2D) => void) | null>(null);
 
-  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const onDrawingComplete = useCallback((drawnCard: FactionCard) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    
+    if (canvas && ctx && drawingCompletionRef.current) {
+      drawingCompletionRef.current(drawnCard, ctx);
+    }
+  }, []);  const {
+    manager,
+    cards,
+    nameTooltip,
+    addCard,
+    removeCard,
+    updateCard,
+  } = useFactionBoardManager(canvasRef, factions, onDrawingComplete);
 
-  const [cards, setCards] = useState<Array<FactionCard>>([]);
-  const [tooltips, setTooltips] = useState<Array<FactionToolTipProps>>([]);
-  const [nameTooltip, setNameTooltip] = useState<FactionNameTooltipData>(null);
-  const [panStart, setPanStart] = useState<FactionBoardPoint | null>(null);
-  const [startPoint, setStartPoint] = useState<FactionBoardPoint | null>(null);
-  const [currentCard, setCurrentCard] = useState<FactionCard | null>(null);
-
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvas = canvasRef.current;
-  const ctx = canvas?.getContext("2d");
+  const { handleDrawingComplete } = useDrawingLogic({
+    cards,
+    onCardAdded: addCard,
+    onTooltipsAdded: (newTooltips) => {
+      setTooltips((prev) => [...prev, ...newTooltips]);
+    },
+    panOffset: manager?.getPanOffset() ?? { x: 0, y: 0 },
+    seeds: seedsData,
+  });
 
   useEffect(() => {
-    if (!ctx) return;
+    drawingCompletionRef.current = handleDrawingComplete;
+  }, [handleDrawingComplete]);
 
-    const updatedCards = factions.map((faction, index) =>
-      buildFactionCard(ctx, faction, index)
-    );
+  const handleFactionChange = useCallback(
+    (faction: FactionCard) => {
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext("2d");
+      if (!canvas || !ctx) return;
 
-    setCards(updatedCards);
-  }, [factions, ctx]);
+      const cardIndex = cards.findIndex((card) => card.id === faction.id);
+      if (cardIndex === -1) return;
 
-  useEffect(() => {
-    if (!canvas || !ctx) return;
+      const card = cards[cardIndex];
+      if (!card || !card.data) return;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const updatedCard = { ...card };
+      const updateCardName =
+        updatedCard.data!.name !== faction.data.name ||
+        updatedCard.data!.race !== faction.data.race;
 
-    ctx.save();
-    ctx.translate(panOffset.x, panOffset.y);
-
-    cards.forEach((card) => {
-      const borderColor = card.data.color + "FF";
-      const fillColor = card.data.color + "40";
-
-      ctx.fillStyle = fillColor;
-      ctx.fillRect(card.x, card.y, card.width, card.height);
-
-      ctx.strokeStyle = borderColor;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(card.x, card.y, card.width, card.height);
-
-      ctx.fillStyle = borderColor;
-      ctx.fillRect(card.x - 1, card.y - 26, card.width + 2, 25);
-
-      ctx.font = "16px sans-serif";
-
-      ctx.lineWidth = 3;
-      ctx.fillStyle = getContrastTextColor(card.data.color);
-      ctx.fillText(card.label, card.x + 10, card.y - 6);
-    });
-
-    const { height = 0, width = 0 } = currentCard || {};
-    const hasSize = currentCard && width > 0 && height > 0;
-
-    if (isDrawing && hasSize) {
-      ctx.fillStyle = currentCard.data.color + "4D";
-      ctx.strokeStyle = currentCard.data.color;
-      ctx.fillRect(
-        currentCard.x,
-        currentCard.y,
-        currentCard.width,
-        currentCard.height
-      );
-
-      ctx.lineWidth = 2;
-      ctx.setLineDash([5, 5]);
-      ctx.strokeRect(
-        currentCard.x,
-        currentCard.y,
-        currentCard.width,
-        currentCard.height
-      );
-      ctx.setLineDash([]);
-    }
-
-    ctx.restore();
-  }, [cards, currentCard, isDrawing, tooltips, panOffset, canvas, ctx]);
-
-  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (event.target !== canvasRef.current) return;
-
-    const positions = getMousePosition(event, canvasRef.current, panOffset);
-    if (!positions || !ctx) return;
-
-    if (event.button === 2 || event.button === 1 || event.shiftKey) {
-      setIsPanning(true);
-      setPanStart(positions.screen);
-      return;
-    }
-
-    const { world } = positions;
-    const seeds = { noun: "", faction: "", adjective: "", race: "" };
-    const color = "#ff6b6b";
-
-    setIsDrawing(true);
-    setStartPoint(world);
-    setCurrentCard(
-      buildTemporaryFactionCard(
-        ctx,
-        world.x,
-        world.y,
-        0,
-        0,
-        color,
-        cards.length + 1,
-        seeds
-      )
-    );
-  };
-
-  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvas) return;
-
-    const positions = getMousePosition(event, canvas, panOffset);
-    if (!positions) return;
-
-    if (isPanning && panStart && tooltips.length === 0) {
-      const deltaX = positions.screen.x - panStart.x;
-      const deltaY = positions.screen.y - panStart.y;
-
-      setPanOffset((prev) => ({
-        x: prev.x + deltaX,
-        y: prev.y + deltaY,
-      }));
-
-      setPanStart(positions.screen);
-
-      return;
-    }
-
-    if (!isDrawing) {
-      const { world } = positions;
-
-      for (let i = cards.length - 1; i >= 0; i--) {
-        const r = cards[i];
-
-        const isHovered =
-          r &&
-          world.x >= r.x &&
-          world.x <= r.x + r.width &&
-          world.y >= r.y - 26 &&
-          world.y <= r.y + r.height + 26 &&
-          r.label.includes("...");
-
-        if (isHovered) {
-          const screenPos = worldToScreen(world.x, world.y, panOffset);
-
-          setNameTooltip({
-            id: r.id,
-            label: `${r.data.name} (${r.data.race})`,
-            x: screenPos.x,
-            y: screenPos.y,
-          });
-
-          return;
-        }
+      if (updateCardName && updatedCard.width) {
+        const width = updatedCard.width;
+        const fullName = `${faction.data.name} (${faction.data.race})`;
+        updatedCard.label = getFactionDisplayText(ctx, fullName, width);
       }
 
-      if (nameTooltip) setNameTooltip(null);
-    } else if (ctx && startPoint) {
-      const { world } = positions;
-      const x = Math.min(startPoint.x, world.x);
-      const y = Math.min(startPoint.y, world.y);
-      const width = Math.abs(world.x - startPoint.x);
-      const height = Math.abs(world.y - startPoint.y);
+      const isTemporary = hasFactionChanged(faction, factions[cardIndex]);
 
-      const seeds = { noun: "", faction: "", adjective: "", race: "" };
-      const color = "#ff6b6b";
+      updateCard(faction.id, {
+        ...updatedCard,
+        data: { ...updatedCard.data, ...faction.data },
+        isTemporary,
+      });
+    },
+    [cards, factions, updateCard]
+  );
 
-      setCurrentCard(
-        buildTemporaryFactionCard(
-          ctx,
-          x,
-          y,
-          width,
-          height,
-          color,
-          cards.length + 1,
-          seeds
-        )
+  const handleFactionSave = useCallback(
+    (faction: Faction) => {
+      const cardToUpdate = cards.find(
+        (card) =>
+          card.data.name === faction.name && card.data.race === faction.race
       );
-    }
-  };
 
-  const handleMouseUp = useCallback(() => {
-    if (isPanning) {
-      setIsPanning(false);
-      setPanStart(null);
-      return;
-    }
+      if (cardToUpdate) {
+        updateCard(cardToUpdate.id, {
+          id: faction.id,
+          isTemporary: false,
+        });
+      }
+    },
+    [cards, updateCard]
+  );
 
-    if (!ctx) return;
+  const handleFactionReset = useCallback(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx || !manager) return;
 
-    const { width = 0, height = 0 } = currentCard || {};
-    const isTooSmall = width < 100 || height < 100;
+    setTooltips([]);
 
-    if (!isDrawing || !currentCard || isTooSmall) {
-      setIsDrawing(false);
-      setStartPoint(null);
-      setCurrentCard(null);
-      return;
-    }
+    const resetCards = manager.buildCardsFromFactions(factions);
+    manager.setCards(resetCards);
+  }, [manager, factions]);
 
-    const usedColors = cards.map((card) => card.data.color);
+  const handleFactionRemove = useCallback(
+    (id: string) => {
+      setTooltips((prev) => prev.filter((t) => !t.id.includes(id)));
+      removeCard(id);
+    },
+    [removeCard]
+  );
 
-    const nounsMax = nouns?.length ? nouns.length - 1 : 0;
-    const adjectivesMax = adjectives?.length ? adjectives.length - 1 : 0;
-    const racesMax = races?.length ? races.length - 1 : 0;
-    const factionsMax = factionNames?.length ? factionNames.length - 1 : 0;
+  const handleTooltipClick = useCallback(
+    (id: string, relationship: "conflict" | "alliance") => {
+      console.log(id, relationship);
+      setTooltips((prev) => prev.filter((t) => t.id !== id));
+    },
+    []
+  );
 
-    const nounsIndex = chance.integer({ min: 0, max: nounsMax });
-    const adjectivesIndex = chance.integer({ min: 0, max: adjectivesMax });
-    const racesIndex = chance.integer({ min: 0, max: racesMax });
-    const factionsIndex = chance.integer({ min: 0, max: factionsMax });
-
-    const seeds = {
-      noun: nouns[nounsIndex]?.value ?? "",
-      adjective: adjectives[adjectivesIndex]?.value ?? "",
-      race: races[racesIndex]?.value ?? "",
-      faction: factionNames[factionsIndex]?.value ?? "",
+  useEffect(() => {
+    const updateDimensions = () => {
+      setCanvasDimensions({
+        width: window.innerWidth - 100,
+        height: window.innerHeight - 200,
+      });
     };
 
-    const newCard = buildTemporaryFactionCard(
-      ctx,
-      currentCard.x,
-      currentCard.y,
-      currentCard.width,
-      currentCard.height,
-      getUniqueRandomColor(usedColors),
-      cards.length + 1,
-      seeds
-    );
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
 
-    const newTooltips = cards.reduce<Array<FactionToolTipProps>>(
-      (acc, card) => {
-        const oldCardRight = card.x + card.width;
-        const newCardRight = newCard.x + newCard.width;
-        const oldCardBottom = card.y + card.height;
-        const newCardBottom = newCard.y + newCard.height;
-
-        if (
-          card.x < newCardRight &&
-          oldCardRight > newCard.x &&
-          card.y < newCardBottom &&
-          oldCardBottom > newCard.y
-        ) {
-          const overlapLeft = Math.max(card.x, newCard.x);
-          const overlapTop = Math.max(card.y, newCard.y);
-          const overlapRight = Math.min(oldCardRight, newCardRight);
-          const overlapBottom = Math.min(oldCardBottom, newCardBottom);
-
-          const overlapWidth = overlapRight - overlapLeft;
-          const overlapHeight = overlapBottom - overlapTop;
-
-          if (overlapWidth <= 0 || overlapHeight <= 0) return acc;
-
-          const overlapCenterX = overlapLeft + overlapWidth / 2;
-          const overlapCenterY = overlapTop + overlapHeight / 2;
-
-          const screenPos = worldToScreen(
-            overlapCenterX,
-            overlapCenterY,
-            panOffset
-          );
-
-          return [
-            ...acc,
-            {
-              id: `tooltip-${card.id}-${newCard.id}`,
-              x: screenPos.x,
-              y: screenPos.y,
-              onClick: (id: string, relationship: "conflict" | "alliance") => {
-                console.log(id, relationship);
-                setTooltips((prev) => prev.filter((t) => t.id !== id));
-              },
-            },
-          ];
-        }
-
-        return acc;
-      },
-      []
-    );
-
-    setCards((prev) => [...prev, newCard]);
-    setTooltips((prev) => [...prev, ...newTooltips]);
-    setIsDrawing(false);
-    setStartPoint(null);
-    setCurrentCard(null);
-  }, [
-    isPanning,
-    ctx,
-    currentCard,
-    isDrawing,
-    cards,
-    nouns,
-    adjectives,
-    races,
-    factionNames,
-    panOffset,
-  ]);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
 
   return (
     <div className="relative w-full h-full">
       <canvas
         ref={canvasRef}
-        width={window.innerWidth - 100}
-        height={window.innerHeight - 200}
-        className={`block bg-gray-50 cursoir-pointer ${isPanning ? "cursor-grabbing" : isDrawing ? "cursor-crosshair" : ""}`}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onContextMenu={(e) => e.preventDefault()}
+        width={canvasDimensions.width}
+        height={canvasDimensions.height}
+        className="block bg-gray-50 cursor-pointer"
+        style={{
+          imageRendering: "pixelated",
+        }}
       />
       {nameTooltip ? (
         <FactionNameTooltip
@@ -401,70 +209,14 @@ export const FactionBoard = () => {
           x={tooltip.x}
           y={tooltip.y}
           id={tooltip.id}
-          onClick={tooltip.onClick}
+          onClick={handleTooltipClick}
         />
       ))}
       <FactionFormSideBar
-        onChange={(faction) => {
-          if (!canvas || !ctx) return;
-
-          setCards((prev) =>
-            prev.map((card, index) => {
-              const isFaction = card.id === faction.id;
-
-              if (!isFaction) return card;
-
-              const updatedCard = { ...card };
-              const updateCardName =
-                updatedCard.data.name !== faction.data.name ||
-                updatedCard.data.race !== faction.data.race;
-
-              if (updateCardName) {
-                const width = updatedCard.width;
-                const fullName = `${faction.data.name} (${faction.data.race})`;
-                updatedCard.label = getFactionDisplayText(ctx, fullName, width);
-              }
-
-              const isTemporary = hasFactionChanged(faction, factions[index]);
-
-              return {
-                ...updatedCard,
-                data: { ...updatedCard.data, ...faction.data },
-                isTemporary,
-              };
-            })
-          );
-        }}
-        onSave={(faction) => {
-          setCards((prev) =>
-            prev.map((card) => {
-              const isFaction =
-                card.data.name === faction.name &&
-                card.data.race === faction.race;
-
-              if (!isFaction) return card;
-
-              return { ...card, id: faction.id, isTemporary: false };
-            })
-          );
-        }}
-        onReset={() => {
-          if (!canvas || !ctx) return;
-
-          setTooltips([]);
-
-          setCards((prev) =>
-            prev.reduce<Array<FactionCard>>((acc, card, index) => {
-              const faction = factions[card.position];
-              if (!faction) return acc;
-              return [...acc, buildFactionCard(ctx, faction, index)];
-            }, [])
-          );
-        }}
-        onRemove={(id) => {
-          setTooltips((prev) => prev.filter((t) => !t.id.includes(id)));
-          setCards((prev) => prev.filter((card) => card.id !== id));
-        }}
+        onChange={handleFactionChange}
+        onSave={handleFactionSave}
+        onReset={handleFactionReset}
+        onRemove={handleFactionRemove}
         factions={cards}
       />
     </div>

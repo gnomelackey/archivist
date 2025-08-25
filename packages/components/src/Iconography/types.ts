@@ -13,6 +13,10 @@ export type IconographyProps = Omit<IconProps, "color"> & {
     | "clear"
     | "save"
     | "search"
+    | "arrowUp"
+    | "arrowDown"
+    | "arrowLeft"
+    | "arrowRight"
     | "bannerCheck"
     | "bannerMinus";
 };

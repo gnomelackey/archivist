@@ -11,6 +11,8 @@ import { BannerMinusIcon } from "./Icons/BannerMinusIcon";
 import { SearchIcon } from "./Icons/SearchIcon";
 
 import type { IconographyProps } from "./types";
+import { ArrowIcon } from "./Icons/ArrowIcon";
+import { IconProps } from "./Icons/types";
 
 /**
  * This component renders different icons based on the `name` prop.
@@ -34,6 +36,16 @@ export const Iconography = ({
     search: SearchIcon,
     skull: SkullIcon,
     clear: ClearIcon,
+    arrowDown: ArrowIcon,
+    arrowUp: ({ ...props }: IconProps) => (
+      <ArrowIcon {...props} rotate="180deg" />
+    ),
+    arrowLeft: ({ ...props }: IconProps) => (
+      <ArrowIcon {...props} rotate="270deg" />
+    ),
+    arrowRight: ({ ...props }: IconProps) => (
+      <ArrowIcon {...props} rotate="90deg" />
+    ),
   }[name];
 
   const themeVariant = Theme[variant] ?? Theme.primary;

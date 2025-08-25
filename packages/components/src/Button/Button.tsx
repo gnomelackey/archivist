@@ -13,9 +13,24 @@ export const Button = ({
     outline: {
       primary: "btn-outline-primary",
       secondary: "btn-outline-secondary",
+      error: "btn-outline-error",
+      success: "btn-outline-success",
+      info: "btn-outline-info",
     },
-    fill: { primary: "btn-fill-primary", secondary: "btn-fill-secondary" },
-    text: { primary: "btn-text-primary", secondary: "btn-text-secondary" },
+    fill: {
+      primary: "btn-fill-primary",
+      secondary: "btn-fill-secondary",
+      error: "btn-fill-error",
+      success: "btn-fill-success",
+      info: "btn-fill-info",
+    },
+    text: {
+      primary: "btn-text-primary",
+      secondary: "btn-text-secondary",
+      error: "btn-text-error",
+      success: "btn-text-success",
+      info: "btn-text-info",
+    },
   }[variant][mode];
 
   const sizeClassNames = {

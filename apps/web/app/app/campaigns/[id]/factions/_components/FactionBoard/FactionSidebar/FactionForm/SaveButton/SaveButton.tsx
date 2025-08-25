@@ -50,6 +50,7 @@ export const SaveButton = ({ faction, onSave, show }: SaveButtonProps) => {
       type="button"
       variant="fill"
       className="flex-1"
+      mode="success"
       onClick={() => handleCreate(faction)}
     >
       Save

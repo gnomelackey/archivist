@@ -9,7 +9,7 @@ export const ResetButton = ({ onReset, show }: ResetButtonProps) => {
     <Button
       key="faction-remove-temporary"
       className="w-full"
-      mode="secondary"
+      mode="error"
       onClick={onReset}
     >
       Reset Board

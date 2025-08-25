@@ -49,7 +49,7 @@ export const RemoveAllButton = ({
     <Button
       key="faction-remove-all"
       className="w-full"
-      mode="secondary"
+      mode="error"
       onClick={handleRemoveAll}
     >
       Remove All

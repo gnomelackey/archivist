@@ -4,6 +4,7 @@ export * from "./IconButton";
 export * from "./Iconography";
 export * from "./Input";
 export * from "./Modal";
+export * from "./Multiselect";
 export * from "./Portal";
 export * from "./TextArea";
 export * from "./Tooltip";

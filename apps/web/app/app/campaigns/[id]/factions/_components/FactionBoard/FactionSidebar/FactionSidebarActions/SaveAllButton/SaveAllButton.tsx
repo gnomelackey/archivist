@@ -58,6 +58,7 @@ export const SaveAllButton = ({
       key="faction-create-all"
       className="w-full"
       variant="fill"
+      mode="success"
       onClick={handleCreateAll}
     >
       Save All

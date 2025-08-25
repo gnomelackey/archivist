@@ -36,7 +36,7 @@ export const RemoveButton = ({ faction, onRemove }: RemoveButtonProps) => {
     <Button
       type="button"
       variant="outline"
-      mode="secondary"
+      mode="error"
       onClick={() => handleRemoveCard(faction)}
     >
       Remove

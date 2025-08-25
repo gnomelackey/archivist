@@ -4,6 +4,15 @@
 .btn-outline-secondary {
   @apply font-bold text-secondary-fg border-secondary bg-transparent border-3 rounded;
 }
+.btn-outline-error {
+  @apply font-bold text-error-fg border-error bg-transparent border-3 rounded;
+}
+.btn-outline-success {
+  @apply font-bold text-success-fg border-success bg-transparent border-3 rounded;
+}
+.btn-outline-info {
+  @apply font-bold text-info-fg border-info bg-transparent border-3 rounded;
+}
 
 .btn-fill-primary {
   @apply text-primary-fg bg-primary-400 rounded;
@@ -11,10 +20,28 @@
 .btn-fill-secondary {
   @apply text-secondary-fg bg-secondary-400 rounded;
 }
+.btn-fill-error {
+  @apply text-error-fg bg-error-400 rounded;
+}
+.btn-fill-info {
+  @apply text-info-fg bg-info-400 rounded;
+}
+.btn-fill-success {
+  @apply text-success-fg bg-success-400 rounded;
+}
 
 .btn-text-primary {
   @apply text-primary-600 bg-transparent;
 }
 .btn-text-secondary {
   @apply text-secondary-600 bg-transparent;
+}
+.btn-text-error {
+  @apply text-error-600 bg-transparent;
+}
+.btn-text-info {
+  @apply text-info-600 bg-transparent;
+}
+.btn-text-success {
+  @apply text-success-600 bg-transparent;
 }

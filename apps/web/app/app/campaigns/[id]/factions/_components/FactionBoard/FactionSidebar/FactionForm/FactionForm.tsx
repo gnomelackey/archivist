@@ -3,14 +3,16 @@ import React from "react";
 import {
   Iconography,
   Input,
+  MultiselectOption,
   TextArea,
   TypeaheadOption,
 } from "@repo/components";
 
 import type { FactionFormProps } from "./types";
-import { RaceTypeAhead } from "./RaceTypeAhead";
 import { SaveButton } from "./SaveButton";
 import { RemoveButton } from "./RemoveButton";
+import { SeedTypeAhead } from "./SeedTypeAhead";
+import { SeedMultiselect } from "./SeedMultiselect";
 
 export const FactionForm = ({
   faction,
@@ -48,6 +50,20 @@ export const FactionForm = ({
     });
   };
 
+  const handleResourceChange = (options: Array<MultiselectOption>) => {
+    onChange({
+      ...faction,
+      data: { ...faction.data, resources: options },
+    });
+  };
+
+  const handleGoalChange = (options: Array<MultiselectOption>) => {
+    onChange({
+      ...faction,
+      data: { ...faction.data, goals: options },
+    });
+  };
+
   return (
     <form className="flex flex-col gap-2">
       <div className="flex flex-1 gap-2">
@@ -56,7 +72,14 @@ export const FactionForm = ({
           value={faction.data.name ?? ""}
           onChange={handleChangeName}
         />
-        <RaceTypeAhead faction={faction} onChange={handleChangeRace} />
+        <SeedTypeAhead
+          faction={faction}
+          onChange={handleChangeRace}
+          type="race"
+          placeholder="Race"
+          fullWidth={false}
+          className="w-30"
+        />
       </div>
       <TextArea
         placeholder="Description"
@@ -64,11 +87,28 @@ export const FactionForm = ({
         value={faction.data.description ?? ""}
         onChange={handleDescriptionChange}
       />
+      <SeedMultiselect
+        placeholder="Add a Faction Resource..."
+        type="resource"
+        faction={faction}
+        onChange={handleResourceChange}
+      />
+      <SeedMultiselect
+        placeholder="Add a Faction Goal..."
+        type="goal"
+        faction={faction}
+        onChange={handleGoalChange}
+      />
       <div className="flex gap-2 items-center">
         {!faction.isTemporary ? (
-          <Iconography name="bannerCheck" size={1.75} />
+          <Iconography name="bannerCheck" size={1.75} variant="success" />
         ) : (
-          <Iconography name="bannerMinus" size={1.75} color={200} />
+          <Iconography
+            name="bannerMinus"
+            size={1.75}
+            variant="error"
+            color={600}
+          />
         )}
         <button
           className={`w-10 rounded h-10 flex-shrink-0 hover:cursor-pointer`}

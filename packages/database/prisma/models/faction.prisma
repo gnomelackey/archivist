@@ -1,17 +1,18 @@
 model Faction {
-  id            String      @id @default(cuid())
-  name          String
-  race          String
-  color         String
-  description   String?
+  id           String       @id @default(cuid())
+  name         String
+  race         String
+  color        String
+  description  String?
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
-  coordinates   Coordinates[]
+  coordinates  Coordinates[]
+  descriptors  Seed[]
 
-  campaignId    String
-  campaign      Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId   String
+  campaign     Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@unique([name, race])
 }

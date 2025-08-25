@@ -1,8 +1,12 @@
+import type { MultiselectOption } from "@repo/components";
+
 interface FactionCardData {
   name: string;
   race: string;
   color: string;
   description?: string;
+  goals?: Array<MultiselectOption>;
+  resources?: Array<MultiselectOption>;
 }
 
 export interface FactionCard {

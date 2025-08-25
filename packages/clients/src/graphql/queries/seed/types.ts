@@ -9,6 +9,8 @@ export type SeedData = {
 
 export type SeedsByTypes = {
   seedsByTypes: {
+    resource: SeedData[];
+    goal: SeedData[];
     race: SeedData[];
     noun: SeedData[];
     faction: SeedData[];

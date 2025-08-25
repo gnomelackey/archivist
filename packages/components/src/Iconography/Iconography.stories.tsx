@@ -17,6 +17,10 @@ const StoryBoardPlayground = ({ ...args }: StorybookIconographyProps) => {
       <Iconography {...args} name="search" />
       <Iconography {...args} name="skull" />
       <Iconography {...args} name="clear" />
+      <Iconography {...args} name="arrowUp" />
+      <Iconography {...args} name="arrowDown" />
+      <Iconography {...args} name="arrowLeft" />
+      <Iconography {...args} name="arrowRight" />
     </div>
   );
 };

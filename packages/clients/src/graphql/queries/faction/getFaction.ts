@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client";
 
-import { COMPLETE_FACTION_FRAGEMENT } from "./fragments/faction.complete";
+import { FACTION_BASE_FRAGMENT } from "./fragments/faction.base";
 
 export const GET_FACTION_QUERY = gql`
   query GetFaction($id: ID!) {
     faction(id: $id) {
-      ...CompleteFactionFragment
+      ...FactionBaseFragment
     }
   }
 
-  ${COMPLETE_FACTION_FRAGEMENT}
+  ${FACTION_BASE_FRAGMENT}
 `;

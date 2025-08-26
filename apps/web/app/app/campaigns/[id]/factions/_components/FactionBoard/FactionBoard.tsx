@@ -5,10 +5,9 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import {
   Faction,
-  GET_FACTIONS_WITH_COORDINATES,
+  GET_FACTIONS_FOR_BOARD,
   GET_SEEDS_BY_TYPES_QUERY,
 } from "@repo/clients";
-import { CoordinateLocationEnum } from "@repo/enums";
 import { useParams } from "next/navigation";
 
 import { FactionFormSideBar } from "./FactionSidebar";
@@ -32,21 +31,18 @@ export const FactionBoard = () => {
   const [canvasDimensions, setCanvasDimensions] = useState(CANVAS_DIMENSIONS);
   const [tooltips, setTooltips] = useState<Array<FactionToolTipProps>>([]);
 
-  const { data } = useQuery(GET_FACTIONS_WITH_COORDINATES, {
-    variables: { campaign, location: CoordinateLocationEnum.FACTION_BOARD },
+  const { data } = useQuery(GET_FACTIONS_FOR_BOARD, {
+    variables: { campaign },
   });
 
   const { data: seeds } = useQuery(GET_SEEDS_BY_TYPES_QUERY, {
     variables: { types: ["race", "noun", "faction", "adjective"] },
   });
 
-  const factions: Array<Faction> = useMemo(
-    () => {
-      const result = data?.factionsWithCoordinates ?? [];
-      return result;
-    },
-    [data]
-  );
+  const factions: Array<Faction> = useMemo(() => {
+    const result = data?.factionsWithCoordinates ?? [];
+    return result;
+  }, [data]);
 
   const seedsData = useMemo(() => {
     if (!seeds) {
@@ -59,14 +55,16 @@ export const FactionBoard = () => {
       factions: seeds.seedsByTypes.faction ?? [],
       adjectives: seeds.seedsByTypes.adjective ?? [],
     };
-    }, [seeds]);
+  }, [seeds]);
 
-  const drawingCompletionRef = useRef<((drawnCard: FactionCard, ctx: CanvasRenderingContext2D) => void) | null>(null);
+  const drawingCompletionRef = useRef<
+    ((drawnCard: FactionCard, ctx: CanvasRenderingContext2D) => void) | null
+  >(null);
 
   const onDrawingComplete = useCallback((drawnCard: FactionCard) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    
+
     if (canvas && ctx && drawingCompletionRef.current) {
       requestAnimationFrame(() => {
         drawingCompletionRef.current!(drawnCard, ctx);
@@ -74,14 +72,8 @@ export const FactionBoard = () => {
     }
   }, []);
 
-  const {
-    manager,
-    cards,
-    nameTooltip,
-    addCard,
-    removeCard,
-    updateCard,
-  } = useFactionBoardManager(canvasRef, factions, onDrawingComplete);
+  const { manager, cards, nameTooltip, addCard, removeCard, updateCard } =
+    useFactionBoardManager(canvasRef, factions, onDrawingComplete);
 
   const { handleDrawingComplete } = useDrawingLogic({
     cards,
@@ -196,9 +188,7 @@ export const FactionBoard = () => {
         width={canvasDimensions.width}
         height={canvasDimensions.height}
         className="block bg-gray-50 cursor-pointer"
-        style={{
-          imageRendering: "pixelated",
-        }}
+        style={{ imageRendering: "pixelated" }}
       />
       {nameTooltip ? (
         <FactionNameTooltip

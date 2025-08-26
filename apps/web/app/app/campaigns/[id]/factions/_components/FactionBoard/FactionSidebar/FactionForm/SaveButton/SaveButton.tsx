@@ -2,7 +2,7 @@ import { Button } from "@repo/components";
 import { useMutation } from "@apollo/client";
 import {
   CREATE_FACTION_MUTATION,
-  GET_FACTIONS_WITH_COORDINATES,
+  GET_FACTIONS_FOR_BOARD,
 } from "@repo/clients";
 import { useParams } from "next/navigation";
 
@@ -14,7 +14,7 @@ export const SaveButton = ({ faction, onSave, show }: SaveButtonProps) => {
   const { id: campaignId } = useParams();
 
   const [createFaction] = useMutation(CREATE_FACTION_MUTATION, {
-    refetchQueries: [GET_FACTIONS_WITH_COORDINATES],
+    refetchQueries: [GET_FACTIONS_FOR_BOARD],
   });
 
   if (!show) return null;

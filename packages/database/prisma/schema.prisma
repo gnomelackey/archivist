@@ -9,18 +9,20 @@ datasource db {
 
 
 model Campaign {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
+  id                String            @id @default(cuid())
+  name              String
+  description       String?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  factions    Faction[]
-  maps        Map[]
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  maps              Map[]
+  factions          Faction[]
+  factionAlliances  FactionAlliance[]
+  factionConflicts  FactionConflict[]
 }
 
 
@@ -42,22 +44,68 @@ model Coordinates {
 
 
 model Faction {
-  id           String       @id @default(cuid())
-  name         String
-  race         String
-  color        String
-  description  String?
+  id                  String              @id @default(cuid())
+  name                String
+  race                String
+  color               String
+  description         String?
 
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 
-  coordinates  Coordinates[]
-  descriptors  Seed[]
+  coordinates         Coordinates[]
+  descriptors         Seed[]
+  conflictsAggressor  FactionConflict[]   @relation("aggressor")
+  conflictsDefender   FactionConflict[]   @relation("defender")
+  alliancesA          FactionAlliance[]   @relation("partyA")
+  alliancesB          FactionAlliance[]   @relation("partyB")
 
-  campaignId   String
-  campaign     Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId          String
+  campaign            Campaign            @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@unique([name, race])
+}
+
+
+model FactionAlliance {
+  id         String   @id @default(cuid())
+  reason     String
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+
+  seedId     String
+  seed       Seed     @relation(fields: [seedId], references: [id])
+
+  partyAId   String
+  partyA     Faction  @relation("partyA", fields: [partyAId], references: [id])
+
+  partyBId   String
+  partyB     Faction  @relation("partyB", fields: [partyBId], references: [id])
+}
+
+
+model FactionConflict {
+  id           String   @id @default(cuid())
+  reason       String
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  campaignId   String
+  campaign     Campaign @relation(fields: [campaignId], references: [id])
+
+  seedId       String
+  seed         Seed     @relation(fields: [seedId], references: [id])
+
+  aggressorId  String
+  aggressor    Faction  @relation("aggressor", fields: [aggressorId], references: [id])
+
+  defenderId   String
+  defender     Faction  @relation("defender", fields: [defenderId], references: [id])
 }
 
 
@@ -75,17 +123,19 @@ model Map {
 }
 
 model Seed {
-  id          String   @id @default(cuid())
-  type        String
-  value       String
+  id                String            @id @default(cuid())
+  type              String
+  value             String
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  factions    Faction[]
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  factions          Faction[]
+  factionConflicts  FactionConflict[]
+  factionAlliances  FactionAlliance[]
 }
 
 

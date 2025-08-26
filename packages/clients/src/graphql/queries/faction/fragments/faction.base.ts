@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
-export const COMPLETE_FACTION_FRAGEMENT = gql`
-  fragment CompleteFactionFragment on Faction {
+export const FACTION_BASE_FRAGMENT = gql`
+  fragment FactionBaseFragment on Faction {
     id
     name
     race

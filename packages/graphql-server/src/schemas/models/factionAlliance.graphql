@@ -1,0 +1,9 @@
+type FactionAlliance {
+  id: String!
+  reason: String
+  partyA: String!
+  partyB: String!
+  seed: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

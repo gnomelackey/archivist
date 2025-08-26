@@ -1,6 +1,6 @@
 import type * as Types from './schema-types';
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import type { Campaign, Coordinates, Faction, Seed, User } from '@repo/db';
+import type { Campaign, Coordinates, Faction, FactionAlliance, FactionConflict, Seed, User } from '@repo/db';
 import type { ArchivistGraphQLContext } from '../context';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
@@ -81,6 +81,8 @@ export type ResolversTypes = {
   CoordinatesInput: Types.CoordinatesInput;
   DateTime: ResolverTypeWrapper<Types.Scalars['DateTime']['output']>;
   Faction: ResolverTypeWrapper<Faction>;
+  FactionAlliance: ResolverTypeWrapper<FactionAlliance>;
+  FactionConflict: ResolverTypeWrapper<FactionConflict>;
   FactionInput: Types.FactionInput;
   Float: ResolverTypeWrapper<Types.Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Types.Scalars['ID']['output']>;
@@ -100,6 +102,8 @@ export type ResolversParentTypes = {
   CoordinatesInput: Types.CoordinatesInput;
   DateTime: Types.Scalars['DateTime']['output'];
   Faction: Faction;
+  FactionAlliance: FactionAlliance;
+  FactionConflict: FactionConflict;
   FactionInput: Types.FactionInput;
   Float: Types.Scalars['Float']['output'];
   ID: Types.Scalars['ID']['output'];
@@ -139,8 +143,10 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type FactionResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Faction'] = ResolversParentTypes['Faction']> = {
+  alliances?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['FactionAlliance']>>>, ParentType, ContextType>;
   campaign?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   color?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  conflicts?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['FactionConflict']>>>, ParentType, ContextType>;
   coordinates?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['Coordinates']>>>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   description?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -149,6 +155,28 @@ export type FactionResolvers<ContextType = ArchivistGraphQLContext, ParentType e
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   race?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   resources?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['Seed']>>>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FactionAllianceResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['FactionAlliance'] = ResolversParentTypes['FactionAlliance']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  partyA?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  partyB?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reason?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  seed?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FactionConflictResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['FactionConflict'] = ResolversParentTypes['FactionConflict']> = {
+  aggressor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  defender?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reason?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  seed?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -183,6 +211,8 @@ export type QueryResolvers<ContextType = ArchivistGraphQLContext, ParentType ext
 
 export type SeedResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Seed'] = ResolversParentTypes['Seed']> = {
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  factionAlliances?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['FactionAlliance']>>>, ParentType, ContextType>;
+  factionConflicts?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['FactionConflict']>>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -202,6 +232,8 @@ export type Resolvers<ContextType = ArchivistGraphQLContext> = {
   Coordinates?: CoordinatesResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   Faction?: FactionResolvers<ContextType>;
+  FactionAlliance?: FactionAllianceResolvers<ContextType>;
+  FactionConflict?: FactionConflictResolvers<ContextType>;
   JSONObject?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

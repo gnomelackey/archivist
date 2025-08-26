@@ -1,0 +1,19 @@
+model FactionConflict {
+  id           String   @id @default(cuid())
+  reason       String
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  campaignId   String
+  campaign     Campaign @relation(fields: [campaignId], references: [id])
+
+  seedId       String
+  seed         Seed     @relation(fields: [seedId], references: [id])
+
+  aggressorId  String
+  aggressor    Faction  @relation("aggressor", fields: [aggressorId], references: [id])
+
+  defenderId   String
+  defender     Faction  @relation("defender", fields: [defenderId], references: [id])
+}

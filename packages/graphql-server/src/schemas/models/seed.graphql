@@ -3,6 +3,8 @@ type Seed {
   type: String!
   value: String!
   user: String!
+  factionAlliances: [FactionAlliance]
+  factionConflicts: [FactionConflict]
   createdAt: DateTime!
   updatedAt: DateTime!
 }

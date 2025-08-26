@@ -9,13 +9,23 @@ export const FactionReferences: ArchivistGraphQLResolvers["Faction"] = {
       where: { factionId: parent.id },
     });
   },
+  alliances: (parent, _, context) => {
+    return context.prisma.factionAlliance.findMany({
+      where: { OR: [{ partyAId: parent.id }, { partyBId: parent.id }] },
+    });
+  },
+  conflicts: (parent, _, context) => {
+    return context.prisma.factionConflict.findMany({
+      where: { OR: [{ aggressorId: parent.id }, { defenderId: parent.id }] },
+    });
+  },
   resources: (parent, _, context) => {
     return context.prisma.seed.findMany({
       where: {
         factions: {
-          some: { id: parent.id }
+          some: { id: parent.id },
         },
-        type: "resource"
+        type: "resource",
       },
     });
   },
@@ -23,9 +33,9 @@ export const FactionReferences: ArchivistGraphQLResolvers["Faction"] = {
     return context.prisma.seed.findMany({
       where: {
         factions: {
-          some: { id: parent.id }
+          some: { id: parent.id },
         },
-        type: "goal"
+        type: "goal",
       },
     });
   },

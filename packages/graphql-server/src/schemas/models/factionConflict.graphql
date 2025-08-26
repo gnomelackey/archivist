@@ -1,0 +1,9 @@
+type FactionConflict {
+  id: String!
+  reason: String
+  aggressor: String!
+  defender: String!
+  seed: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

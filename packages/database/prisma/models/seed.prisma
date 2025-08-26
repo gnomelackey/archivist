@@ -1,13 +1,15 @@
 model Seed {
-  id          String   @id @default(cuid())
-  type        String
-  value       String
+  id                String            @id @default(cuid())
+  type              String
+  value             String
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  factions    Faction[]
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  factions          Faction[]
+  factionConflicts  FactionConflict[]
+  factionAlliances  FactionAlliance[]
 }

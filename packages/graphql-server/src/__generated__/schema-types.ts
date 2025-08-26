@@ -49,8 +49,10 @@ export type CoordinatesInput = {
 
 export type Faction = {
   __typename?: 'Faction';
+  alliances?: Maybe<Array<Maybe<FactionAlliance>>>;
   campaign: Scalars['String']['output'];
   color: Scalars['String']['output'];
+  conflicts?: Maybe<Array<Maybe<FactionConflict>>>;
   coordinates?: Maybe<Array<Maybe<Coordinates>>>;
   createdAt: Scalars['DateTime']['output'];
   description?: Maybe<Scalars['String']['output']>;
@@ -59,6 +61,28 @@ export type Faction = {
   name: Scalars['String']['output'];
   race: Scalars['String']['output'];
   resources?: Maybe<Array<Maybe<Seed>>>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type FactionAlliance = {
+  __typename?: 'FactionAlliance';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['String']['output'];
+  partyA: Scalars['String']['output'];
+  partyB: Scalars['String']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  seed: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type FactionConflict = {
+  __typename?: 'FactionConflict';
+  aggressor: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  defender: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  seed: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -178,6 +202,8 @@ export type QuerySeedsByTypesArgs = {
 export type Seed = {
   __typename?: 'Seed';
   createdAt: Scalars['DateTime']['output'];
+  factionAlliances?: Maybe<Array<Maybe<FactionAlliance>>>;
+  factionConflicts?: Maybe<Array<Maybe<FactionConflict>>>;
   id: Scalars['String']['output'];
   type: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];

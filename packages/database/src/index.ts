@@ -5,6 +5,8 @@ export type {
   Campaign,
   Coordinates,
   Faction,
+  FactionAlliance,
+  FactionConflict,
   Map,
   Prisma,
   PrismaClient,

@@ -1,0 +1,19 @@
+model FactionAlliance {
+  id         String   @id @default(cuid())
+  reason     String
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+
+  seedId     String
+  seed       Seed     @relation(fields: [seedId], references: [id])
+
+  partyAId   String
+  partyA     Faction  @relation("partyA", fields: [partyAId], references: [id])
+
+  partyBId   String
+  partyB     Faction  @relation("partyB", fields: [partyBId], references: [id])
+}

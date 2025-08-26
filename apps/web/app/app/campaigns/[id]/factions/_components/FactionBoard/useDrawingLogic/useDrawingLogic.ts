@@ -62,7 +62,6 @@ export const useDrawingLogic = ({
 
       onCardAdded(newCard);
 
-      // Simple client-side overlap calculation (bypassing worker for now)
       setTimeout(() => {
         const overlaps = cards.reduce<Array<{
           cardId: string;

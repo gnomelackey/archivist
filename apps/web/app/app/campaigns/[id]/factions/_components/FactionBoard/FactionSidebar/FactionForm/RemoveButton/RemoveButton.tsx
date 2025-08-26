@@ -1,7 +1,7 @@
 import { Button } from "@repo/components";
 import { useMutation } from "@apollo/client";
 import {
-  GET_FACTIONS_WITH_COORDINATES,
+  GET_FACTIONS_FOR_BOARD,
   REMOVE_FACTION_MUTATION,
 } from "@repo/clients";
 import { useParams } from "next/navigation";
@@ -13,7 +13,7 @@ export const RemoveButton = ({ faction, onRemove }: RemoveButtonProps) => {
   const { id: campaignId } = useParams();
 
   const [removeFaction] = useMutation(REMOVE_FACTION_MUTATION, {
-    refetchQueries: [GET_FACTIONS_WITH_COORDINATES],
+    refetchQueries: [GET_FACTIONS_FOR_BOARD],
   });
 
   const handleRemoveTemporaryCard = (faction: FactionCard) => {

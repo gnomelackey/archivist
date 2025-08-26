@@ -51,18 +51,29 @@ export const FactionFormSideBar = ({
     >
       <div>
         <div className="sticky flex flex-col gap-2 top-0 bg-bg p-6 pt-6 border-b border-primary-border z-10 bg-bg-default">
-          <Input placeholder="Filter factions..." icon={{ name: "search" }} onChange={handleFilter} value={query} />
+          <Input
+            placeholder="Filter factions..."
+            icon={{ name: "search" }}
+            onChange={handleFilter}
+            value={query}
+          />
         </div>
         <div className="px-6 pt-16 pb-24 flex flex-col gap-6">
-          {filteredFactions.map((faction) => (
+          {filteredFactions.map((faction, index) => [
+            index !== 0 ? (
+              <div
+                key={`${faction.id}-border`}
+                className="border-b-4 border-dotted border-secondary-border pb-4 mb-4"
+              />
+            ) : null,
             <FactionForm
               key={faction.id}
               faction={faction}
               onRemove={onRemove}
               onSave={onSave}
               onChange={onChange}
-            />
-          ))}
+            />,
+          ])}
         </div>
       </div>
       <FactionFormSideBarActions

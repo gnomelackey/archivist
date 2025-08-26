@@ -17,6 +17,8 @@ type Faction {
   coordinates: [Coordinates]
   resources: [Seed]
   goals: [Seed]
+  alliances: [FactionAlliance]
+  conflicts: [FactionConflict]
   createdAt: DateTime!
   updatedAt: DateTime!
 }

@@ -25,6 +25,8 @@ generates:
         Campaign: "@repo/db#Campaign"
         Coordinates: "@repo/db#Coordinates"
         Faction: "@repo/db#Faction"
+        FactionAlliance: "@repo/db#FactionAlliance"
+        FactionConflict: "@repo/db#FactionConflict"
         Seed: "@repo/db#Seed"
         User: "@repo/db#User"
       resolverTypeWrapperSignature: "Promise<T> | T | import('@repo/db').PrismaPromise<T>"

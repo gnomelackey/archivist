@@ -4,19 +4,21 @@ import type { IconProps } from "./Icons/types";
 
 export type IconographyProps = Omit<IconProps, "color"> & {
   color?: PaletteKey;
-  variant?: VariantKey;
   name:
     | "add"
-    | "show"
-    | "hide"
-    | "skull"
-    | "clear"
-    | "save"
-    | "search"
-    | "arrowUp"
+    | "alliance"
     | "arrowDown"
     | "arrowLeft"
     | "arrowRight"
+    | "arrowUp"
     | "bannerCheck"
-    | "bannerMinus";
+    | "bannerMinus"
+    | "clear"
+    | "conflict"
+    | "hide"
+    | "save"
+    | "search"
+    | "show"
+    | "skull";
+  variant?: VariantKey;
 };

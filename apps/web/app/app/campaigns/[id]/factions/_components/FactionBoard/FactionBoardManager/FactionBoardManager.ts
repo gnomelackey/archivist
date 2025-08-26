@@ -2,11 +2,7 @@ import type { Faction } from "@repo/clients";
 
 import type { FactionBoardManagerConfig } from "./types";
 import type { FactionBoardPoint, FactionCard } from "../types";
-import {
-  buildFactionCard,
-  getContrastTextColor,
-  worldToScreen,
-} from "../utils";
+import { buildFactionCard, getContrastTextColor } from "../utils";
 
 export class FactionBoardManager {
   private canvas: HTMLCanvasElement;
@@ -21,12 +17,10 @@ export class FactionBoardManager {
   private panThrottleId: number | null = null;
   private drawThrottleId: number | null = null;
 
-  private onCardHover?: (card: FactionCard | null) => void;
   private onDrawingComplete?: (card: FactionCard) => void;
 
   constructor(config: FactionBoardManagerConfig) {
     this.canvas = config.canvas;
-    this.onCardHover = config.onCardHover;
     this.onDrawingComplete = config.onDrawingComplete;
 
     const ctx = this.canvas.getContext("2d");
@@ -94,33 +88,37 @@ export class FactionBoardManager {
 
   public setPanOffset(offset: { x: number; y: number }) {
     this.panOffset = offset;
-    this.render();
+    this.renderAnimationFrame();
   }
 
   public getPanOffset(): { x: number; y: number } {
     return { ...this.panOffset };
   }
 
-  private render() {
+  private renderAnimationFrame() {
     requestAnimationFrame(() => {
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.ctx.save();
-      this.ctx.translate(this.panOffset.x, this.panOffset.y);
-
-      this.ctx.imageSmoothingEnabled = false;
-      this.ctx.font = "16px sans-serif";
-      this.ctx.lineWidth = 2;
-
-      this.cards.forEach((card) => {
-        this.renderCard(card);
-      });
-
-      if (this.isDrawing && this.currentCard) {
-        this.renderDrawingCard(this.currentCard);
-      }
-
-      this.ctx.restore();
+      this.render();
     });
+  }
+
+  private render() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.save();
+    this.ctx.translate(this.panOffset.x, this.panOffset.y);
+
+    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.font = "16px sans-serif";
+    this.ctx.lineWidth = 2;
+
+    this.cards.forEach((card) => {
+      this.renderCard(card);
+    });
+
+    if (this.isDrawing && this.currentCard) {
+      this.renderDrawingCard(this.currentCard);
+    }
+
+    this.ctx.restore();
   }
 
   private renderCard(card: FactionCard) {
@@ -206,8 +204,8 @@ export class FactionBoardManager {
         description: "",
       },
     };
-    
-    this.render();
+
+    this.renderAnimationFrame();
   }
 
   private handleMouseMove(event: MouseEvent) {
@@ -229,51 +227,23 @@ export class FactionBoardManager {
             y: this.panOffset.y + deltaY,
           };
           this.panStart = positions.screen;
-          this.render();
+          this.renderAnimationFrame();
           this.panThrottleId = null;
         });
       }
       return;
     }
 
-    if (!this.isDrawing) {
-      this.handleCardHover(positions.world);
-    } else if (this.startPoint) {
+    if (this.startPoint) {
       if (this.drawThrottleId) {
         cancelAnimationFrame(this.drawThrottleId);
       }
-      
+
       this.drawThrottleId = requestAnimationFrame(() => {
         this.updateDrawingCard(positions.world);
         this.drawThrottleId = null;
       });
     }
-  }
-
-  private handleCardHover(worldPos: FactionBoardPoint) {
-    for (let i = this.cards.length - 1; i >= 0; i--) {
-      const card = this.cards[i];
-
-      if (!card) continue;
-
-      const isHovered =
-        worldPos.x >= card.x &&
-        worldPos.x <= card.x + card.width &&
-        worldPos.y >= card.y - 26 &&
-        worldPos.y <= card.y + card.height + 26;
-
-      if (isHovered && card.label.includes("...")) {
-        const screenPos = worldToScreen(worldPos.x, worldPos.y, this.panOffset);
-        this.onCardHover?.({
-          ...card,
-          x: screenPos.x,
-          y: screenPos.y,
-        } as FactionCard);
-        return;
-      }
-    }
-
-    this.onCardHover?.(null);
   }
 
   private updateDrawingCard(worldPos: FactionBoardPoint) {

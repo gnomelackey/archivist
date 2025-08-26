@@ -4,7 +4,6 @@ import type { Faction } from "@repo/clients";
 
 import { FactionBoardManager } from "../FactionBoardManager/FactionBoardManager";
 import type { FactionCard } from "../types";
-import { FactionNameTooltipData } from "../FactionNameTooltip";
 
 /**
  * Hook for managing the FactionBoardManager lifecycle and state
@@ -21,7 +20,6 @@ export const useFactionBoardManager = (
 ) => {
   const managerRef = useRef<FactionBoardManager | null>(null);
   const [cards, setCards] = useState<Array<FactionCard>>([]);
-  const [nameTooltip, setNameTooltip] = useState<FactionNameTooltipData>(null);
   const onDrawingCompleteRef = useRef(onDrawingComplete);
 
   useEffect(() => {
@@ -36,18 +34,6 @@ export const useFactionBoardManager = (
     try {
       const manager = new FactionBoardManager({
         canvas: canvasRef.current,
-        onCardHover: (card) => {
-          if (card) {
-            setNameTooltip({
-              id: card.id,
-              label: `${card.data.name} (${card.data.race})`,
-              x: card.x,
-              y: card.y,
-            });
-          } else {
-            setNameTooltip(null);
-          }
-        },
         onDrawingComplete: (card) => {
           if (onDrawingCompleteRef.current) {
             onDrawingCompleteRef.current(card);
@@ -128,7 +114,6 @@ export const useFactionBoardManager = (
   return {
     manager: managerRef.current,
     cards,
-    nameTooltip,
     addCard,
     removeCard,
     updateCard,

@@ -9,10 +9,12 @@ import { SaveIcon } from "./Icons/SaveIcon";
 import { BannerCheckIcon } from "./Icons/BannerCheckIcon";
 import { BannerMinusIcon } from "./Icons/BannerMinusIcon";
 import { SearchIcon } from "./Icons/SearchIcon";
-
-import type { IconographyProps } from "./types";
 import { ArrowIcon } from "./Icons/ArrowIcon";
 import { IconProps } from "./Icons/types";
+import { ConflictIcon } from "./Icons/ConflictIcon";
+import { AllianceIcon } from "./Icons/AllianceIcon";
+
+import type { IconographyProps } from "./types";
 
 /**
  * This component renders different icons based on the `name` prop.
@@ -28,24 +30,26 @@ export const Iconography = ({
 }: IconographyProps) => {
   const Icon = {
     add: AddIcon,
-    bannerCheck: BannerCheckIcon,
-    bannerMinus: BannerMinusIcon,
-    show: ShowIcon,
-    hide: HideIcon,
-    save: SaveIcon,
-    search: SearchIcon,
-    skull: SkullIcon,
-    clear: ClearIcon,
+    alliance: AllianceIcon,
     arrowDown: ArrowIcon,
-    arrowUp: ({ ...props }: IconProps) => (
-      <ArrowIcon {...props} rotate="180deg" />
-    ),
     arrowLeft: ({ ...props }: IconProps) => (
       <ArrowIcon {...props} rotate="270deg" />
     ),
     arrowRight: ({ ...props }: IconProps) => (
       <ArrowIcon {...props} rotate="90deg" />
     ),
+    arrowUp: ({ ...props }: IconProps) => (
+      <ArrowIcon {...props} rotate="180deg" />
+    ),
+    bannerCheck: BannerCheckIcon,
+    bannerMinus: BannerMinusIcon,
+    clear: ClearIcon,
+    conflict: ConflictIcon,
+    hide: HideIcon,
+    save: SaveIcon,
+    search: SearchIcon,
+    show: ShowIcon,
+    skull: SkullIcon,
   }[name];
 
   const themeVariant = Theme[variant] ?? Theme.primary;

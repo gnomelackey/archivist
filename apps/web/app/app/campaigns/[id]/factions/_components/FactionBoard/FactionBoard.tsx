@@ -15,7 +15,6 @@ import {
   FactionRelationsTooltip,
   type FactionToolTipProps,
 } from "./FactionRelationsTooltip";
-import { FactionNameTooltip } from "./FactionNameTooltip";
 import { useFactionBoardManager } from "./useFactionBoardManager";
 import { useDrawingLogic } from "./useDrawingLogic/useDrawingLogic";
 import { getFactionDisplayText, hasFactionChanged } from "./utils";
@@ -72,7 +71,7 @@ export const FactionBoard = () => {
     }
   }, []);
 
-  const { manager, cards, nameTooltip, addCard, removeCard, updateCard } =
+  const { manager, cards, addCard, removeCard, updateCard } =
     useFactionBoardManager(canvasRef, factions, onDrawingComplete);
 
   const { handleDrawingComplete } = useDrawingLogic({
@@ -190,13 +189,6 @@ export const FactionBoard = () => {
         className="block bg-gray-50 cursor-pointer"
         style={{ imageRendering: "pixelated" }}
       />
-      {nameTooltip ? (
-        <FactionNameTooltip
-          x={nameTooltip.x}
-          y={nameTooltip.y}
-          label={nameTooltip.label}
-        />
-      ) : null}
       {tooltips.map((tooltip) => (
         <FactionRelationsTooltip
           key={tooltip.id}

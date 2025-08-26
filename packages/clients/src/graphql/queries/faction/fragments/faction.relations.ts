@@ -7,23 +7,22 @@ import { FACTION_SEED_FRAGMENT } from "./seed";
 import { FACTION_BASE_FRAGMENT } from "./faction.base";
 
 export const FACTION_RELATIONS_FRAGMENT = gql`
-  fragment FactionRelationsFragment on FactionRelations {
-      ...FactionBaseFragment
-      coordinates {
-        ...FactionCoordinatesFragment
-      }
-      resources {
-        ...FactionSeedFragment
-      }
-      goals {
-        ...FactionSeedFragment
-      }
-      conflicts {
-        ...FactionConflictFragment
-      }
-      alliances {
-        ...FactionAllianceFragment
-      }
+  fragment FactionRelationsFragment on Faction {
+    ...FactionBaseFragment
+    coordinates {
+      ...FactionCoordinatesFragment
+    }
+    resources {
+      ...FactionSeedFragment
+    }
+    goals {
+      ...FactionSeedFragment
+    }
+    conflicts {
+      ...FactionConflictFragment
+    }
+    alliances {
+      ...FactionAllianceFragment
     }
   }
 

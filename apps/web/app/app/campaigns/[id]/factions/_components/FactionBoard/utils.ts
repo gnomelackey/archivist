@@ -8,7 +8,7 @@ const chance = new Chance();
 /**
  * Converts screen coordinates to world coordinates by subtracting pan offset
  * @param screenX - The x coordinate in screen space
- * @param screenY - The y coordinate in screen space  
+ * @param screenY - The y coordinate in screen space
  * @param panOffset - The current pan offset of the viewport
  * @returns World coordinates as {x, y}
  */
@@ -19,22 +19,6 @@ export const screenToWorld = (
 ) => ({
   x: screenX - panOffset.x,
   y: screenY - panOffset.y,
-});
-
-/**
- * Converts world coordinates to screen coordinates by adding pan offset
- * @param worldX - The x coordinate in world space
- * @param worldY - The y coordinate in world space
- * @param panOffset - The current pan offset of the viewport
- * @returns Screen coordinates as {x, y}
- */
-export const worldToScreen = (
-  worldX: number,
-  worldY: number,
-  panOffset: { x: number; y: number }
-) => ({
-  x: worldX + panOffset.x,
-  y: worldY + panOffset.y,
 });
 
 /**
@@ -185,11 +169,12 @@ export const buildFactionCard = (
   if (!ctx) throw new Error("Canvas context is required to build faction card");
   if (!faction) throw new Error("Faction is required to build faction card");
 
-  const coordinates = faction.coordinates?.[0];
-  if (!coordinates) throw new Error("Faction must have coordinates");
+  const coords = faction.coordinates?.[0];
+  if (!coords) throw new Error("Faction must have coordinates");
 
+  const id = faction.id;
   const fullname = `${faction.name} (${faction.race})`;
-  const label = getFactionDisplayText(ctx, fullname, coordinates.width);
+  const label = getFactionDisplayText(ctx, fullname, coords.width);
 
   const resources =
     faction.resources?.map((r) => ({
@@ -214,14 +199,7 @@ export const buildFactionCard = (
     goals,
   };
 
-  return {
-    ...coordinates,
-    id: faction.id,
-    label,
-    data,
-    position,
-    isTemporary: false,
-  };
+  return { ...coords, id, label, data, position, isTemporary: false };
 };
 
 /**
@@ -260,14 +238,10 @@ export const buildTemporaryFactionCard = (
   const fullname = `${seeds.faction} of the ${seeds.adjective} ${seeds.noun} (${seeds.race})`;
   const label = getFactionDisplayText(ctx, fullname, width);
 
-  const data = {
-    name,
-    color,
-    race: seeds.race,
-    description: "",
-  };
+  const data = { name, color, race: seeds.race, description: "" };
+  const coords = { x, y, width, height };
 
-  return { data, id, x, y, width, height, label, position, isTemporary: true };
+  return { ...coords, data, id, label, position, isTemporary: false };
 };
 
 /**

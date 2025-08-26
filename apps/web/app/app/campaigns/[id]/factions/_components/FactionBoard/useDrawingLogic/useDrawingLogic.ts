@@ -2,7 +2,6 @@ import { useCallback } from "react";
 
 import Chance from "chance";
 
-import { useFactionWorker } from "../useFactionWorker/useFactionWorker";
 import { getUniqueRandomColor, buildTemporaryFactionCard } from "../utils";
 import type { FactionCard } from "../types";
 import type { UseDrawingLogicParams } from "./types";
@@ -22,8 +21,6 @@ export const useDrawingLogic = ({
   panOffset,
   seeds,
 }: UseDrawingLogicParams) => {
-  const { calculateOverlaps } = useFactionWorker();
-
   /**
    * Handles the completion of a drawing operation by generating a new faction card
    * Creates random faction attributes and calculates overlaps with existing cards
@@ -32,7 +29,6 @@ export const useDrawingLogic = ({
    */
   const handleDrawingComplete = useCallback(
     (drawnCard: FactionCard, ctx: CanvasRenderingContext2D) => {
-      
       const { races, nouns, adjectives, factions } = seeds;
       const usedColors = cards.map((card) => card.data.color);
 
@@ -64,34 +60,67 @@ export const useDrawingLogic = ({
         seedValues
       );
 
-      calculateOverlaps(
-        cards,
-        newCard,
-        (data: {
-          overlaps: Array<{
-            cardId: string;
-            newCardId: string;
-            centerX: number;
-            centerY: number;
-          }>;
-        }) => {
-          const newTooltips = data.overlaps.map((overlap) => {
-            return {
-              id: `tooltip-${overlap.cardId}-${overlap.newCardId}`,
-              x: overlap.centerX + panOffset.x,
-              y: overlap.centerY + panOffset.y,
-              onClick: (id: string, relationship: "conflict" | "alliance") => {
-                console.log(id, relationship);
-              },
-            };
-          });
+      onCardAdded(newCard);
 
-          onCardAdded(newCard);
-          onTooltipsAdded(newTooltips);
-        }
-      );
+      // Simple client-side overlap calculation (bypassing worker for now)
+      setTimeout(() => {
+        const overlaps = cards.reduce<Array<{
+          cardId: string;
+          newCardId: string;
+          centerX: number;
+          centerY: number;
+        }>>((acc, card) => {
+          const oldCardRight = card.x + card.width;
+          const newCardRight = newCard.x + newCard.width;
+          const oldCardBottom = card.y + card.height;
+          const newCardBottom = newCard.y + newCard.height;
+
+          if (
+            card.x < newCardRight &&
+            oldCardRight > newCard.x &&
+            card.y < newCardBottom &&
+            oldCardBottom > newCard.y
+          ) {
+            const overlapLeft = Math.max(card.x, newCard.x);
+            const overlapTop = Math.max(card.y, newCard.y);
+            const overlapRight = Math.min(oldCardRight, newCardRight);
+            const overlapBottom = Math.min(oldCardBottom, newCardBottom);
+
+            const overlapWidth = overlapRight - overlapLeft;
+            const overlapHeight = overlapBottom - overlapTop;
+
+            if (overlapWidth > 0 && overlapHeight > 0) {
+              const overlapCenterX = overlapLeft + overlapWidth / 2;
+              const overlapCenterY = overlapTop + overlapHeight / 2;
+
+              acc.push({
+                cardId: card.id,
+                newCardId: newCard.id,
+                centerX: overlapCenterX,
+                centerY: overlapCenterY
+              });
+            }
+          }
+
+          return acc;
+        }, []);
+
+        const newTooltips = overlaps.map((overlap) => {
+          return {
+            id: `tooltip-${overlap.cardId}-${overlap.newCardId}`,
+            x: overlap.centerX + panOffset.x,
+            y: overlap.centerY + panOffset.y,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            onClick: (_id: string, _relationship: "conflict" | "alliance") => {
+              // Handle relationship selection
+            },
+          };
+        });
+
+        onTooltipsAdded(newTooltips);
+      }, 100);
     },
-    [cards, calculateOverlaps, onCardAdded, onTooltipsAdded, panOffset, seeds]
+    [cards, onCardAdded, onTooltipsAdded, panOffset, seeds]
   );
 
   return {

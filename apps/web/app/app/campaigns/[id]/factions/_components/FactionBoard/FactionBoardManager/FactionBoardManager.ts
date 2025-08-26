@@ -4,7 +4,6 @@ import type { FactionBoardManagerConfig } from "./types";
 import type { FactionBoardPoint, FactionCard } from "../types";
 import {
   buildFactionCard,
-  buildTemporaryFactionCard,
   getContrastTextColor,
   worldToScreen,
 } from "../utils";
@@ -20,6 +19,7 @@ export class FactionBoardManager {
   private panStart: FactionBoardPoint | null = null;
   private startPoint: FactionBoardPoint | null = null;
   private panThrottleId: number | null = null;
+  private drawThrottleId: number | null = null;
 
   private onCardHover?: (card: FactionCard | null) => void;
   private onDrawingComplete?: (card: FactionCard) => void;
@@ -54,6 +54,9 @@ export class FactionBoardManager {
 
     if (this.panThrottleId) {
       cancelAnimationFrame(this.panThrottleId);
+    }
+    if (this.drawThrottleId) {
+      cancelAnimationFrame(this.drawThrottleId);
     }
   }
 
@@ -181,23 +184,28 @@ export class FactionBoardManager {
     }
 
     const { world } = positions;
-    const seeds = { noun: "", faction: "", adjective: "", race: "" };
     const color = "#ff6b6b";
 
     this.isDrawing = true;
     this.startPoint = world;
     this.canvas.style.cursor = "crosshair";
 
-    this.currentCard = buildTemporaryFactionCard(
-      this.ctx,
-      world.x,
-      world.y,
-      0,
-      0,
-      color,
-      this.cards.length + 1,
-      seeds
-    );
+    this.currentCard = {
+      id: `temp-drawing-${Date.now()}`,
+      x: world.x,
+      y: world.y,
+      width: 0,
+      height: 0,
+      label: "Drawing...",
+      position: this.cards.length + 1,
+      isTemporary: true,
+      data: {
+        name: "New Faction",
+        color,
+        race: "Unknown",
+        description: "",
+      },
+    };
     
     this.render();
   }
@@ -231,7 +239,14 @@ export class FactionBoardManager {
     if (!this.isDrawing) {
       this.handleCardHover(positions.world);
     } else if (this.startPoint) {
-      this.updateDrawingCard(positions.world);
+      if (this.drawThrottleId) {
+        cancelAnimationFrame(this.drawThrottleId);
+      }
+      
+      this.drawThrottleId = requestAnimationFrame(() => {
+        this.updateDrawingCard(positions.world);
+        this.drawThrottleId = null;
+      });
     }
   }
 
@@ -269,19 +284,24 @@ export class FactionBoardManager {
     const width = Math.abs(worldPos.x - this.startPoint.x);
     const height = Math.abs(worldPos.y - this.startPoint.y);
 
-    const seeds = { noun: "", faction: "", adjective: "", race: "" };
     const color = "#ff6b6b";
 
-    this.currentCard = buildTemporaryFactionCard(
-      this.ctx,
+    this.currentCard = {
+      id: `temp-drawing-${Date.now()}`,
       x,
       y,
       width,
       height,
-      color,
-      this.cards.length + 1,
-      seeds
-    );
+      label: "Drawing...",
+      position: this.cards.length + 1,
+      isTemporary: true,
+      data: {
+        name: "New Faction",
+        color,
+        race: "Unknown",
+        description: "",
+      },
+    };
 
     this.render();
   }
@@ -300,6 +320,10 @@ export class FactionBoardManager {
     }
 
     if (this.isDrawing) {
+      if (this.drawThrottleId) {
+        cancelAnimationFrame(this.drawThrottleId);
+        this.drawThrottleId = null;
+      }
       this.finishDrawing();
     }
 
@@ -322,12 +346,12 @@ export class FactionBoardManager {
     this.isDrawing = false;
     this.startPoint = null;
     this.currentCard = null;
-    this.render();
 
     if (this.onDrawingComplete) {
       this.onDrawingComplete(newCard);
     }
 
+    this.render();
     return newCard;
   }
 

@@ -68,9 +68,13 @@ export const FactionBoard = () => {
     const ctx = canvas?.getContext("2d");
     
     if (canvas && ctx && drawingCompletionRef.current) {
-      drawingCompletionRef.current(drawnCard, ctx);
+      requestAnimationFrame(() => {
+        drawingCompletionRef.current!(drawnCard, ctx);
+      });
     }
-  }, []);  const {
+  }, []);
+
+  const {
     manager,
     cards,
     nameTooltip,
@@ -164,8 +168,8 @@ export const FactionBoard = () => {
   );
 
   const handleTooltipClick = useCallback(
-    (id: string, relationship: "conflict" | "alliance") => {
-      console.log(id, relationship);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (id: string, _relationship: "conflict" | "alliance") => {
       setTooltips((prev) => prev.filter((t) => t.id !== id));
     },
     []

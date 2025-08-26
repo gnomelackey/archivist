@@ -22,6 +22,22 @@ export const screenToWorld = (
 });
 
 /**
+ * Converts world coordinates to screen coordinates by adding pan offset
+ * @param worldX - The x coordinate in world space
+ * @param worldY - The y coordinate in world space
+ * @param panOffset - The current pan offset of the viewport
+ * @returns Screen coordinates as {x, y}
+ */
+export const worldToScreen = (
+  worldX: number,
+  worldY: number,
+  panOffset: { x: number; y: number }
+) => ({
+  x: worldX + panOffset.x,
+  y: worldY + panOffset.y,
+});
+
+/**
  * Gets mouse position in both screen and world coordinates from a React mouse event
  * @param event - React mouse event from canvas interaction
  * @param canvas - The HTML canvas element
@@ -221,7 +237,7 @@ export const buildTemporaryFactionCard = (
   y: number,
   width: number,
   height: number,
-  color: string,    
+  color: string,
   position: number,
   seeds: {
     noun: string;

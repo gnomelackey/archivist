@@ -22,13 +22,15 @@ type Documents = {
     "\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n": typeof types.CreateSeedDocument,
     "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n": typeof types.GetCampaignDocument,
     "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n": typeof types.GetCampaignsDocument,
+    "\n  fragment FactionAllianceFragment on FactionAlliance {\n    id\n    reason\n    seed\n    partyA\n    partyB\n  }\n": typeof types.FactionAllianceFragmentFragmentDoc,
+    "\n  fragment FactionConflictFragment on FactionConflict {\n    id\n    reason\n    seed\n    aggressor\n    defender\n  }\n": typeof types.FactionConflictFragmentFragmentDoc,
     "\n  fragment FactionCoordinatesFragment on Coordinates {\n    id\n    x\n    y\n    width\n    height\n  }\n": typeof types.FactionCoordinatesFragmentFragmentDoc,
     "\n  fragment FactionBaseFragment on Faction {\n    id\n    name\n    race\n    color\n    description\n  }\n": typeof types.FactionBaseFragmentFragmentDoc,
+    "\n  fragment FactionRelationsFragment on Faction {\n    ...FactionBaseFragment\n    coordinates {\n      ...FactionCoordinatesFragment\n    }\n    resources {\n      ...FactionSeedFragment\n    }\n    goals {\n      ...FactionSeedFragment\n    }\n    conflicts {\n      ...FactionConflictFragment\n    }\n    alliances {\n      ...FactionAllianceFragment\n    }\n  }\n\n  \n  \n  \n  \n  \n": typeof types.FactionRelationsFragmentFragmentDoc,
     "\n  fragment FactionSeedFragment on Seed {\n    id\n    value\n  }\n": typeof types.FactionSeedFragmentFragmentDoc,
     "\n  query GetFaction($id: ID!) {\n    faction(id: $id) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": typeof types.GetFactionDocument,
-    "\n  query GetFactionWithCoordinates($id: ID!, $location: String!) {\n    factionWithCoordinates(id: $id, location: $location) {\n      ...FactionBaseFragment\n      coordinates {\n        ...FactionCoordinatesFragment\n      }\n      resources {\n        ...FactionSeedFragment\n      }\n      goals {\n        ...FactionSeedFragment\n      }\n    }\n  }\n\n  \n  \n  \n": typeof types.GetFactionWithCoordinatesDocument,
     "\n  query GetFactions($campaign: ID!) {\n    factions(campaign: $campaign) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": typeof types.GetFactionsDocument,
-    "\n  query GetFactionsWithCoordinates($campaign: ID!, $location: String!) {\n    factionsWithCoordinates(campaign: $campaign, location: $location) {\n      ...FactionBaseFragment\n      coordinates {\n        ...FactionCoordinatesFragment\n      }\n      resources {\n        ...FactionSeedFragment\n      }\n      goals {\n        ...FactionSeedFragment\n      }\n    }\n  }\n\n  \n  \n  \n": typeof types.GetFactionsWithCoordinatesDocument,
+    "\n  query GetFactionsWithCoordinates($campaign: ID!) {\n    factionsWithCoordinates(campaign: $campaign, location: \"faction-board\") {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n": typeof types.GetFactionsWithCoordinatesDocument,
     "\n  query GetSeed($id: ID!) {\n    seed(id: $id) {\n      id\n      type\n      value\n    }\n  }\n": typeof types.GetSeedDocument,
     "\n  query GetSeeds {\n    seeds {\n      id\n      type\n      value\n    }\n  }\n": typeof types.GetSeedsDocument,
     "\n  query GetSeedsByType($type: String!) {\n    seedsByType(type: $type) {\n      id\n      type\n      value\n    }\n  }\n": typeof types.GetSeedsByTypeDocument,
@@ -42,13 +44,15 @@ const documents: Documents = {
     "\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n": types.CreateSeedDocument,
     "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n": types.GetCampaignDocument,
     "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n": types.GetCampaignsDocument,
+    "\n  fragment FactionAllianceFragment on FactionAlliance {\n    id\n    reason\n    seed\n    partyA\n    partyB\n  }\n": types.FactionAllianceFragmentFragmentDoc,
+    "\n  fragment FactionConflictFragment on FactionConflict {\n    id\n    reason\n    seed\n    aggressor\n    defender\n  }\n": types.FactionConflictFragmentFragmentDoc,
     "\n  fragment FactionCoordinatesFragment on Coordinates {\n    id\n    x\n    y\n    width\n    height\n  }\n": types.FactionCoordinatesFragmentFragmentDoc,
     "\n  fragment FactionBaseFragment on Faction {\n    id\n    name\n    race\n    color\n    description\n  }\n": types.FactionBaseFragmentFragmentDoc,
+    "\n  fragment FactionRelationsFragment on Faction {\n    ...FactionBaseFragment\n    coordinates {\n      ...FactionCoordinatesFragment\n    }\n    resources {\n      ...FactionSeedFragment\n    }\n    goals {\n      ...FactionSeedFragment\n    }\n    conflicts {\n      ...FactionConflictFragment\n    }\n    alliances {\n      ...FactionAllianceFragment\n    }\n  }\n\n  \n  \n  \n  \n  \n": types.FactionRelationsFragmentFragmentDoc,
     "\n  fragment FactionSeedFragment on Seed {\n    id\n    value\n  }\n": types.FactionSeedFragmentFragmentDoc,
     "\n  query GetFaction($id: ID!) {\n    faction(id: $id) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": types.GetFactionDocument,
-    "\n  query GetFactionWithCoordinates($id: ID!, $location: String!) {\n    factionWithCoordinates(id: $id, location: $location) {\n      ...FactionBaseFragment\n      coordinates {\n        ...FactionCoordinatesFragment\n      }\n      resources {\n        ...FactionSeedFragment\n      }\n      goals {\n        ...FactionSeedFragment\n      }\n    }\n  }\n\n  \n  \n  \n": types.GetFactionWithCoordinatesDocument,
     "\n  query GetFactions($campaign: ID!) {\n    factions(campaign: $campaign) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": types.GetFactionsDocument,
-    "\n  query GetFactionsWithCoordinates($campaign: ID!, $location: String!) {\n    factionsWithCoordinates(campaign: $campaign, location: $location) {\n      ...FactionBaseFragment\n      coordinates {\n        ...FactionCoordinatesFragment\n      }\n      resources {\n        ...FactionSeedFragment\n      }\n      goals {\n        ...FactionSeedFragment\n      }\n    }\n  }\n\n  \n  \n  \n": types.GetFactionsWithCoordinatesDocument,
+    "\n  query GetFactionsWithCoordinates($campaign: ID!) {\n    factionsWithCoordinates(campaign: $campaign, location: \"faction-board\") {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n": types.GetFactionsWithCoordinatesDocument,
     "\n  query GetSeed($id: ID!) {\n    seed(id: $id) {\n      id\n      type\n      value\n    }\n  }\n": types.GetSeedDocument,
     "\n  query GetSeeds {\n    seeds {\n      id\n      type\n      value\n    }\n  }\n": types.GetSeedsDocument,
     "\n  query GetSeedsByType($type: String!) {\n    seedsByType(type: $type) {\n      id\n      type\n      value\n    }\n  }\n": types.GetSeedsByTypeDocument,
@@ -103,11 +107,23 @@ export function graphql(source: "\n  query GetCampaigns {\n    campaigns {\n    
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  fragment FactionAllianceFragment on FactionAlliance {\n    id\n    reason\n    seed\n    partyA\n    partyB\n  }\n"): (typeof documents)["\n  fragment FactionAllianceFragment on FactionAlliance {\n    id\n    reason\n    seed\n    partyA\n    partyB\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment FactionConflictFragment on FactionConflict {\n    id\n    reason\n    seed\n    aggressor\n    defender\n  }\n"): (typeof documents)["\n  fragment FactionConflictFragment on FactionConflict {\n    id\n    reason\n    seed\n    aggressor\n    defender\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  fragment FactionCoordinatesFragment on Coordinates {\n    id\n    x\n    y\n    width\n    height\n  }\n"): (typeof documents)["\n  fragment FactionCoordinatesFragment on Coordinates {\n    id\n    x\n    y\n    width\n    height\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  fragment FactionBaseFragment on Faction {\n    id\n    name\n    race\n    color\n    description\n  }\n"): (typeof documents)["\n  fragment FactionBaseFragment on Faction {\n    id\n    name\n    race\n    color\n    description\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment FactionRelationsFragment on Faction {\n    ...FactionBaseFragment\n    coordinates {\n      ...FactionCoordinatesFragment\n    }\n    resources {\n      ...FactionSeedFragment\n    }\n    goals {\n      ...FactionSeedFragment\n    }\n    conflicts {\n      ...FactionConflictFragment\n    }\n    alliances {\n      ...FactionAllianceFragment\n    }\n  }\n\n  \n  \n  \n  \n  \n"): (typeof documents)["\n  fragment FactionRelationsFragment on Faction {\n    ...FactionBaseFragment\n    coordinates {\n      ...FactionCoordinatesFragment\n    }\n    resources {\n      ...FactionSeedFragment\n    }\n    goals {\n      ...FactionSeedFragment\n    }\n    conflicts {\n      ...FactionConflictFragment\n    }\n    alliances {\n      ...FactionAllianceFragment\n    }\n  }\n\n  \n  \n  \n  \n  \n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -119,15 +135,11 @@ export function graphql(source: "\n  query GetFaction($id: ID!) {\n    faction(i
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetFactionWithCoordinates($id: ID!, $location: String!) {\n    factionWithCoordinates(id: $id, location: $location) {\n      ...FactionBaseFragment\n      coordinates {\n        ...FactionCoordinatesFragment\n      }\n      resources {\n        ...FactionSeedFragment\n      }\n      goals {\n        ...FactionSeedFragment\n      }\n    }\n  }\n\n  \n  \n  \n"): (typeof documents)["\n  query GetFactionWithCoordinates($id: ID!, $location: String!) {\n    factionWithCoordinates(id: $id, location: $location) {\n      ...FactionBaseFragment\n      coordinates {\n        ...FactionCoordinatesFragment\n      }\n      resources {\n        ...FactionSeedFragment\n      }\n      goals {\n        ...FactionSeedFragment\n      }\n    }\n  }\n\n  \n  \n  \n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function graphql(source: "\n  query GetFactions($campaign: ID!) {\n    factions(campaign: $campaign) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n"): (typeof documents)["\n  query GetFactions($campaign: ID!) {\n    factions(campaign: $campaign) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetFactionsWithCoordinates($campaign: ID!, $location: String!) {\n    factionsWithCoordinates(campaign: $campaign, location: $location) {\n      ...FactionBaseFragment\n      coordinates {\n        ...FactionCoordinatesFragment\n      }\n      resources {\n        ...FactionSeedFragment\n      }\n      goals {\n        ...FactionSeedFragment\n      }\n    }\n  }\n\n  \n  \n  \n"): (typeof documents)["\n  query GetFactionsWithCoordinates($campaign: ID!, $location: String!) {\n    factionsWithCoordinates(campaign: $campaign, location: $location) {\n      ...FactionBaseFragment\n      coordinates {\n        ...FactionCoordinatesFragment\n      }\n      resources {\n        ...FactionSeedFragment\n      }\n      goals {\n        ...FactionSeedFragment\n      }\n    }\n  }\n\n  \n  \n  \n"];
+export function graphql(source: "\n  query GetFactionsWithCoordinates($campaign: ID!) {\n    factionsWithCoordinates(campaign: $campaign, location: \"faction-board\") {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n"): (typeof documents)["\n  query GetFactionsWithCoordinates($campaign: ID!) {\n    factionsWithCoordinates(campaign: $campaign, location: \"faction-board\") {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

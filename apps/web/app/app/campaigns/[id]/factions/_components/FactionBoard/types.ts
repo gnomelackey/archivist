@@ -22,6 +22,7 @@ export interface FactionCard {
 }
 
 export interface FactionBoardPoint {
+  start?: { x: number; y: number } | null;
   x: number;
   y: number;
 }

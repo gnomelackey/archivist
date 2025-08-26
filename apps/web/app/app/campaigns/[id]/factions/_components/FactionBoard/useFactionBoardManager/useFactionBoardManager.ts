@@ -89,11 +89,12 @@ export const useFactionBoardManager = (
    * Updates an existing card in the manager and updates local state
    * @param id - The ID of the card to update
    * @param updates - Partial card object containing the updates to apply
+   * @param immediate - Whether to render immediately (true) or throttled (false)
    */
-  const updateCard = useCallback((id: string, updates: Partial<FactionCard>) => {
+  const updateCard = useCallback((id: string, updates: Partial<FactionCard>, immediate = false) => {
     if (!managerRef.current) return;
     
-    managerRef.current.updateCard(id, updates);
+    managerRef.current.updateCard(id, updates, immediate);
     setCards(managerRef.current.getCards());
   }, []);
 

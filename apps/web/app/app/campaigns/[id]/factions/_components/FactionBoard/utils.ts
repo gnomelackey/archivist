@@ -221,7 +221,7 @@ export const buildTemporaryFactionCard = (
   y: number,
   width: number,
   height: number,
-  color: string,
+  color: string,    
   position: number,
   seeds: {
     noun: string;
@@ -241,7 +241,7 @@ export const buildTemporaryFactionCard = (
   const data = { name, color, race: seeds.race, description: "" };
   const coords = { x, y, width, height };
 
-  return { ...coords, data, id, label, position, isTemporary: false };
+  return { ...coords, data, id, label, position, isTemporary: true };
 };
 
 /**

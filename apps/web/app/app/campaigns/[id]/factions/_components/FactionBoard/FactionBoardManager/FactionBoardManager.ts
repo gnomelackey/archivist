@@ -56,7 +56,8 @@ export class FactionBoardManager {
 
   public setCards(cards: Array<FactionCard>) {
     this.cards = cards;
-    this.render();
+    // Use throttled rendering for batch card updates
+    this.renderAnimationFrame();
   }
 
   public getCards(): Array<FactionCard> {
@@ -65,19 +66,79 @@ export class FactionBoardManager {
 
   public addCard(card: FactionCard) {
     this.cards.push(card);
-    this.render();
+    // Use throttled rendering for new card addition
+    this.renderAnimationFrame();
   }
 
   public removeCard(id: string) {
     this.cards = this.cards.filter((card) => card.id !== id);
-    this.render();
+    // Use immediate rendering only for card removal for instant feedback
+    this.renderImmediate();
   }
 
-  public updateCard(id: string, updates: Partial<FactionCard>) {
-    this.cards = this.cards.map((card) =>
-      card.id === id ? { ...card, ...updates } : card
-    );
-    this.render();
+  public updateCard(id: string, updates: Partial<FactionCard>, immediate = false) {
+    this.cards = this.cards.map((card) => {
+      if (card.id !== id) return card;
+      
+      const updatedCard = { ...card, ...updates };
+      
+      // Auto-update label if name or race changed and we have canvas context
+      if (updates.data && (updates.data.name || updates.data.race) && updatedCard.width) {
+        const fullName = `${updatedCard.data.name} (${updatedCard.data.race})`;
+        updatedCard.label = this.calculateDisplayText(fullName, updatedCard.width);
+      }
+      
+      return updatedCard;
+    });
+    
+    if (immediate) {
+      // Use immediate rendering for critical updates
+      this.renderImmediate();
+    } else {
+      // Use throttled rendering for form updates to prevent lag during typing
+      this.renderAnimationFrame();
+    }
+  }
+
+  /**
+   * Calculate display text with truncation if needed
+   */
+  private calculateDisplayText(text: string, width: number): string {
+    const maxWidth = width - 18;
+
+    this.ctx.save();
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.font = "16px sans-serif";
+
+    let displayText = text;
+
+    if (this.ctx.measureText(text).width > maxWidth) {
+      const ellipsis = "...";
+      const ellipsisWidth = this.ctx.measureText(ellipsis).width;
+      const availableWidth = maxWidth - ellipsisWidth;
+
+      let start = 0;
+      let end = text.length;
+      let bestFit = "";
+
+      while (start <= end) {
+        const mid = Math.floor((start + end) / 2);
+        const testText = text.substring(0, mid);
+        const testWidth = this.ctx.measureText(testText).width;
+
+        if (testWidth <= availableWidth) {
+          bestFit = testText;
+          start = mid + 1;
+        } else {
+          end = mid - 1;
+        }
+      }
+
+      displayText = bestFit + ellipsis;
+    }
+
+    this.ctx.restore();
+    return displayText;
   }
 
   public buildCardsFromFactions(factions: Array<Faction>): Array<FactionCard> {
@@ -102,6 +163,30 @@ export class FactionBoardManager {
   }
 
   private render() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.save();
+    this.ctx.translate(this.panOffset.x, this.panOffset.y);
+
+    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.font = "16px sans-serif";
+    this.ctx.lineWidth = 2;
+
+    this.cards.forEach((card) => {
+      this.renderCard(card);
+    });
+
+    if (this.isDrawing && this.currentCard) {
+      this.renderDrawingCard(this.currentCard);
+    }
+
+    this.ctx.restore();
+  }
+
+  /**
+   * Renders the canvas immediately without requestAnimationFrame
+   * Used for operations that require instant visual feedback
+   */
+  private renderImmediate() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.save();
     this.ctx.translate(this.panOffset.x, this.panOffset.y);
@@ -273,7 +358,8 @@ export class FactionBoardManager {
       },
     };
 
-    this.render();
+    // Use throttled rendering for drawing updates to maintain smooth performance
+    this.renderAnimationFrame();
   }
 
   private handleMouseUp() {
@@ -308,7 +394,8 @@ export class FactionBoardManager {
       this.isDrawing = false;
       this.startPoint = null;
       this.currentCard = null;
-      this.render();
+      // Use throttled rendering for drawing cleanup
+      this.renderAnimationFrame();
       return null;
     }
 
@@ -321,7 +408,8 @@ export class FactionBoardManager {
       this.onDrawingComplete(newCard);
     }
 
-    this.render();
+    // Use throttled rendering for drawing completion
+    this.renderAnimationFrame();
     return newCard;
   }
 

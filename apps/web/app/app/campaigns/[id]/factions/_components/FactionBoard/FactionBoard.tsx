@@ -17,7 +17,6 @@ import {
 } from "./FactionRelationsTooltip";
 import { useFactionBoardManager } from "./useFactionBoardManager";
 import { useDrawingLogic } from "./useDrawingLogic/useDrawingLogic";
-import { getFactionDisplayText, hasFactionChanged } from "./utils";
 import type { FactionCard } from "./types";
 
 const CANVAS_DIMENSIONS = { width: 1200, height: 800 };
@@ -74,6 +73,9 @@ export const FactionBoard = () => {
   const { manager, cards, addCard, removeCard, updateCard } =
     useFactionBoardManager(canvasRef, factions, onDrawingComplete);
 
+  // Memoize cards to prevent unnecessary re-renders of form components
+  const memoizedCards = useMemo(() => cards, [cards]);
+
   const { handleDrawingComplete } = useDrawingLogic({
     cards,
     onCardAdded: addCard,
@@ -90,36 +92,10 @@ export const FactionBoard = () => {
 
   const handleFactionChange = useCallback(
     (faction: FactionCard) => {
-      const canvas = canvasRef.current;
-      const ctx = canvas?.getContext("2d");
-      if (!canvas || !ctx) return;
-
-      const cardIndex = cards.findIndex((card) => card.id === faction.id);
-      if (cardIndex === -1) return;
-
-      const card = cards[cardIndex];
-      if (!card || !card.data) return;
-
-      const updatedCard = { ...card };
-      const updateCardName =
-        updatedCard.data!.name !== faction.data.name ||
-        updatedCard.data!.race !== faction.data.race;
-
-      if (updateCardName && updatedCard.width) {
-        const width = updatedCard.width;
-        const fullName = `${faction.data.name} (${faction.data.race})`;
-        updatedCard.label = getFactionDisplayText(ctx, fullName, width);
-      }
-
-      const isTemporary = hasFactionChanged(faction, factions[cardIndex]);
-
-      updateCard(faction.id, {
-        ...updatedCard,
-        data: { ...updatedCard.data, ...faction.data },
-        isTemporary,
-      });
+      // Simple, direct update - no complex debouncing or refs
+      updateCard(faction.id, faction, false); // Always use throttled rendering
     },
-    [cards, factions, updateCard]
+    [updateCard]
   );
 
   const handleFactionSave = useCallback(
@@ -133,7 +109,7 @@ export const FactionBoard = () => {
         updateCard(cardToUpdate.id, {
           id: faction.id,
           isTemporary: false,
-        });
+        }, true); // immediate render for save operations
       }
     },
     [cards, updateCard]
@@ -177,7 +153,9 @@ export const FactionBoard = () => {
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
 
-    return () => window.removeEventListener("resize", updateDimensions);
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+    };
   }, []);
 
   return (
@@ -203,7 +181,7 @@ export const FactionBoard = () => {
         onSave={handleFactionSave}
         onReset={handleFactionReset}
         onRemove={handleFactionRemove}
-        factions={cards}
+        factions={memoizedCards}
       />
     </div>
   );

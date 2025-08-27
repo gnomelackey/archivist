@@ -90,6 +90,17 @@ export const FactionBoard = () => {
   const [tooltips, setTooltips] = useState<Array<FactionToolTipProps>>([]);
   const [startPoint, setStartPoint] = useState<FactionBoardPoint | null>(null);
   const [currentCard, setCurrentCard] = useState<FactionCard | null>(null);
+
+  // Track animation frame ID for throttling canvas updates
+  const animationFrameRef = useRef<number | null>(null);
+  
+  // Track current cards for canvas rendering without causing callback recreation
+  const cardsRef = useRef<Array<FactionCard>>([]);
+  
+  // Sync cards ref with cards state to avoid callback recreation
+  useEffect(() => {
+    cardsRef.current = cards;
+  }, [cards]);
   
   // Canvas dimensions state to handle SSR
   const [canvasDimensions, setCanvasDimensions] = useState({
@@ -123,6 +134,45 @@ export const FactionBoard = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvas = canvasRef.current;
   const ctx = canvas?.getContext("2d");
+
+  // Throttled canvas redraw function for smooth panning
+  const requestCanvasRedraw = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    
+    animationFrameRef.current = requestAnimationFrame(() => {
+      if (!canvas || !ctx) return;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(panOffsetRef.current.x, panOffsetRef.current.y);
+
+      // Use the ref to get current cards without depending on state
+      cardsRef.current.forEach((card) => {
+        const borderColor = card.data.color + "FF";
+        const fillColor = card.data.color + "40";
+
+        ctx.fillStyle = fillColor;
+        ctx.fillRect(card.x, card.y, card.width, card.height);
+
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(card.x, card.y, card.width, card.height);
+
+        ctx.fillStyle = borderColor;
+        ctx.fillRect(card.x - 1, card.y - 26, card.width + 2, 25);
+
+        ctx.font = "16px sans-serif";
+        ctx.lineWidth = 3;
+        ctx.fillStyle = getContrastTextColor(card.data.color);
+        ctx.fillText(card.label, card.x + 10, card.y - 6);
+      });
+
+      ctx.restore();
+      animationFrameRef.current = null;
+    });
+  }, [canvas, ctx]);
 
   useEffect(() => {
     if (!ctx) return;
@@ -239,34 +289,8 @@ export const FactionBoard = () => {
           y: panOffset.y + deltaY,
         };
         
-        // Force canvas redraw without state update
-        if (ctx) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.save();
-          ctx.translate(panOffsetRef.current.x, panOffsetRef.current.y);
-
-          cards.forEach((card) => {
-            const borderColor = card.data.color + "FF";
-            const fillColor = card.data.color + "40";
-
-            ctx.fillStyle = fillColor;
-            ctx.fillRect(card.x, card.y, card.width, card.height);
-
-            ctx.strokeStyle = borderColor;
-            ctx.lineWidth = 2;
-            ctx.strokeRect(card.x, card.y, card.width, card.height);
-
-            ctx.fillStyle = borderColor;
-            ctx.fillRect(card.x - 1, card.y - 26, card.width + 2, 25);
-
-            ctx.font = "16px sans-serif";
-            ctx.lineWidth = 3;
-            ctx.fillStyle = getContrastTextColor(card.data.color);
-            ctx.fillText(card.label, card.x + 10, card.y - 6);
-          });
-
-          ctx.restore();
-        }
+        // Use throttled canvas redraw to prevent performance issues
+        requestCanvasRedraw();
       }
       return;
     }

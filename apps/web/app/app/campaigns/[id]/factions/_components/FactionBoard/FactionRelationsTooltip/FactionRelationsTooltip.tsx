@@ -23,18 +23,20 @@ export const FactionRelationsTooltip = ({
   return (
     <Tooltip x={x} y={y} className={styles["faction-relations-tooltip"]}>
       <Button
-        mode="secondary"
+        mode="error"
         type="button"
-        variant="fill"
+        variant="outline"
         onClick={handleConflictClick}
+        fullWidth
       >
         Conflict
       </Button>
       <Button
-        mode="secondary"
+        mode="info"
         type="button"
-        variant="outline"
+        variant="fill"
         onClick={handleAllianceClick}
+        fullWidth
       >
         Alliance
       </Button>

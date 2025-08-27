@@ -2,11 +2,12 @@ import type { ButtonProps } from "./types";
 
 export const Button = ({
   type = "button",
-  className,
+  className = '',
   variant = "outline",
   size = "medium",
   mode = "primary",
   children,
+  fullWidth = false,
   ...props
 }: ButtonProps) => {
   const variantClassNames = {
@@ -41,7 +42,9 @@ export const Button = ({
     xLarge: "text-xl",
   }[size];
 
-  const buttonClassNames = `py-1 px-2 font-semibold hover:cursor-pointer hover:opacity-80 ${variantClassNames} ${sizeClassNames} ${className}`;
+  const fullWidthClass = fullWidth ? 'w-full' : '';
+
+  const buttonClassNames = `py-1 px-2 font-semibold hover:cursor-pointer hover:opacity-80 ${variantClassNames} ${sizeClassNames} ${fullWidthClass} ${className}`;
 
   return (
     <button className={buttonClassNames} type={type} {...props}>

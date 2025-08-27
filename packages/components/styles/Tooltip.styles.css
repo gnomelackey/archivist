@@ -6,5 +6,5 @@
   transform: translateX(-50%);
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-top: 8px solid var(--color-primary-surfaceFg)
+  border-top: 8px solid var(--color-primary-surfaceBg)
 }

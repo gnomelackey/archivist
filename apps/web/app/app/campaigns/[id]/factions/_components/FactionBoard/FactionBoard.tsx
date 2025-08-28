@@ -12,10 +12,12 @@ import Chance from "chance";
 import { useParams } from "next/navigation";
 
 import { FactionFormSideBar } from "./FactionSidebar";
-import {
-  FactionRelationsTooltip,
-} from "./FactionRelationsTooltip";
-import type { FactionBoardPoint, FactionCard, FactionBoardTooltip } from "./types";
+import { FactionRelationsTooltip } from "./FactionRelationsTooltip";
+import type {
+  FactionBoardPoint,
+  FactionCard,
+  FactionBoardTooltip,
+} from "./types";
 import {
   buildFactionCard,
   buildTemporaryFactionCard,
@@ -291,11 +293,16 @@ export const FactionBoard = () => {
         const oldCardBottom = card.y + card.height;
         const newCardBottom = newCard.y + newCard.height;
 
+        const newCardOverlapsLeft = card.x < newCardRight;
+        const newCardOverlapsRight = oldCardRight > newCard.x;
+        const newCardOverlapsBottom = card.y < newCardBottom;
+        const newCardOverlapsTop = oldCardBottom > newCard.y;
+
         if (
-          card.x < newCardRight &&
-          oldCardRight > newCard.x &&
-          card.y < newCardBottom &&
-          oldCardBottom > newCard.y
+          newCardOverlapsLeft &&
+          newCardOverlapsRight &&
+          newCardOverlapsBottom &&
+          newCardOverlapsTop
         ) {
           const overlapLeft = Math.max(card.x, newCard.x);
           const overlapTop = Math.max(card.y, newCard.y);

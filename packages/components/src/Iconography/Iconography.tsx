@@ -13,6 +13,7 @@ import { ArrowIcon } from "./Icons/ArrowIcon";
 import { IconProps } from "./Icons/types";
 import { ConflictIcon } from "./Icons/ConflictIcon";
 import { AllianceIcon } from "./Icons/AllianceIcon";
+import { EyeIcon } from "./Icons/EyeIcon";
 
 import type { IconographyProps } from "./types";
 
@@ -45,6 +46,7 @@ export const Iconography = ({
     bannerMinus: BannerMinusIcon,
     clear: ClearIcon,
     conflict: ConflictIcon,
+    eye: EyeIcon,
     hide: HideIcon,
     save: SaveIcon,
     search: SearchIcon,

@@ -1,0 +1,28 @@
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  
+}
+
+.selected {
+  color: var(--color-primary-600);
+  transition: color 0.5s ease-in-out;
+}
+
+.switch-toggle {
+  transition: transform 0.5s ease-in-out;
+}
+
+.switch-label {
+  font-weight: var(--font-weight-bold);
+}
+
+.switch-left {
+  transform: rotate(150deg);
+}
+
+.switch-right {
+  transform: rotate(330deg);
+}

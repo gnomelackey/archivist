@@ -58,12 +58,10 @@ export const Playground: Story = {
   args: {
     x: 200,
     y: 200,
-    width: 200,
-    height: 100,
     children: (
       <div className="text-sm">
-        <strong>Tooltip Content</strong>
-        <p>This is an example tooltip that appears on hover!</p>
+        <strong className="w-25">Tooltip Content</strong>
+        <p className="w-50">This is an example tooltip that appears on hover!</p>
       </div>
     ),
   },

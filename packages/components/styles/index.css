@@ -3,4 +3,5 @@
 
 @import "./Button.styles.css";
 @import "./Field.styles.css";
+@import "./Switch.styles.css";
 @import "./Tooltip.styles.css";

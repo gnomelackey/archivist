@@ -1,8 +1,7 @@
 export type TooltipProps = {
   x: number;
   y: number;
-  width?: number;
-  height?: number;
+  offset?: number;
   children?: React.ReactNode;
   className?: string;
 };

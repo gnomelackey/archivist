@@ -6,6 +6,7 @@ export * from "./Input";
 export * from "./Modal";
 export * from "./Multiselect";
 export * from "./Portal";
+export * from "./Switch";
 export * from "./TextArea";
 export * from "./Tooltip";
 export * from "./Typeahead";

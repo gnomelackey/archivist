@@ -21,6 +21,19 @@ export interface FactionCard {
   data: FactionCardData;
 }
 
+export interface FactionBoardTooltip {
+  id: string;
+  factionA: string;
+  factionB: string;
+  x: number;
+  y: number;
+  onClick: (
+    factionA: string,
+    factionB: string,
+    relationship: "conflict" | "alliance"
+  ) => void;
+}
+
 export interface FactionBoardPoint {
   start?: { x: number; y: number } | null;
   x: number;

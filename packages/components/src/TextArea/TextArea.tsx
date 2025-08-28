@@ -6,6 +6,7 @@ export const TextArea = ({
   label,
   variant = "outline",
   className = "",
+  fullWidth = false,
   ...props
 }: TextAreaProps) => {
   const htmlFor = useMemo(
@@ -18,7 +19,8 @@ export const TextArea = ({
     outline: "field-outline",
   }[variant];
 
-  const classes = `w-full p-2 rounded textarea ${className}`;
+  const fullWidthClass = fullWidth ? 'w-full' : '';
+  const classes = `p-2 rounded textarea ${fullWidthClass} ${className}`;
 
   const labelText = label ? (
     <label
@@ -30,7 +32,7 @@ export const TextArea = ({
   ) : null;
 
   return (
-    <div className={`flex flex-col field-group ${variantClasses}`}>
+    <div className={`flex flex-col field-group ${fullWidthClass} ${variantClasses}`}>
       {labelText}
       <textarea id={htmlFor} className={classes} {...props} />
     </div>

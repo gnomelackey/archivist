@@ -15,6 +15,7 @@ export type IconographyProps = Omit<IconProps, "color"> & {
     | "bannerMinus"
     | "clear"
     | "conflict"
+    | "eye"
     | "hide"
     | "save"
     | "search"

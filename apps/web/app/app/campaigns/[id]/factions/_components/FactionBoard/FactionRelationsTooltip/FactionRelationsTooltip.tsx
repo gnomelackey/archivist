@@ -17,21 +17,24 @@ export const FactionRelationsTooltip = ({
 
   const handleConflictClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onClick(idA, idB, "conflict");
     setType("conflict");
   };
 
   const handleAllianceClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onClick(idA, idB, "alliance");
     setType("alliance");
+  };
+
+  const handleSwitchClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setType((prev) => (prev === "alliance" ? "conflict" : "alliance"));
   };
 
   return (
     <Tooltip x={x} y={y} className={styles["faction-relations-tooltip"]}>
       {type !== null ? (
         <form className="flex flex-col gap-2 items-center w-full">
-          <TextArea placeholder="Reason..." rows={3} fullWidth />
+          <TextArea className="resize-none" placeholder="Reason..." rows={4} fullWidth />
           {type === "conflict" ? (
             <Typeahead placeholder="Resource" options={[]} />
           ) : null}
@@ -45,26 +48,60 @@ export const FactionRelationsTooltip = ({
           ) : null}
         </form>
       ) : null}
-      <div className="flex gap-2 w-full">
-        <Button
-          mode="error"
-          type="button"
-          variant="outline"
-          onClick={handleConflictClick}
-          fullWidth
-        >
-          Conflict
-        </Button>
-        <Button
-          mode="info"
-          type="button"
-          variant="fill"
-          onClick={handleAllianceClick}
-          fullWidth
-        >
-          Alliance
-        </Button>
-      </div>
+      {type === null ? (
+        <div className="flex gap-2 w-full">
+          <Button
+            mode="error"
+            type="button"
+            variant="outline"
+            onClick={handleConflictClick}
+            fullWidth
+          >
+            Conflict
+          </Button>
+          <Button
+            mode="info"
+            type="button"
+            variant="fill"
+            onClick={handleAllianceClick}
+            fullWidth
+          >
+            Alliance
+          </Button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3 w-full">
+          <div className="flex gap-2 w-full">
+            <Button
+              mode="error"
+              type="button"
+              variant="outline"
+              onClick={handleConflictClick}
+              fullWidth
+            >
+              Cancel
+            </Button>
+            <Button
+              mode="success"
+              type="button"
+              variant="fill"
+              onClick={handleAllianceClick}
+              fullWidth
+            >
+              Save
+            </Button>
+          </div>
+          <Button
+            mode="info"
+            type="button"
+            variant="text"
+            onClick={handleSwitchClick}
+            fullWidth
+          >
+            {`Switch to ${type === "conflict" ? "Alliance" : "Conflict"}`}
+          </Button>
+        </div>
+      )}
     </Tooltip>
   );
 };

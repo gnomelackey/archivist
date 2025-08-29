@@ -36,7 +36,7 @@ export const RemoveAllButton = ({
       factions: permanentCards.map(({ id }) => id),
     };
 
-    factions.forEach(({ id }) => onRemove(id));
+    factions.forEach(({ id }) => onRemove(id, 'pending'));
     removeFactions({ variables });
   };
 

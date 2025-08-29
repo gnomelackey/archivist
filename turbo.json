@@ -30,6 +30,16 @@
         "prisma/schema.prisma"
       ]
     },
+    "build:packages": {
+      "dependsOn": ["^build:packages"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "prisma/schema.prisma"
+      ]
+    },
     "lint": {
       "dependsOn": ["^lint"]
     },

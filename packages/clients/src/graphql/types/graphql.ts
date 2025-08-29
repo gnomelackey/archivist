@@ -63,6 +63,7 @@ export type Faction = {
   name: Scalars['String']['output'];
   race: Scalars['String']['output'];
   resources?: Maybe<Array<Maybe<Seed>>>;
+  trades?: Maybe<Array<Maybe<FactionTrade>>>;
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -73,8 +74,16 @@ export type FactionAlliance = {
   partyA: Scalars['String']['output'];
   partyB: Scalars['String']['output'];
   reason?: Maybe<Scalars['String']['output']>;
-  seed: Scalars['String']['output'];
+  seed?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type FactionAllianceInput = {
+  __typename?: 'FactionAllianceInput';
+  partyA: Scalars['String']['output'];
+  partyB: Scalars['String']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  seed?: Maybe<Scalars['String']['output']>;
 };
 
 export type FactionConflict = {
@@ -84,17 +93,44 @@ export type FactionConflict = {
   defender: Scalars['String']['output'];
   id: Scalars['String']['output'];
   reason?: Maybe<Scalars['String']['output']>;
-  seed: Scalars['String']['output'];
+  seed?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
 };
 
-export type FactionInput = {
+export type FactionConflictInput = {
+  __typename?: 'FactionConflictInput';
+  aggressor: Scalars['String']['output'];
+  defender: Scalars['String']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  seed?: Maybe<Scalars['String']['output']>;
+};
+
+export type FactionCreateInput = {
   color: Scalars['String']['input'];
   coordinates?: InputMaybe<CoordinatesInput>;
   description?: InputMaybe<Scalars['String']['input']>;
   descriptors?: InputMaybe<Array<Scalars['String']['input']>>;
   name: Scalars['String']['input'];
   race: Scalars['String']['input'];
+};
+
+export type FactionTrade = {
+  __typename?: 'FactionTrade';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['String']['output'];
+  partyA: Scalars['String']['output'];
+  partyB: Scalars['String']['output'];
+  seedA: Scalars['String']['output'];
+  seedB: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type FactionTradeInput = {
+  __typename?: 'FactionTradeInput';
+  partyA: Scalars['String']['output'];
+  partyB: Scalars['String']['output'];
+  seedA: Scalars['String']['output'];
+  seedB: Scalars['String']['output'];
 };
 
 export type FactionUpdateInput = {
@@ -112,6 +148,9 @@ export type Mutation = {
   _empty?: Maybe<Scalars['String']['output']>;
   createCampaign: Campaign;
   createFaction: Faction;
+  createFactionAlliance: FactionAlliance;
+  createFactionConflict: FactionConflict;
+  createFactionTrade: FactionTrade;
   createFactions: Array<Faction>;
   createSeed: Seed;
   removeFaction: Scalars['String']['output'];
@@ -129,13 +168,31 @@ export type MutationCreateCampaignArgs = {
 
 export type MutationCreateFactionArgs = {
   campaign: Scalars['ID']['input'];
-  faction: FactionInput;
+  faction: FactionCreateInput;
+};
+
+
+export type MutationCreateFactionAllianceArgs = {
+  campaign: Scalars['ID']['input'];
+  input: FactionAllianceInput;
+};
+
+
+export type MutationCreateFactionConflictArgs = {
+  campaign: Scalars['ID']['input'];
+  input: FactionConflictInput;
+};
+
+
+export type MutationCreateFactionTradeArgs = {
+  campaign: Scalars['ID']['input'];
+  input: FactionTradeInput;
 };
 
 
 export type MutationCreateFactionsArgs = {
   campaign: Scalars['ID']['input'];
-  factions: Array<FactionInput>;
+  factions: Array<FactionCreateInput>;
 };
 
 
@@ -159,7 +216,7 @@ export type MutationRemoveFactionsArgs = {
 
 export type MutationUpdateFactionArgs = {
   campaign: Scalars['ID']['input'];
-  data: FactionInput;
+  data: FactionCreateInput;
   faction: Scalars['ID']['input'];
 };
 
@@ -171,6 +228,15 @@ export type MutationUpdateFactionsArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  AllFactionAlliances: Array<FactionAlliance>;
+  AllFactionConflicts: Array<FactionConflict>;
+  AllFactionTrades: Array<FactionTrade>;
+  FactionAlliance: FactionAlliance;
+  FactionAlliances: Array<FactionAlliance>;
+  FactionConflict: FactionConflict;
+  FactionConflicts: Array<FactionConflict>;
+  FactionTrade: FactionTrade;
+  FactionTrades: Array<FactionTrade>;
   _empty?: Maybe<Scalars['String']['output']>;
   campaign?: Maybe<Campaign>;
   campaigns: Array<Campaign>;
@@ -182,6 +248,51 @@ export type Query = {
   seeds: Array<Seed>;
   seedsByType: Array<Seed>;
   seedsByTypes: Scalars['JSONObject']['output'];
+};
+
+
+export type QueryAllFactionAlliancesArgs = {
+  campaign: Scalars['ID']['input'];
+};
+
+
+export type QueryAllFactionConflictsArgs = {
+  campaign: Scalars['ID']['input'];
+};
+
+
+export type QueryAllFactionTradesArgs = {
+  campaign: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionAllianceArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionAlliancesArgs = {
+  ids: Array<Scalars['ID']['input']>;
+};
+
+
+export type QueryFactionConflictArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionConflictsArgs = {
+  ids: Array<Scalars['ID']['input']>;
+};
+
+
+export type QueryFactionTradeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionTradesArgs = {
+  ids: Array<Scalars['ID']['input']>;
 };
 
 
@@ -244,6 +355,18 @@ export type SeedType = {
   type: Scalars['String']['output'];
 };
 
+export type FactionAllianceFragmentFragment = { __typename?: 'FactionAlliance', id: string, reason?: string | null, seed?: string | null, partyA: string, partyB: string };
+
+export type FactionConflictFragmentFragment = { __typename?: 'FactionConflict', id: string, reason?: string | null, seed?: string | null, aggressor: string, defender: string };
+
+export type FactionCoordinatesFragmentFragment = { __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number };
+
+export type FactionBaseFragmentFragment = { __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null };
+
+export type FactionRelationsFragmentFragment = { __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number } | null> | null, resources?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, goals?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, conflicts?: Array<{ __typename?: 'FactionConflict', id: string, reason?: string | null, seed?: string | null, aggressor: string, defender: string } | null> | null, alliances?: Array<{ __typename?: 'FactionAlliance', id: string, reason?: string | null, seed?: string | null, partyA: string, partyB: string } | null> | null };
+
+export type FactionSeedFragmentFragment = { __typename?: 'Seed', id: string, value: string };
+
 export type CreateCampaignMutationVariables = Exact<{
   name: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
@@ -254,19 +377,19 @@ export type CreateCampaignMutation = { __typename?: 'Mutation', createCampaign: 
 
 export type CreateFactionMutationVariables = Exact<{
   campaign: Scalars['ID']['input'];
-  faction: FactionInput;
+  faction: FactionCreateInput;
 }>;
 
 
-export type CreateFactionMutation = { __typename?: 'Mutation', createFaction: { __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number, location: string } | null> | null } };
+export type CreateFactionMutation = { __typename?: 'Mutation', createFaction: { __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null } };
 
 export type CreateFactionsMutationVariables = Exact<{
   campaign: Scalars['ID']['input'];
-  factions: Array<FactionInput> | FactionInput;
+  factions: Array<FactionCreateInput> | FactionCreateInput;
 }>;
 
 
-export type CreateFactionsMutation = { __typename?: 'Mutation', createFactions: Array<{ __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number, location: string } | null> | null }> };
+export type CreateFactionsMutation = { __typename?: 'Mutation', createFactions: Array<{ __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null }> };
 
 export type RemoveFactionMutationVariables = Exact<{
   campaign: Scalars['ID']['input'];
@@ -287,11 +410,11 @@ export type RemoveFactionsMutation = { __typename?: 'Mutation', removeFactions: 
 export type UpdateFactionMutationVariables = Exact<{
   campaign: Scalars['ID']['input'];
   faction: Scalars['ID']['input'];
-  data: FactionInput;
+  data: FactionCreateInput;
 }>;
 
 
-export type UpdateFactionMutation = { __typename?: 'Mutation', updateFaction: { __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number, location: string } | null> | null } };
+export type UpdateFactionMutation = { __typename?: 'Mutation', updateFaction: { __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number } | null> | null, resources?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, goals?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, conflicts?: Array<{ __typename?: 'FactionConflict', id: string, reason?: string | null, seed?: string | null, aggressor: string, defender: string } | null> | null, alliances?: Array<{ __typename?: 'FactionAlliance', id: string, reason?: string | null, seed?: string | null, partyA: string, partyB: string } | null> | null } };
 
 export type UpdateFactionsMutationVariables = Exact<{
   campaign: Scalars['ID']['input'];
@@ -299,7 +422,7 @@ export type UpdateFactionsMutationVariables = Exact<{
 }>;
 
 
-export type UpdateFactionsMutation = { __typename?: 'Mutation', updateFactions: Array<{ __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number, location: string } | null> | null }> };
+export type UpdateFactionsMutation = { __typename?: 'Mutation', updateFactions: Array<{ __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number } | null> | null, resources?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, goals?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, conflicts?: Array<{ __typename?: 'FactionConflict', id: string, reason?: string | null, seed?: string | null, aggressor: string, defender: string } | null> | null, alliances?: Array<{ __typename?: 'FactionAlliance', id: string, reason?: string | null, seed?: string | null, partyA: string, partyB: string } | null> | null }> };
 
 export type CreateSeedMutationVariables = Exact<{
   type: Scalars['String']['input'];
@@ -321,18 +444,6 @@ export type GetCampaignsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCampaignsQuery = { __typename?: 'Query', campaigns: Array<{ __typename?: 'Campaign', id: string, name: string, description?: string | null }> };
 
-export type FactionAllianceFragmentFragment = { __typename?: 'FactionAlliance', id: string, reason?: string | null, seed: string, partyA: string, partyB: string };
-
-export type FactionConflictFragmentFragment = { __typename?: 'FactionConflict', id: string, reason?: string | null, seed: string, aggressor: string, defender: string };
-
-export type FactionCoordinatesFragmentFragment = { __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number };
-
-export type FactionBaseFragmentFragment = { __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null };
-
-export type FactionRelationsFragmentFragment = { __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number } | null> | null, resources?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, goals?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, conflicts?: Array<{ __typename?: 'FactionConflict', id: string, reason?: string | null, seed: string, aggressor: string, defender: string } | null> | null, alliances?: Array<{ __typename?: 'FactionAlliance', id: string, reason?: string | null, seed: string, partyA: string, partyB: string } | null> | null };
-
-export type FactionSeedFragmentFragment = { __typename?: 'Seed', id: string, value: string };
-
 export type GetFactionQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -352,7 +463,7 @@ export type GetFactionsWithCoordinatesQueryVariables = Exact<{
 }>;
 
 
-export type GetFactionsWithCoordinatesQuery = { __typename?: 'Query', factionsWithCoordinates: Array<{ __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number } | null> | null, resources?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, goals?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, conflicts?: Array<{ __typename?: 'FactionConflict', id: string, reason?: string | null, seed: string, aggressor: string, defender: string } | null> | null, alliances?: Array<{ __typename?: 'FactionAlliance', id: string, reason?: string | null, seed: string, partyA: string, partyB: string } | null> | null }> };
+export type GetFactionsWithCoordinatesQuery = { __typename?: 'Query', factionsWithCoordinates: Array<{ __typename?: 'Faction', id: string, name: string, race: string, color: string, description?: string | null, coordinates?: Array<{ __typename?: 'Coordinates', id: string, x: number, y: number, width: number, height: number } | null> | null, resources?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, goals?: Array<{ __typename?: 'Seed', id: string, value: string } | null> | null, conflicts?: Array<{ __typename?: 'FactionConflict', id: string, reason?: string | null, seed?: string | null, aggressor: string, defender: string } | null> | null, alliances?: Array<{ __typename?: 'FactionAlliance', id: string, reason?: string | null, seed?: string | null, partyA: string, partyB: string } | null> | null }> };
 
 export type GetSeedQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -380,12 +491,12 @@ export const FactionConflictFragmentFragmentDoc = {"kind":"Document","definition
 export const FactionAllianceFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionAllianceFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FactionAlliance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"seed"}},{"kind":"Field","name":{"kind":"Name","value":"partyA"}},{"kind":"Field","name":{"kind":"Name","value":"partyB"}}]}}]} as unknown as DocumentNode<FactionAllianceFragmentFragment, unknown>;
 export const FactionRelationsFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionRelationsFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Faction"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionBaseFragment"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionCoordinatesFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"resources"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionSeedFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"goals"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionSeedFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"conflicts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionConflictFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"alliances"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionAllianceFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionBaseFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Faction"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"race"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionCoordinatesFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Coordinates"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionSeedFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Seed"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionConflictFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FactionConflict"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"seed"}},{"kind":"Field","name":{"kind":"Name","value":"aggressor"}},{"kind":"Field","name":{"kind":"Name","value":"defender"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionAllianceFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FactionAlliance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"seed"}},{"kind":"Field","name":{"kind":"Name","value":"partyA"}},{"kind":"Field","name":{"kind":"Name","value":"partyB"}}]}}]} as unknown as DocumentNode<FactionRelationsFragmentFragment, unknown>;
 export const CreateCampaignDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateCampaign"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"description"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCampaign"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"description"},"value":{"kind":"Variable","name":{"kind":"Name","value":"description"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]} as unknown as DocumentNode<CreateCampaignMutation, CreateCampaignMutationVariables>;
-export const CreateFactionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateFaction"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"faction"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FactionInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createFaction"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"faction"},"value":{"kind":"Variable","name":{"kind":"Name","value":"faction"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"race"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"location"}}]}}]}}]}}]} as unknown as DocumentNode<CreateFactionMutation, CreateFactionMutationVariables>;
-export const CreateFactionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateFactions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"factions"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FactionInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createFactions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"factions"},"value":{"kind":"Variable","name":{"kind":"Name","value":"factions"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"race"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"location"}}]}}]}}]}}]} as unknown as DocumentNode<CreateFactionsMutation, CreateFactionsMutationVariables>;
+export const CreateFactionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateFaction"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"faction"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FactionCreateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createFaction"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"faction"},"value":{"kind":"Variable","name":{"kind":"Name","value":"faction"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionBaseFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionBaseFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Faction"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"race"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]} as unknown as DocumentNode<CreateFactionMutation, CreateFactionMutationVariables>;
+export const CreateFactionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateFactions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"factions"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FactionCreateInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createFactions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"factions"},"value":{"kind":"Variable","name":{"kind":"Name","value":"factions"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionBaseFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionBaseFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Faction"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"race"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]} as unknown as DocumentNode<CreateFactionsMutation, CreateFactionsMutationVariables>;
 export const RemoveFactionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RemoveFaction"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"faction"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeFaction"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"faction"},"value":{"kind":"Variable","name":{"kind":"Name","value":"faction"}}}]}]}}]} as unknown as DocumentNode<RemoveFactionMutation, RemoveFactionMutationVariables>;
 export const RemoveFactionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RemoveFactions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"factions"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeFactions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"factions"},"value":{"kind":"Variable","name":{"kind":"Name","value":"factions"}}}]}]}}]} as unknown as DocumentNode<RemoveFactionsMutation, RemoveFactionsMutationVariables>;
-export const UpdateFactionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateFaction"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"faction"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FactionInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateFaction"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"faction"},"value":{"kind":"Variable","name":{"kind":"Name","value":"faction"}}},{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"race"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"location"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateFactionMutation, UpdateFactionMutationVariables>;
-export const UpdateFactionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateFactions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FactionUpdateInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateFactions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"race"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"location"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateFactionsMutation, UpdateFactionsMutationVariables>;
+export const UpdateFactionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateFaction"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"faction"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FactionCreateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateFaction"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"faction"},"value":{"kind":"Variable","name":{"kind":"Name","value":"faction"}}},{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionRelationsFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionBaseFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Faction"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"race"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionCoordinatesFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Coordinates"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionSeedFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Seed"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionConflictFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FactionConflict"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"seed"}},{"kind":"Field","name":{"kind":"Name","value":"aggressor"}},{"kind":"Field","name":{"kind":"Name","value":"defender"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionAllianceFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FactionAlliance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"seed"}},{"kind":"Field","name":{"kind":"Name","value":"partyA"}},{"kind":"Field","name":{"kind":"Name","value":"partyB"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionRelationsFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Faction"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionBaseFragment"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionCoordinatesFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"resources"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionSeedFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"goals"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionSeedFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"conflicts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionConflictFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"alliances"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionAllianceFragment"}}]}}]}}]} as unknown as DocumentNode<UpdateFactionMutation, UpdateFactionMutationVariables>;
+export const UpdateFactionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateFactions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FactionUpdateInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateFactions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaign"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaign"}}},{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionRelationsFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionBaseFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Faction"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"race"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionCoordinatesFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Coordinates"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionSeedFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Seed"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionConflictFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FactionConflict"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"seed"}},{"kind":"Field","name":{"kind":"Name","value":"aggressor"}},{"kind":"Field","name":{"kind":"Name","value":"defender"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionAllianceFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FactionAlliance"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"seed"}},{"kind":"Field","name":{"kind":"Name","value":"partyA"}},{"kind":"Field","name":{"kind":"Name","value":"partyB"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FactionRelationsFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Faction"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionBaseFragment"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionCoordinatesFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"resources"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionSeedFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"goals"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionSeedFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"conflicts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionConflictFragment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"alliances"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FactionAllianceFragment"}}]}}]}}]} as unknown as DocumentNode<UpdateFactionsMutation, UpdateFactionsMutationVariables>;
 export const CreateSeedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateSeed"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSeed"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<CreateSeedMutation, CreateSeedMutationVariables>;
 export const GetCampaignDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCampaign"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"campaign"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]} as unknown as DocumentNode<GetCampaignQuery, GetCampaignQueryVariables>;
 export const GetCampaignsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCampaigns"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"campaigns"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]} as unknown as DocumentNode<GetCampaignsQuery, GetCampaignsQueryVariables>;

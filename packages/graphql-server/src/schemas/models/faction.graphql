@@ -1,4 +1,4 @@
-input FactionInput {
+input FactionCreateInput {
   name: String!
   race: String!
   color: String!
@@ -29,6 +29,7 @@ type Faction {
   goals: [Seed]
   alliances: [FactionAlliance]
   conflicts: [FactionConflict]
+  trades: [FactionTrade]
   createdAt: DateTime!
   updatedAt: DateTime!
 }

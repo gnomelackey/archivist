@@ -1,0 +1,11 @@
+extend type Query {
+  FactionAlliance(id: ID!): FactionAlliance!
+  FactionAlliances(ids: [ID!]!): [FactionAlliance!]!
+  AllFactionAlliances(campaign: ID!): [FactionAlliance!]!
+  FactionConflict(id: ID!): FactionConflict!
+  FactionConflicts(ids: [ID!]!): [FactionConflict!]!
+  AllFactionConflicts(campaign: ID!): [FactionConflict!]!
+  FactionTrade(id: ID!): FactionTrade!
+  FactionTrades(ids: [ID!]!): [FactionTrade!]!
+  AllFactionTrades(campaign: ID!): [FactionTrade!]!
+}

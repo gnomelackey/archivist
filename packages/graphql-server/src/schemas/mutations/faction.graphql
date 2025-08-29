@@ -1,8 +1,8 @@
 extend type Mutation {
-  createFaction(campaign: ID!, faction: FactionInput!): Faction!
-  createFactions(campaign: ID!, factions: [FactionInput!]!): [Faction!]!
+  createFaction(campaign: ID!, faction: FactionCreateInput!): Faction!
+  createFactions(campaign: ID!, factions: [FactionCreateInput!]!): [Faction!]!
 
-  updateFaction(campaign: ID!, faction: ID!, data: FactionInput!): Faction!
+  updateFaction(campaign: ID!, faction: ID!, data: FactionCreateInput!): Faction!
   updateFactions(campaign: ID!, data: [FactionUpdateInput!]!): [Faction!]!
 
   removeFaction(campaign: ID!, faction: ID!): String!

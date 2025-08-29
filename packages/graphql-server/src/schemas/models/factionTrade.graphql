@@ -1,16 +1,16 @@
-type FactionAllianceInput {
-  reason: String
+type FactionTradeInput {
   partyA: String!
   partyB: String!
-  seed: String
+  seedA: String!
+  seedB: String!
 }
 
-type FactionAlliance {
+type FactionTrade {
   id: String!
-  reason: String
   partyA: String!
   partyB: String!
-  seed: String
+  seedA: String!
+  seedB: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }

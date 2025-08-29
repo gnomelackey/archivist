@@ -1,6 +1,5 @@
-model FactionAlliance {
+model FactionTrade {
   id         String   @id @default(cuid())
-  reason     String?
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -8,8 +7,11 @@ model FactionAlliance {
   campaignId String
   campaign   Campaign @relation(fields: [campaignId], references: [id])
 
-  seedId     String
-  seed       Seed     @relation(fields: [seedId], references: [id])
+  seedAId    String
+  seedA      Seed     @relation("seedA", fields: [seedAId], references: [id])
+
+  seedBId    String
+  seedB      Seed     @relation("seedB", fields: [seedBId], references: [id])
 
   partyAId   String
   partyA     Faction  @relation("partyA", fields: [partyAId], references: [id])

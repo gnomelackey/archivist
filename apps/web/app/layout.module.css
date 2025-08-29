@@ -1,6 +1,8 @@
 .main {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  max-height: calc(100vh - var(--full-appbar-height) - 24px);
   gap: 32px;
   grid-row-start: 2;
 }

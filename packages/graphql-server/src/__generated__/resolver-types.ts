@@ -1,6 +1,6 @@
 import type * as Types from './schema-types';
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import type { Campaign, Coordinates, Faction, FactionAlliance, FactionConflict, Seed, User } from '@repo/db';
+import type { Campaign, Coordinates, Faction, FactionAlliance, FactionConflict, FactionTrade, Seed, User } from '@repo/db';
 import type { ArchivistGraphQLContext } from '../context';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
@@ -82,8 +82,12 @@ export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Types.Scalars['DateTime']['output']>;
   Faction: ResolverTypeWrapper<Faction>;
   FactionAlliance: ResolverTypeWrapper<FactionAlliance>;
+  FactionAllianceInput: ResolverTypeWrapper<Types.FactionAllianceInput>;
   FactionConflict: ResolverTypeWrapper<FactionConflict>;
-  FactionInput: Types.FactionInput;
+  FactionConflictInput: ResolverTypeWrapper<Types.FactionConflictInput>;
+  FactionCreateInput: Types.FactionCreateInput;
+  FactionTrade: ResolverTypeWrapper<FactionTrade>;
+  FactionTradeInput: ResolverTypeWrapper<Types.FactionTradeInput>;
   FactionUpdateInput: Types.FactionUpdateInput;
   Float: ResolverTypeWrapper<Types.Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Types.Scalars['ID']['output']>;
@@ -104,8 +108,12 @@ export type ResolversParentTypes = {
   DateTime: Types.Scalars['DateTime']['output'];
   Faction: Faction;
   FactionAlliance: FactionAlliance;
+  FactionAllianceInput: Types.FactionAllianceInput;
   FactionConflict: FactionConflict;
-  FactionInput: Types.FactionInput;
+  FactionConflictInput: Types.FactionConflictInput;
+  FactionCreateInput: Types.FactionCreateInput;
+  FactionTrade: FactionTrade;
+  FactionTradeInput: Types.FactionTradeInput;
   FactionUpdateInput: Types.FactionUpdateInput;
   Float: Types.Scalars['Float']['output'];
   ID: Types.Scalars['ID']['output'];
@@ -157,6 +165,7 @@ export type FactionResolvers<ContextType = ArchivistGraphQLContext, ParentType e
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   race?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   resources?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['Seed']>>>, ParentType, ContextType>;
+  trades?: Resolver<Types.Maybe<Array<Types.Maybe<ResolversTypes['FactionTrade']>>>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -167,8 +176,16 @@ export type FactionAllianceResolvers<ContextType = ArchivistGraphQLContext, Pare
   partyA?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   partyB?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   reason?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  seed?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  seed?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FactionAllianceInputResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['FactionAllianceInput'] = ResolversParentTypes['FactionAllianceInput']> = {
+  partyA?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  partyB?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reason?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  seed?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -178,8 +195,35 @@ export type FactionConflictResolvers<ContextType = ArchivistGraphQLContext, Pare
   defender?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   reason?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  seed?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  seed?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FactionConflictInputResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['FactionConflictInput'] = ResolversParentTypes['FactionConflictInput']> = {
+  aggressor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  defender?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reason?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  seed?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FactionTradeResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['FactionTrade'] = ResolversParentTypes['FactionTrade']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  partyA?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  partyB?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  seedA?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  seedB?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FactionTradeInputResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['FactionTradeInput'] = ResolversParentTypes['FactionTradeInput']> = {
+  partyA?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  partyB?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  seedA?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  seedB?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -191,6 +235,9 @@ export type MutationResolvers<ContextType = ArchivistGraphQLContext, ParentType 
   _empty?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createCampaign?: Resolver<ResolversTypes['Campaign'], ParentType, ContextType, RequireFields<Types.MutationCreateCampaignArgs, 'name'>>;
   createFaction?: Resolver<ResolversTypes['Faction'], ParentType, ContextType, RequireFields<Types.MutationCreateFactionArgs, 'campaign' | 'faction'>>;
+  createFactionAlliance?: Resolver<ResolversTypes['FactionAlliance'], ParentType, ContextType, RequireFields<Types.MutationCreateFactionAllianceArgs, 'campaign' | 'input'>>;
+  createFactionConflict?: Resolver<ResolversTypes['FactionConflict'], ParentType, ContextType, RequireFields<Types.MutationCreateFactionConflictArgs, 'campaign' | 'input'>>;
+  createFactionTrade?: Resolver<ResolversTypes['FactionTrade'], ParentType, ContextType, RequireFields<Types.MutationCreateFactionTradeArgs, 'campaign' | 'input'>>;
   createFactions?: Resolver<Array<ResolversTypes['Faction']>, ParentType, ContextType, RequireFields<Types.MutationCreateFactionsArgs, 'campaign' | 'factions'>>;
   createSeed?: Resolver<ResolversTypes['Seed'], ParentType, ContextType, RequireFields<Types.MutationCreateSeedArgs, 'type' | 'value'>>;
   removeFaction?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<Types.MutationRemoveFactionArgs, 'campaign' | 'faction'>>;
@@ -200,6 +247,15 @@ export type MutationResolvers<ContextType = ArchivistGraphQLContext, ParentType 
 };
 
 export type QueryResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  AllFactionAlliances?: Resolver<Array<ResolversTypes['FactionAlliance']>, ParentType, ContextType, RequireFields<Types.QueryAllFactionAlliancesArgs, 'campaign'>>;
+  AllFactionConflicts?: Resolver<Array<ResolversTypes['FactionConflict']>, ParentType, ContextType, RequireFields<Types.QueryAllFactionConflictsArgs, 'campaign'>>;
+  AllFactionTrades?: Resolver<Array<ResolversTypes['FactionTrade']>, ParentType, ContextType, RequireFields<Types.QueryAllFactionTradesArgs, 'campaign'>>;
+  FactionAlliance?: Resolver<ResolversTypes['FactionAlliance'], ParentType, ContextType, RequireFields<Types.QueryFactionAllianceArgs, 'id'>>;
+  FactionAlliances?: Resolver<Array<ResolversTypes['FactionAlliance']>, ParentType, ContextType, RequireFields<Types.QueryFactionAlliancesArgs, 'ids'>>;
+  FactionConflict?: Resolver<ResolversTypes['FactionConflict'], ParentType, ContextType, RequireFields<Types.QueryFactionConflictArgs, 'id'>>;
+  FactionConflicts?: Resolver<Array<ResolversTypes['FactionConflict']>, ParentType, ContextType, RequireFields<Types.QueryFactionConflictsArgs, 'ids'>>;
+  FactionTrade?: Resolver<ResolversTypes['FactionTrade'], ParentType, ContextType, RequireFields<Types.QueryFactionTradeArgs, 'id'>>;
+  FactionTrades?: Resolver<Array<ResolversTypes['FactionTrade']>, ParentType, ContextType, RequireFields<Types.QueryFactionTradesArgs, 'ids'>>;
   _empty?: Resolver<Types.Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   campaign?: Resolver<Types.Maybe<ResolversTypes['Campaign']>, ParentType, ContextType, RequireFields<Types.QueryCampaignArgs, 'id'>>;
   campaigns?: Resolver<Array<ResolversTypes['Campaign']>, ParentType, ContextType>;
@@ -237,7 +293,11 @@ export type Resolvers<ContextType = ArchivistGraphQLContext> = {
   DateTime?: GraphQLScalarType;
   Faction?: FactionResolvers<ContextType>;
   FactionAlliance?: FactionAllianceResolvers<ContextType>;
+  FactionAllianceInput?: FactionAllianceInputResolvers<ContextType>;
   FactionConflict?: FactionConflictResolvers<ContextType>;
+  FactionConflictInput?: FactionConflictInputResolvers<ContextType>;
+  FactionTrade?: FactionTradeResolvers<ContextType>;
+  FactionTradeInput?: FactionTradeInputResolvers<ContextType>;
   JSONObject?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

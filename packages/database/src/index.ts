@@ -7,6 +7,7 @@ export type {
   Faction,
   FactionAlliance,
   FactionConflict,
+  FactionTrade,
   Map,
   Prisma,
   PrismaClient,

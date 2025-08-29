@@ -23,6 +23,7 @@ model Campaign {
   factions          Faction[]
   factionAlliances  FactionAlliance[]
   factionConflicts  FactionConflict[]
+  factionTrades     FactionTrade[]
 }
 
 
@@ -59,6 +60,8 @@ model Faction {
   conflictsDefender   FactionConflict[]   @relation("defender")
   alliancesA          FactionAlliance[]   @relation("partyA")
   alliancesB          FactionAlliance[]   @relation("partyB")
+  tradeA              FactionTrade[]      @relation("partyA")
+  tradeB              FactionTrade[]      @relation("partyB")
 
   campaignId          String
   campaign            Campaign            @relation(fields: [campaignId], references: [id], onDelete: Cascade)
@@ -69,7 +72,7 @@ model Faction {
 
 model FactionAlliance {
   id         String   @id @default(cuid())
-  reason     String
+  reason     String?
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -90,7 +93,7 @@ model FactionAlliance {
 
 model FactionConflict {
   id           String   @id @default(cuid())
-  reason       String
+  reason       String?
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -109,6 +112,29 @@ model FactionConflict {
 }
 
 
+model FactionTrade {
+  id         String   @id @default(cuid())
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+
+  seedAId    String
+  seedA      Seed     @relation("seedA", fields: [seedAId], references: [id])
+
+  seedBId    String
+  seedB      Seed     @relation("seedB", fields: [seedBId], references: [id])
+
+  partyAId   String
+  partyA     Faction  @relation("partyA", fields: [partyAId], references: [id])
+
+  partyBId   String
+  partyB     Faction  @relation("partyB", fields: [partyBId], references: [id])
+}
+
+
 model Map {
   id          String   @id @default(cuid())
   name        String
@@ -123,19 +149,21 @@ model Map {
 }
 
 model Seed {
-  id                String            @id @default(cuid())
+  id                String           @id @default(cuid())
   type              String
   value             String
 
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 
   userId            String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   factions          Faction[]
   factionConflicts  FactionConflict[]
   factionAlliances  FactionAlliance[]
+  factionTradeA     FactionTrade[]   @relation("seedA")
+  factionTradeB     FactionTrade[]   @relation("seedB")
 }
 
 

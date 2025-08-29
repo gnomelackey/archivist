@@ -9,6 +9,7 @@
   "scripts": {
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify",
     "build:js": "tsc",
+    "build:packages": "npm run build:js && npm run build:css",
     "build": "npm run build:js && npm run build:css"
   },
   "devDependencies": {

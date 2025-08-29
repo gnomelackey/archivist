@@ -1,0 +1,5 @@
+extend type Mutation {
+  createFactionAlliance(campaign: ID!, input: FactionAllianceInput!): FactionAlliance!
+  createFactionConflict(campaign: ID!, input: FactionConflictInput!): FactionConflict!
+  createFactionTrade(campaign: ID!, input: FactionTradeInput!): FactionTrade!
+}

@@ -14,22 +14,22 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n": typeof types.CreateCampaignDocument,
-    "\n  mutation CreateFaction($campaign: ID!, $faction: FactionInput!) {\n    createFaction(campaign: $campaign, faction: $faction) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n": typeof types.CreateFactionDocument,
-    "\n  mutation CreateFactions($campaign: ID!, $factions: [FactionInput!]!) {\n    createFactions(campaign: $campaign, factions: $factions) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n": typeof types.CreateFactionsDocument,
-    "\n  mutation RemoveFaction($campaign: ID!, $faction: ID!) {\n    removeFaction(campaign: $campaign, faction: $faction)\n  }\n": typeof types.RemoveFactionDocument,
-    "\n  mutation RemoveFactions($campaign: ID!, $factions: [ID!]!) {\n    removeFactions(campaign: $campaign, factions: $factions)\n  }\n": typeof types.RemoveFactionsDocument,
-    "\n  mutation UpdateFaction($campaign: ID!, $faction: ID!, $data: FactionInput!) {\n    updateFaction(campaign: $campaign, faction: $faction, data: $data) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n": typeof types.UpdateFactionDocument,
-    "\n  mutation UpdateFactions($campaign: ID!, $data: [FactionUpdateInput!]!) {\n    updateFactions(campaign: $campaign, data: $data) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n": typeof types.UpdateFactionsDocument,
-    "\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n": typeof types.CreateSeedDocument,
-    "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n": typeof types.GetCampaignDocument,
-    "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n": typeof types.GetCampaignsDocument,
     "\n  fragment FactionAllianceFragment on FactionAlliance {\n    id\n    reason\n    seed\n    partyA\n    partyB\n  }\n": typeof types.FactionAllianceFragmentFragmentDoc,
     "\n  fragment FactionConflictFragment on FactionConflict {\n    id\n    reason\n    seed\n    aggressor\n    defender\n  }\n": typeof types.FactionConflictFragmentFragmentDoc,
     "\n  fragment FactionCoordinatesFragment on Coordinates {\n    id\n    x\n    y\n    width\n    height\n  }\n": typeof types.FactionCoordinatesFragmentFragmentDoc,
     "\n  fragment FactionBaseFragment on Faction {\n    id\n    name\n    race\n    color\n    description\n  }\n": typeof types.FactionBaseFragmentFragmentDoc,
     "\n  fragment FactionRelationsFragment on Faction {\n    ...FactionBaseFragment\n    coordinates {\n      ...FactionCoordinatesFragment\n    }\n    resources {\n      ...FactionSeedFragment\n    }\n    goals {\n      ...FactionSeedFragment\n    }\n    conflicts {\n      ...FactionConflictFragment\n    }\n    alliances {\n      ...FactionAllianceFragment\n    }\n  }\n\n  \n  \n  \n  \n  \n": typeof types.FactionRelationsFragmentFragmentDoc,
     "\n  fragment FactionSeedFragment on Seed {\n    id\n    value\n  }\n": typeof types.FactionSeedFragmentFragmentDoc,
+    "\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n": typeof types.CreateCampaignDocument,
+    "\n  mutation CreateFaction($campaign: ID!, $faction: FactionCreateInput!) {\n    createFaction(campaign: $campaign, faction: $faction) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": typeof types.CreateFactionDocument,
+    "\n  mutation CreateFactions($campaign: ID!, $factions: [FactionCreateInput!]!) {\n    createFactions(campaign: $campaign, factions: $factions) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": typeof types.CreateFactionsDocument,
+    "\n  mutation RemoveFaction($campaign: ID!, $faction: ID!) {\n    removeFaction(campaign: $campaign, faction: $faction)\n  }\n": typeof types.RemoveFactionDocument,
+    "\n  mutation RemoveFactions($campaign: ID!, $factions: [ID!]!) {\n    removeFactions(campaign: $campaign, factions: $factions)\n  }\n": typeof types.RemoveFactionsDocument,
+    "\n  mutation UpdateFaction($campaign: ID!, $faction: ID!, $data: FactionCreateInput!) {\n    updateFaction(campaign: $campaign, faction: $faction, data: $data) {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n": typeof types.UpdateFactionDocument,
+    "\n  mutation UpdateFactions($campaign: ID!, $data: [FactionUpdateInput!]!) {\n    updateFactions(campaign: $campaign, data: $data) {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n": typeof types.UpdateFactionsDocument,
+    "\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n": typeof types.CreateSeedDocument,
+    "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n": typeof types.GetCampaignDocument,
+    "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n": typeof types.GetCampaignsDocument,
     "\n  query GetFaction($id: ID!) {\n    faction(id: $id) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": typeof types.GetFactionDocument,
     "\n  query GetFactions($campaign: ID!) {\n    factions(campaign: $campaign) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": typeof types.GetFactionsDocument,
     "\n  query GetFactionsWithCoordinates($campaign: ID!) {\n    factionsWithCoordinates(campaign: $campaign, location: \"faction-board\") {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n": typeof types.GetFactionsWithCoordinatesDocument,
@@ -38,22 +38,22 @@ type Documents = {
     "\n  query GetSeedsByType($type: String!) {\n    seedsByType(type: $type) {\n      id\n      type\n      value\n    }\n  }\n": typeof types.GetSeedsByTypeDocument,
 };
 const documents: Documents = {
-    "\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n": types.CreateCampaignDocument,
-    "\n  mutation CreateFaction($campaign: ID!, $faction: FactionInput!) {\n    createFaction(campaign: $campaign, faction: $faction) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n": types.CreateFactionDocument,
-    "\n  mutation CreateFactions($campaign: ID!, $factions: [FactionInput!]!) {\n    createFactions(campaign: $campaign, factions: $factions) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n": types.CreateFactionsDocument,
-    "\n  mutation RemoveFaction($campaign: ID!, $faction: ID!) {\n    removeFaction(campaign: $campaign, faction: $faction)\n  }\n": types.RemoveFactionDocument,
-    "\n  mutation RemoveFactions($campaign: ID!, $factions: [ID!]!) {\n    removeFactions(campaign: $campaign, factions: $factions)\n  }\n": types.RemoveFactionsDocument,
-    "\n  mutation UpdateFaction($campaign: ID!, $faction: ID!, $data: FactionInput!) {\n    updateFaction(campaign: $campaign, faction: $faction, data: $data) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n": types.UpdateFactionDocument,
-    "\n  mutation UpdateFactions($campaign: ID!, $data: [FactionUpdateInput!]!) {\n    updateFactions(campaign: $campaign, data: $data) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n": types.UpdateFactionsDocument,
-    "\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n": types.CreateSeedDocument,
-    "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n": types.GetCampaignDocument,
-    "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n": types.GetCampaignsDocument,
     "\n  fragment FactionAllianceFragment on FactionAlliance {\n    id\n    reason\n    seed\n    partyA\n    partyB\n  }\n": types.FactionAllianceFragmentFragmentDoc,
     "\n  fragment FactionConflictFragment on FactionConflict {\n    id\n    reason\n    seed\n    aggressor\n    defender\n  }\n": types.FactionConflictFragmentFragmentDoc,
     "\n  fragment FactionCoordinatesFragment on Coordinates {\n    id\n    x\n    y\n    width\n    height\n  }\n": types.FactionCoordinatesFragmentFragmentDoc,
     "\n  fragment FactionBaseFragment on Faction {\n    id\n    name\n    race\n    color\n    description\n  }\n": types.FactionBaseFragmentFragmentDoc,
     "\n  fragment FactionRelationsFragment on Faction {\n    ...FactionBaseFragment\n    coordinates {\n      ...FactionCoordinatesFragment\n    }\n    resources {\n      ...FactionSeedFragment\n    }\n    goals {\n      ...FactionSeedFragment\n    }\n    conflicts {\n      ...FactionConflictFragment\n    }\n    alliances {\n      ...FactionAllianceFragment\n    }\n  }\n\n  \n  \n  \n  \n  \n": types.FactionRelationsFragmentFragmentDoc,
     "\n  fragment FactionSeedFragment on Seed {\n    id\n    value\n  }\n": types.FactionSeedFragmentFragmentDoc,
+    "\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n": types.CreateCampaignDocument,
+    "\n  mutation CreateFaction($campaign: ID!, $faction: FactionCreateInput!) {\n    createFaction(campaign: $campaign, faction: $faction) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": types.CreateFactionDocument,
+    "\n  mutation CreateFactions($campaign: ID!, $factions: [FactionCreateInput!]!) {\n    createFactions(campaign: $campaign, factions: $factions) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": types.CreateFactionsDocument,
+    "\n  mutation RemoveFaction($campaign: ID!, $faction: ID!) {\n    removeFaction(campaign: $campaign, faction: $faction)\n  }\n": types.RemoveFactionDocument,
+    "\n  mutation RemoveFactions($campaign: ID!, $factions: [ID!]!) {\n    removeFactions(campaign: $campaign, factions: $factions)\n  }\n": types.RemoveFactionsDocument,
+    "\n  mutation UpdateFaction($campaign: ID!, $faction: ID!, $data: FactionCreateInput!) {\n    updateFaction(campaign: $campaign, faction: $faction, data: $data) {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n": types.UpdateFactionDocument,
+    "\n  mutation UpdateFactions($campaign: ID!, $data: [FactionUpdateInput!]!) {\n    updateFactions(campaign: $campaign, data: $data) {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n": types.UpdateFactionsDocument,
+    "\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n": types.CreateSeedDocument,
+    "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n": types.GetCampaignDocument,
+    "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n": types.GetCampaignsDocument,
     "\n  query GetFaction($id: ID!) {\n    faction(id: $id) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": types.GetFactionDocument,
     "\n  query GetFactions($campaign: ID!) {\n    factions(campaign: $campaign) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n": types.GetFactionsDocument,
     "\n  query GetFactionsWithCoordinates($campaign: ID!) {\n    factionsWithCoordinates(campaign: $campaign, location: \"faction-board\") {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n": types.GetFactionsWithCoordinatesDocument,
@@ -79,46 +79,6 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n"): (typeof documents)["\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation CreateFaction($campaign: ID!, $faction: FactionInput!) {\n    createFaction(campaign: $campaign, faction: $faction) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateFaction($campaign: ID!, $faction: FactionInput!) {\n    createFaction(campaign: $campaign, faction: $faction) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation CreateFactions($campaign: ID!, $factions: [FactionInput!]!) {\n    createFactions(campaign: $campaign, factions: $factions) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateFactions($campaign: ID!, $factions: [FactionInput!]!) {\n    createFactions(campaign: $campaign, factions: $factions) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation RemoveFaction($campaign: ID!, $faction: ID!) {\n    removeFaction(campaign: $campaign, faction: $faction)\n  }\n"): (typeof documents)["\n  mutation RemoveFaction($campaign: ID!, $faction: ID!) {\n    removeFaction(campaign: $campaign, faction: $faction)\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation RemoveFactions($campaign: ID!, $factions: [ID!]!) {\n    removeFactions(campaign: $campaign, factions: $factions)\n  }\n"): (typeof documents)["\n  mutation RemoveFactions($campaign: ID!, $factions: [ID!]!) {\n    removeFactions(campaign: $campaign, factions: $factions)\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation UpdateFaction($campaign: ID!, $faction: ID!, $data: FactionInput!) {\n    updateFaction(campaign: $campaign, faction: $faction, data: $data) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateFaction($campaign: ID!, $faction: ID!, $data: FactionInput!) {\n    updateFaction(campaign: $campaign, faction: $faction, data: $data) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation UpdateFactions($campaign: ID!, $data: [FactionUpdateInput!]!) {\n    updateFactions(campaign: $campaign, data: $data) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateFactions($campaign: ID!, $data: [FactionUpdateInput!]!) {\n    updateFactions(campaign: $campaign, data: $data) {\n      id\n      name\n      race\n      color\n      description\n      coordinates {\n        id\n        x\n        y\n        width\n        height\n        location\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n"): (typeof documents)["\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n"): (typeof documents)["\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n"): (typeof documents)["\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function graphql(source: "\n  fragment FactionAllianceFragment on FactionAlliance {\n    id\n    reason\n    seed\n    partyA\n    partyB\n  }\n"): (typeof documents)["\n  fragment FactionAllianceFragment on FactionAlliance {\n    id\n    reason\n    seed\n    partyA\n    partyB\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -140,6 +100,46 @@ export function graphql(source: "\n  fragment FactionRelationsFragment on Factio
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  fragment FactionSeedFragment on Seed {\n    id\n    value\n  }\n"): (typeof documents)["\n  fragment FactionSeedFragment on Seed {\n    id\n    value\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n"): (typeof documents)["\n  mutation CreateCampaign($name: String!, $description: String) {\n    createCampaign(name: $name, description: $description) {\n      id\n      name\n      description\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateFaction($campaign: ID!, $faction: FactionCreateInput!) {\n    createFaction(campaign: $campaign, faction: $faction) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n"): (typeof documents)["\n  mutation CreateFaction($campaign: ID!, $faction: FactionCreateInput!) {\n    createFaction(campaign: $campaign, faction: $faction) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateFactions($campaign: ID!, $factions: [FactionCreateInput!]!) {\n    createFactions(campaign: $campaign, factions: $factions) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n"): (typeof documents)["\n  mutation CreateFactions($campaign: ID!, $factions: [FactionCreateInput!]!) {\n    createFactions(campaign: $campaign, factions: $factions) {\n      ...FactionBaseFragment\n    }\n  }\n\n  \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation RemoveFaction($campaign: ID!, $faction: ID!) {\n    removeFaction(campaign: $campaign, faction: $faction)\n  }\n"): (typeof documents)["\n  mutation RemoveFaction($campaign: ID!, $faction: ID!) {\n    removeFaction(campaign: $campaign, faction: $faction)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation RemoveFactions($campaign: ID!, $factions: [ID!]!) {\n    removeFactions(campaign: $campaign, factions: $factions)\n  }\n"): (typeof documents)["\n  mutation RemoveFactions($campaign: ID!, $factions: [ID!]!) {\n    removeFactions(campaign: $campaign, factions: $factions)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateFaction($campaign: ID!, $faction: ID!, $data: FactionCreateInput!) {\n    updateFaction(campaign: $campaign, faction: $faction, data: $data) {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n"): (typeof documents)["\n  mutation UpdateFaction($campaign: ID!, $faction: ID!, $data: FactionCreateInput!) {\n    updateFaction(campaign: $campaign, faction: $faction, data: $data) {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateFactions($campaign: ID!, $data: [FactionUpdateInput!]!) {\n    updateFactions(campaign: $campaign, data: $data) {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n"): (typeof documents)["\n  mutation UpdateFactions($campaign: ID!, $data: [FactionUpdateInput!]!) {\n    updateFactions(campaign: $campaign, data: $data) {\n      ...FactionRelationsFragment\n    }\n  }\n\n  \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n"): (typeof documents)["\n  mutation CreateSeed($type: String!, $value: String!) {\n    createSeed(type: $type, value: $value) {\n      id\n      type\n      value\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n"): (typeof documents)["\n  query GetCampaign($id: ID!) {\n    campaign(id: $id) {\n      id\n      name\n      description\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n"): (typeof documents)["\n  query GetCampaigns {\n    campaigns {\n      id\n      name\n      description\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

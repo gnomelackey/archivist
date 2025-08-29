@@ -1,0 +1,3 @@
+.factionBoard {
+  max-height: calc(100vh - var(--full-appbar-height) - 16px) !important;
+}

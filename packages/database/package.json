@@ -16,6 +16,7 @@
     "migrate:dev": "prisma migrate dev --schema=./prisma/schema.prisma",
     "migrate:deploy": "prisma migrate deploy --schema=./prisma/schema.prisma",
     "build": "npm run prisma:merge && npm run prisma:generate && tsc",
+    "build:packages": "npm run prisma:merge && npm run prisma:generate && tsc",
     "postinstall": "npm run prisma:merge && npm run prisma:generate",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit"

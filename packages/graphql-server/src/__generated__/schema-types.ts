@@ -61,6 +61,7 @@ export type Faction = {
   name: Scalars['String']['output'];
   race: Scalars['String']['output'];
   resources?: Maybe<Array<Maybe<Seed>>>;
+  trades?: Maybe<Array<Maybe<FactionTrade>>>;
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -71,8 +72,16 @@ export type FactionAlliance = {
   partyA: Scalars['String']['output'];
   partyB: Scalars['String']['output'];
   reason?: Maybe<Scalars['String']['output']>;
-  seed: Scalars['String']['output'];
+  seed?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type FactionAllianceInput = {
+  __typename?: 'FactionAllianceInput';
+  partyA: Scalars['String']['output'];
+  partyB: Scalars['String']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  seed?: Maybe<Scalars['String']['output']>;
 };
 
 export type FactionConflict = {
@@ -82,17 +91,44 @@ export type FactionConflict = {
   defender: Scalars['String']['output'];
   id: Scalars['String']['output'];
   reason?: Maybe<Scalars['String']['output']>;
-  seed: Scalars['String']['output'];
+  seed?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
 };
 
-export type FactionInput = {
+export type FactionConflictInput = {
+  __typename?: 'FactionConflictInput';
+  aggressor: Scalars['String']['output'];
+  defender: Scalars['String']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  seed?: Maybe<Scalars['String']['output']>;
+};
+
+export type FactionCreateInput = {
   color: Scalars['String']['input'];
   coordinates?: InputMaybe<CoordinatesInput>;
   description?: InputMaybe<Scalars['String']['input']>;
   descriptors?: InputMaybe<Array<Scalars['String']['input']>>;
   name: Scalars['String']['input'];
   race: Scalars['String']['input'];
+};
+
+export type FactionTrade = {
+  __typename?: 'FactionTrade';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['String']['output'];
+  partyA: Scalars['String']['output'];
+  partyB: Scalars['String']['output'];
+  seedA: Scalars['String']['output'];
+  seedB: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type FactionTradeInput = {
+  __typename?: 'FactionTradeInput';
+  partyA: Scalars['String']['output'];
+  partyB: Scalars['String']['output'];
+  seedA: Scalars['String']['output'];
+  seedB: Scalars['String']['output'];
 };
 
 export type FactionUpdateInput = {
@@ -110,6 +146,9 @@ export type Mutation = {
   _empty?: Maybe<Scalars['String']['output']>;
   createCampaign: Campaign;
   createFaction: Faction;
+  createFactionAlliance: FactionAlliance;
+  createFactionConflict: FactionConflict;
+  createFactionTrade: FactionTrade;
   createFactions: Array<Faction>;
   createSeed: Seed;
   removeFaction: Scalars['String']['output'];
@@ -127,13 +166,31 @@ export type MutationCreateCampaignArgs = {
 
 export type MutationCreateFactionArgs = {
   campaign: Scalars['ID']['input'];
-  faction: FactionInput;
+  faction: FactionCreateInput;
+};
+
+
+export type MutationCreateFactionAllianceArgs = {
+  campaign: Scalars['ID']['input'];
+  input: FactionAllianceInput;
+};
+
+
+export type MutationCreateFactionConflictArgs = {
+  campaign: Scalars['ID']['input'];
+  input: FactionConflictInput;
+};
+
+
+export type MutationCreateFactionTradeArgs = {
+  campaign: Scalars['ID']['input'];
+  input: FactionTradeInput;
 };
 
 
 export type MutationCreateFactionsArgs = {
   campaign: Scalars['ID']['input'];
-  factions: Array<FactionInput>;
+  factions: Array<FactionCreateInput>;
 };
 
 
@@ -157,7 +214,7 @@ export type MutationRemoveFactionsArgs = {
 
 export type MutationUpdateFactionArgs = {
   campaign: Scalars['ID']['input'];
-  data: FactionInput;
+  data: FactionCreateInput;
   faction: Scalars['ID']['input'];
 };
 
@@ -169,6 +226,15 @@ export type MutationUpdateFactionsArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  AllFactionAlliances: Array<FactionAlliance>;
+  AllFactionConflicts: Array<FactionConflict>;
+  AllFactionTrades: Array<FactionTrade>;
+  FactionAlliance: FactionAlliance;
+  FactionAlliances: Array<FactionAlliance>;
+  FactionConflict: FactionConflict;
+  FactionConflicts: Array<FactionConflict>;
+  FactionTrade: FactionTrade;
+  FactionTrades: Array<FactionTrade>;
   _empty?: Maybe<Scalars['String']['output']>;
   campaign?: Maybe<Campaign>;
   campaigns: Array<Campaign>;
@@ -180,6 +246,51 @@ export type Query = {
   seeds: Array<Seed>;
   seedsByType: Array<Seed>;
   seedsByTypes: Scalars['JSONObject']['output'];
+};
+
+
+export type QueryAllFactionAlliancesArgs = {
+  campaign: Scalars['ID']['input'];
+};
+
+
+export type QueryAllFactionConflictsArgs = {
+  campaign: Scalars['ID']['input'];
+};
+
+
+export type QueryAllFactionTradesArgs = {
+  campaign: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionAllianceArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionAlliancesArgs = {
+  ids: Array<Scalars['ID']['input']>;
+};
+
+
+export type QueryFactionConflictArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionConflictsArgs = {
+  ids: Array<Scalars['ID']['input']>;
+};
+
+
+export type QueryFactionTradeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFactionTradesArgs = {
+  ids: Array<Scalars['ID']['input']>;
 };
 
 

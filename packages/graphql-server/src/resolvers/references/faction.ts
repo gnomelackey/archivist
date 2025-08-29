@@ -19,6 +19,11 @@ export const FactionReferences: ArchivistGraphQLResolvers["Faction"] = {
       where: { OR: [{ aggressorId: parent.id }, { defenderId: parent.id }] },
     });
   },
+  trades: (parent, _, context) => {
+    return context.prisma.factionTrade.findMany({
+      where: { OR: [{ partyAId: parent.id }, { partyBId: parent.id }] },
+    });
+  },
   resources: (parent, _, context) => {
     return context.prisma.seed.findMany({
       where: {

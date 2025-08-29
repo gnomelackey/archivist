@@ -14,6 +14,8 @@ model Faction {
   conflictsDefender   FactionConflict[]   @relation("defender")
   alliancesA          FactionAlliance[]   @relation("partyA")
   alliancesB          FactionAlliance[]   @relation("partyB")
+  tradeA              FactionTrade[]      @relation("partyA")
+  tradeB              FactionTrade[]      @relation("partyB")
 
   campaignId          String
   campaign            Campaign            @relation(fields: [campaignId], references: [id], onDelete: Cascade)

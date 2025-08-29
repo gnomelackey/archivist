@@ -27,6 +27,7 @@ generates:
         Faction: "@repo/db#Faction"
         FactionAlliance: "@repo/db#FactionAlliance"
         FactionConflict: "@repo/db#FactionConflict"
+        FactionTrade: "@repo/db#FactionTrade"
         Seed: "@repo/db#Seed"
         User: "@repo/db#User"
       resolverTypeWrapperSignature: "Promise<T> | T | import('@repo/db').PrismaPromise<T>"

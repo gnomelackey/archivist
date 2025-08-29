@@ -1,25 +1,13 @@
-import { Faction } from "@repo/db";
+import type { Faction } from "@repo/db";
 
-import { FactionInput } from "../../__generated__/schema-types";
-import { ArchivistGraphQLContext } from "../../context";
+import type { FactionCreateInput } from "../../__generated__/schema-types";
+import type { ArchivistGraphQLContext } from "../../context";
 import type { ArchivistGraphQLResolvers } from "../types";
-
-const campaignValidation = async (
-  context: ArchivistGraphQLContext,
-  campaign: string
-) => {
-  const { userId } = context;
-
-  await context.prisma.campaign
-    .findUnique({ where: { id: campaign, userId } })
-    .catch(() => {
-      throw new Error("Error: Invalid campaign.");
-    });
-};
+import { campaignValidation } from "../../utils/campaignValidation";
 
 const coordinatesDecorator = async (
   context: ArchivistGraphQLContext,
-  input: FactionInput,
+  input: FactionCreateInput,
   model: Faction
 ) => {
   if (!input.coordinates) return model;
@@ -38,7 +26,7 @@ const coordinatesDecorator = async (
   return { ...model, coordinates };
 };
 
-const mapToFactionData = (input: FactionInput) => {
+const mapToFactionData = (input: FactionCreateInput) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data: any = {
     name: input.name,
@@ -54,9 +42,9 @@ const mapToFactionData = (input: FactionInput) => {
   return data;
 };
 
-const creatFaction = async (
+const createFaction = async (
   context: ArchivistGraphQLContext,
-  input: FactionInput,
+  input: FactionCreateInput,
   campaignId: string
 ) => {
   const data = {
@@ -71,7 +59,7 @@ const creatFaction = async (
 
 const updateFaction = async (
   context: ArchivistGraphQLContext,
-  input: FactionInput,
+  input: FactionCreateInput,
   factionId: string
 ) => {
   const data = mapToFactionData(input);
@@ -91,7 +79,7 @@ export const FactionMutations: ArchivistGraphQLResolvers["Mutation"] = {
 
     await campaignValidation(context, campaign);
 
-    return creatFaction(context, faction, campaign);
+    return createFaction(context, faction, campaign);
   },
   createFactions: async (_, args, context) => {
     const { campaign, factions } = args;
@@ -103,7 +91,7 @@ export const FactionMutations: ArchivistGraphQLResolvers["Mutation"] = {
     await campaignValidation(context, campaign);
 
     return factions.map(async (faction) =>
-      creatFaction(context, faction, campaign)
+      createFaction(context, faction, campaign)
     );
   },
   updateFaction: async (_, args, context) => {

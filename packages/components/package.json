@@ -13,6 +13,7 @@
   "scripts": {
     "build:css": "tailwindcss -i ./styles/index.css -o ./dist/index.css --minify",
     "build": "tsc && npm run build:css",
+    "build:packages": "tsc && npm run build:css",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit",
     "storybook": "storybook dev"

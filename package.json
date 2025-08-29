@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "npm run codegen && turbo build && turbo lint && turbo check-types",
+    "build:packages": "npm run codegen && turbo build && turbo lint && turbo check-types",
     "check-types": "turbo run check-types",
     "codegen": "graphql-codegen --config codegen.yml",
     "codegen:watch": "graphql-codegen --config codegen.yml --watch",

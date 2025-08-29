@@ -13,4 +13,5 @@ model Campaign {
   factions          Faction[]
   factionAlliances  FactionAlliance[]
   factionConflicts  FactionConflict[]
+  factionTrades     FactionTrade[]
 }

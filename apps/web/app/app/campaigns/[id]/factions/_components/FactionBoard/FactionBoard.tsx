@@ -28,6 +28,7 @@ import {
   worldToScreen,
 } from "./utils";
 import { FactionRelationsTooltipProps } from "./FactionRelationsTooltip/types";
+import { FactionsLoading } from "../FactionsLoading";
 
 const chance = new Chance();
 
@@ -37,13 +38,16 @@ const canvasSizeDefault = { width: 800, height: 600 };
 export const FactionBoard = () => {
   const { id: campaign } = useParams();
 
-  const { data } = useQuery(GET_FACTIONS_FOR_BOARD, {
+  const { data, loading: factionsLoading } = useQuery(GET_FACTIONS_FOR_BOARD, {
     variables: { campaign },
   });
 
-  const { data: seeds } = useQuery(GET_SEEDS_BY_TYPES_QUERY, {
-    variables: { types: ["race", "noun", "faction", "adjective"] },
-  });
+  const { data: seeds, loading: seedsLoading } = useQuery(
+    GET_SEEDS_BY_TYPES_QUERY,
+    {
+      variables: { types: ["race", "noun", "faction", "adjective"] },
+    }
+  );
 
   const factions: Array<Faction> = useMemo(
     () => data?.factionsWithCoordinates ?? [],
@@ -86,6 +90,7 @@ export const FactionBoard = () => {
 
   const canvas = canvasRef.current;
   const ctx = canvas?.getContext("2d");
+  const isLoading = factionsLoading || seedsLoading;
 
   const [createFaction] = useMutation(CREATE_FACTION_MUTATION, {
     onCompleted: (data) => {
@@ -437,19 +442,11 @@ export const FactionBoard = () => {
   }, [canvas, ctx, factions]);
 
   useEffect(() => {
-    panOffsetRef.current = panOffset;
-  }, [panOffset]);
-
-  useEffect(() => {
-    cardsRef.current = cards;
-  }, [cards]);
-
-  useEffect(() => {
     if (typeof window !== "undefined") {
       const updateDimensions = () => {
         setCanvasDimensions({
           width: window.innerWidth - 100,
-          height: window.innerHeight - 200,
+          height: window.innerHeight - 112,
         });
       };
 
@@ -464,6 +461,14 @@ export const FactionBoard = () => {
   }, []);
 
   useEffect(() => {
+    panOffsetRef.current = panOffset;
+  }, [panOffset]);
+
+  useEffect(() => {
+    cardsRef.current = cards;
+  }, [cards]);
+
+  useEffect(() => {
     if (!ctx) return;
 
     const updatedCards = factions.map((faction, index) =>
@@ -471,7 +476,7 @@ export const FactionBoard = () => {
     );
 
     setCards(updatedCards);
-  }, [factions, ctx]);
+  }, [ctx, factions]);
 
   useEffect(() => {
     if (!canvas || !ctx) return;
@@ -529,6 +534,8 @@ export const FactionBoard = () => {
 
     ctx.restore();
   }, [cards, currentCard, isDrawing, tooltips, panOffset, canvas, ctx]);
+
+  if (isLoading) return <FactionsLoading ref={canvasRef} />;
 
   return (
     <div className="relative w-full h-full">

@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 import { FACTION_BASE_FRAGMENT } from "../../fragments";
 
 export const CREATE_FACTIONS_MUTATION = gql`
-  mutation CreateFactions($campaign: ID!, $factions: [FactionInput!]!) {
+  mutation CreateFactions($campaign: ID!, $factions: [FactionCreateInput!]!) {
     createFactions(campaign: $campaign, factions: $factions) {
       ...FactionBaseFragment
     }

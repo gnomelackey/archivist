@@ -2,22 +2,20 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
+  CREATE_FACTION_MUTATION,
   Faction,
   GET_FACTIONS_FOR_BOARD,
   GET_SEEDS_BY_TYPES_QUERY,
 } from "@repo/clients";
 import Chance from "chance";
 import { useParams } from "next/navigation";
+import theme from "@repo/theme";
 
 import { FactionFormSideBar } from "./FactionSidebar";
 import { FactionRelationsTooltip } from "./FactionRelationsTooltip";
-import type {
-  FactionBoardPoint,
-  FactionCard,
-  FactionBoardTooltip,
-} from "./types";
+import type { FactionBoardPoint, FactionCard } from "./types";
 import {
   buildFactionCard,
   buildTemporaryFactionCard,
@@ -25,23 +23,16 @@ import {
   getFactionDisplayText,
   getMousePosition,
   getUniqueRandomColor,
+  handleFactionMapping,
   hasFactionChanged,
   worldToScreen,
 } from "./utils";
-import theme from "@repo/theme";
+import { FactionRelationsTooltipProps } from "./FactionRelationsTooltip/types";
 
 const chance = new Chance();
 
-const offsetDefault = {
-  start: null,
-  x: 0,
-  y: 0,
-};
-
-const canvasSizeDefault = {
-  width: 800,
-  height: 600,
-};
+const offsetDefault = { start: null, x: 0, y: 0 };
+const canvasSizeDefault = { width: 800, height: 600 };
 
 export const FactionBoard = () => {
   const { id: campaign } = useParams();
@@ -77,22 +68,39 @@ export const FactionBoard = () => {
     };
   }, [seeds]);
 
-  const [cards, setCards] = useState<Array<FactionCard>>([]);
-  const [tooltips, setTooltips] = useState<Array<FactionBoardTooltip>>([]);
-  const [startPoint, setStartPoint] = useState<FactionBoardPoint | null>(null);
-  const [currentCard, setCurrentCard] = useState<FactionCard | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
-  const [panOffset, setPanOffset] = useState<FactionBoardPoint>(offsetDefault);
+  const [cards, setCards] = useState<Array<FactionCard>>([]);
   const [canvasDimensions, setCanvasDimensions] = useState(canvasSizeDefault);
+  const [panOffset, setPanOffset] = useState<FactionBoardPoint>(offsetDefault);
+  const [currentCard, setCurrentCard] = useState<FactionCard | null>(null);
+  const [startPoint, setStartPoint] = useState<FactionBoardPoint | null>(null);
+  const [tooltips, setTooltips] = useState<Array<FactionRelationsTooltipProps>>(
+    []
+  );
 
-  const panOffsetRef = useRef<FactionBoardPoint>(offsetDefault);
-  const animationFrameRef = useRef<number | null>(null);
   const cardsRef = useRef<Array<FactionCard>>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const panOffsetRef = useRef<FactionBoardPoint>(offsetDefault);
 
   const canvas = canvasRef.current;
   const ctx = canvas?.getContext("2d");
+
+  const [createFaction] = useMutation(CREATE_FACTION_MUTATION, {
+    onCompleted: (data) => {
+      const newFaction = data.createFaction;
+      setCards((prev) =>
+        prev.map((card) => {
+          const compositeKeyMatches =
+            card.data.name === newFaction.name &&
+            card.data.race === newFaction.race;
+
+          return compositeKeyMatches ? { ...card, id: newFaction.id } : card;
+        })
+      );
+    },
+  });
 
   const requestCanvasRedraw = useCallback(() => {
     if (animationFrameRef.current) {
@@ -286,7 +294,7 @@ export const FactionBoard = () => {
       seeds
     );
 
-    const newTooltips = cards.reduce<Array<FactionBoardTooltip>>(
+    const newTooltips = cards.reduce<Array<FactionRelationsTooltipProps>>(
       (acc, card) => {
         const oldCardRight = card.x + card.width;
         const newCardRight = newCard.x + newCard.width;
@@ -304,6 +312,8 @@ export const FactionBoard = () => {
           newCardOverlapsBottom &&
           newCardOverlapsTop
         ) {
+          const tooltipId = `tooltip-${card.id}-${newCard.id}`;
+
           const overlapLeft = Math.max(card.x, newCard.x);
           const overlapTop = Math.max(card.y, newCard.y);
           const overlapRight = Math.min(oldCardRight, newCardRight);
@@ -326,12 +336,16 @@ export const FactionBoard = () => {
           return [
             ...acc,
             {
-              id: `tooltip-${card.id}-${newCard.id}`,
+              id: tooltipId,
               factionA: newCard.id,
               factionB: card.id,
               x: screenPos.x,
               y: screenPos.y,
               onClick: handleTooltipClick,
+              onCancel: () => {
+                setCards((prev) => prev.filter((c) => c.id !== newCard.id));
+                setTooltips((prev) => prev.filter((t) => t.id !== tooltipId));
+              },
             },
           ];
         }
@@ -346,6 +360,13 @@ export const FactionBoard = () => {
     setIsDrawing(false);
     setStartPoint(null);
     setCurrentCard(null);
+
+    createFaction({
+      variables: {
+        campaign,
+        faction: handleFactionMapping(newCard),
+      },
+    });
   };
 
   const handleFactionChange = useCallback(
@@ -369,13 +390,16 @@ export const FactionBoard = () => {
             updatedCard.label = getFactionDisplayText(ctx, fullName, width);
           }
 
-          const isTemporary =
-            card.isTemporary || hasFactionChanged(faction, factions[index]);
+          const isModified =
+            card.isModified || hasFactionChanged(faction, factions[index]);
 
           return {
             ...updatedCard,
-            data: { ...updatedCard.data, ...faction.data },
-            isTemporary,
+            isModified,
+            data: {
+              ...updatedCard.data,
+              ...faction.data,
+            },
           };
         })
       );
@@ -383,18 +407,20 @@ export const FactionBoard = () => {
     [canvas, ctx, factions]
   );
 
-  const handleFactionSave = useCallback((faction: Faction) => {
+  const handleRemove = (
+    id: string,
+    removed: "success" | "error" | "pending"
+  ) => {
     setCards((prev) =>
-      prev.map((card) => {
-        const isFaction =
-          card.data.name === faction.name && card.data.race === faction.race;
-
-        if (!isFaction) return card;
-
-        return { ...card, id: faction.id, isTemporary: false };
-      })
+      prev.reduce<Array<FactionCard>>((acc, card) => {
+        const update = id === card.id;
+        const hidden = removed === "pending";
+        if (!update) return [...acc, card];
+        else if (removed === "success") return acc;
+        return [...acc, { ...card, hidden }];
+      }, [])
     );
-  }, []);
+  };
 
   const handleReset = useCallback(() => {
     if (!canvas || !ctx) return;
@@ -409,11 +435,6 @@ export const FactionBoard = () => {
       }, [])
     );
   }, [canvas, ctx, factions]);
-
-  const handleRemove = useCallback((id: string) => {
-    setTooltips((prev) => prev.filter((t) => !t.id.includes(id)));
-    setCards((prev) => prev.filter((card) => card.id !== id));
-  }, []);
 
   useEffect(() => {
     panOffsetRef.current = panOffset;
@@ -460,6 +481,8 @@ export const FactionBoard = () => {
     ctx.translate(panOffset.x, panOffset.y);
 
     cards.forEach((card) => {
+      if (card.hidden) return;
+
       const borderColor = card.data.color + "FF";
       const fillColor = card.data.color + "40";
 
@@ -525,7 +548,6 @@ export const FactionBoard = () => {
       ))}
       <FactionFormSideBar
         onChange={handleFactionChange}
-        onSave={handleFactionSave}
         onReset={handleReset}
         onRemove={handleRemove}
         factions={cards}

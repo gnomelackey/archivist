@@ -1,9 +1,6 @@
 import { Button } from "@repo/components";
 import { useMutation } from "@apollo/client";
-import {
-  GET_FACTIONS_FOR_BOARD,
-  REMOVE_FACTION_MUTATION,
-} from "@repo/clients";
+import { REMOVE_FACTION_MUTATION } from "@repo/clients";
 import { useParams } from "next/navigation";
 
 import type { RemoveButtonProps } from "./types";
@@ -13,23 +10,19 @@ export const RemoveButton = ({ faction, onRemove }: RemoveButtonProps) => {
   const { id: campaignId } = useParams();
 
   const [removeFaction] = useMutation(REMOVE_FACTION_MUTATION, {
-    refetchQueries: [GET_FACTIONS_FOR_BOARD],
+    onCompleted: () => {
+      onRemove(faction.id, 'success');
+    },
+    onError: () => {
+      onRemove(faction.id, 'error');
+    },
   });
 
-  const handleRemoveTemporaryCard = (faction: FactionCard) => {
-    if (faction.isTemporary) {
-      onRemove(faction.id);
-    }
-  };
-
   const handleRemoveCard = (faction: FactionCard) => {
-    if (!faction.isTemporary) {
-      removeFaction({
-        variables: { campaign: campaignId, faction: faction.id },
-      });
-    } else {
-      handleRemoveTemporaryCard(faction);
-    }
+    const variables = { campaign: campaignId, faction: faction.id };
+
+    onRemove(faction.id, 'pending');
+    removeFaction({ variables });
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, ChangeEvent } from "react";
 
 import {
   Iconography,
@@ -13,56 +13,41 @@ import { SaveButton } from "./SaveButton";
 import { RemoveButton } from "./RemoveButton";
 import { SeedTypeAhead } from "./SeedTypeAhead";
 import { SeedMultiselect } from "./SeedMultiselect";
-import { FactionCard } from "../../types";
 
 export const FactionForm = ({
   faction,
-  onSave,
   onRemove,
   onChange,
 }: FactionFormProps) => {
-  const [form, setForm] = useState(faction);
+  const [name, setName] = useState(faction.data.name);
+  const [description, setDescription] = useState(faction.data.description);
 
-  useEffect(() => {
-    setForm(faction);
-  }, [faction]);
-
-  const handleTextInputBlur = () => {
-    onChange({ ...faction, data: form.data });
+  const handleChangeName = (ev: ChangeEvent<HTMLInputElement>) => {
+    setName(ev.target.value);
   };
 
-  const handleFormChange = (newData: FactionCard["data"]) => {
-    setForm((prev) => ({
-      ...prev,
-      isTemporary: true,
-      data: { ...prev.data, ...newData },
-    }));
+  const handleDescriptionChange = (ev: ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(ev.target.value);
   };
 
-  const handleChangeName = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    handleFormChange({ ...form.data, name: ev.target.value });
-  };
-
-  const handleDescriptionChange = (
-    ev: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    handleFormChange({ ...form.data, description: ev.target.value });
-  };
-
-  const handleColorChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...faction, data: { ...form.data, color: ev.target.value } });
+  const handleColorChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...faction, data: { ...faction.data, color: ev.target.value } });
   };
 
   const handleChangeRace = (option: TypeaheadOption) => {
-    onChange({ ...faction, data: { ...form.data, race: option.label } });
+    onChange({ ...faction, data: { ...faction.data, race: option.label } });
   };
 
   const handleResourceChange = (options: Array<MultiselectOption>) => {
-    onChange({ ...faction, data: { ...form.data, resources: options } });
+    onChange({ ...faction, data: { ...faction.data, resources: options } });
   };
 
   const handleGoalChange = (options: Array<MultiselectOption>) => {
-    onChange({ ...faction, data: { ...form.data, goals: options } });
+    onChange({ ...faction, data: { ...faction.data, goals: options } });
+  };
+
+  const handleTextInputBlur = () => {
+    onChange({ ...faction, data: { ...faction.data, name, description } });
   };
 
   return (
@@ -70,7 +55,7 @@ export const FactionForm = ({
       <div className="flex flex-1 gap-2">
         <Input
           placeholder="Faction Name"
-          value={form.data.name ?? ""}
+          value={name ?? ""}
           onChange={handleChangeName}
           onBlur={handleTextInputBlur}
         />
@@ -86,7 +71,7 @@ export const FactionForm = ({
       <TextArea
         placeholder="Description"
         rows={2}
-        value={form.data.description ?? ""}
+        value={description ?? ""}
         onChange={handleDescriptionChange}
         onBlur={handleTextInputBlur}
       />
@@ -103,7 +88,7 @@ export const FactionForm = ({
         onChange={handleGoalChange}
       />
       <div className="flex gap-2 items-center">
-        {!faction.isTemporary ? (
+        {!faction.isModified ? (
           <Iconography name="bannerCheck" size={1.75} variant="success" />
         ) : (
           <Iconography
@@ -115,7 +100,7 @@ export const FactionForm = ({
         )}
         <button
           className={`w-10 rounded h-10 flex-shrink-0 hover:cursor-pointer`}
-          style={{ backgroundColor: form.data.color }}
+          style={{ backgroundColor: faction.data.color }}
           onClick={() =>
             window.document.getElementById(`${faction.id}-color-input`)?.click()
           }
@@ -124,16 +109,12 @@ export const FactionForm = ({
           id={`${faction.id}-color-input`}
           type="color"
           hidden
-          value={form.data.color}
+          value={faction.data.color}
           onChange={handleColorChange}
         />
         <div className="flex gap-2 flex-1">
-          <RemoveButton faction={faction} onRemove={onRemove} show />
-          <SaveButton
-            faction={faction}
-            onSave={onSave}
-            show={form.isTemporary}
-          />
+          <RemoveButton faction={faction} show onRemove={onRemove} />
+          <SaveButton faction={faction} show={faction.isModified} />
         </div>
       </div>
     </form>

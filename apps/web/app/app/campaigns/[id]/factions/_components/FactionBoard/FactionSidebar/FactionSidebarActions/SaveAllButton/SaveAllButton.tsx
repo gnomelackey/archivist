@@ -1,41 +1,29 @@
 import { Button } from "@repo/components";
 import { useMutation } from "@apollo/client";
-import {
-  CREATE_FACTIONS_MUTATION,
-  GET_FACTIONS_FOR_BOARD,
-} from "@repo/clients";
+import { UPDATE_FACTIONS_MUTATION } from "@repo/clients";
 import { useParams } from "next/navigation";
 
 import type { SaveAllButtonProps } from "./types";
-import { handleFactionMapping } from "../../utils";
+import { handleFactionMapping } from "../../../utils";
 
-export const SaveAllButton = ({
-  factions,
-  onSave,
-  show,
-}: SaveAllButtonProps) => {
+export const SaveAllButton = ({ factions, show }: SaveAllButtonProps) => {
   const { id: campaignId } = useParams();
 
-  const [createFactions] = useMutation(CREATE_FACTIONS_MUTATION, {
-    refetchQueries: [GET_FACTIONS_FOR_BOARD],
-  });
+  const [updateFaction] = useMutation(UPDATE_FACTIONS_MUTATION);
 
   if (!show) return null;
 
   const handleCreateAll = () => {
-    const temporaryCards = factions.filter((f) => f.isTemporary);
+    const temporaryCards = factions.filter((f) => f.isModified);
 
     if (!temporaryCards.length) return;
 
-    createFactions({
-      onCompleted: (data) => {
-        data.createFactions.forEach(onSave);
-      },
-      variables: {
-        campaign: campaignId,
-        factions: temporaryCards.map(handleFactionMapping),
-      },
-    });
+    const variables = {
+      campaign: campaignId,
+      data: temporaryCards.map((f) => ({ id: f.id, ...handleFactionMapping(f) })),
+    };
+
+    updateFaction({ variables });
   };
 
   return (

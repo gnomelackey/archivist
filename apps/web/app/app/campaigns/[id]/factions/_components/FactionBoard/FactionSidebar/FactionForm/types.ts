@@ -1,9 +1,7 @@
-import { Faction } from "@repo/clients";
 import type { FactionCard } from "../../types";
 
 export type FactionFormProps = {
-  onRemove: (id: string) => void;
+  onRemove: (id: string, removed: 'success' | 'error' | 'pending') => void;
   onChange: (faction: FactionCard) => void;
-  onSave: (faction: Faction) => void;
   faction: FactionCard;
 };

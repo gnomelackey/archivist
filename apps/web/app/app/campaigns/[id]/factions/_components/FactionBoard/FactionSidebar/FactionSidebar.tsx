@@ -8,9 +8,8 @@ import { FactionCard } from "../types";
 
 export const FactionFormSideBar = ({
   factions,
-  onRemove,
-  onSave,
   onReset,
+  onRemove,
   onChange,
 }: FactionSideBarProps) => {
   const showActions = factions.length > 0;
@@ -70,7 +69,6 @@ export const FactionFormSideBar = ({
               key={faction.id}
               faction={faction}
               onRemove={onRemove}
-              onSave={onSave}
               onChange={onChange}
             />,
           ])}
@@ -78,9 +76,8 @@ export const FactionFormSideBar = ({
       </div>
       <FactionFormSideBarActions
         factions={filteredFactions}
-        onSave={onSave}
-        onReset={onReset}
         onRemove={onRemove}
+        onReset={onReset}
         show={showActions}
       />
     </div>

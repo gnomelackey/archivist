@@ -2,6 +2,7 @@ import Chance from "chance";
 
 import type { FactionCard } from "./types";
 import { Faction } from "@repo/clients";
+import { CoordinateLocationEnum } from "@repo/enums";
 
 const chance = new Chance();
 
@@ -189,6 +190,8 @@ export const buildFactionCard = (
   if (!coords) throw new Error("Faction must have coordinates");
 
   const id = faction.id;
+  const hidden = false;
+  const isModified = false;
   const fullname = `${faction.name} (${faction.race})`;
   const label = getFactionDisplayText(ctx, fullname, coords.width);
 
@@ -215,7 +218,7 @@ export const buildFactionCard = (
     goals,
   };
 
-  return { ...coords, id, label, data, position, isTemporary: false };
+  return { ...coords, id, label, data, position, hidden, isModified };
 };
 
 /**
@@ -249,7 +252,8 @@ export const buildTemporaryFactionCard = (
   if (!ctx) throw new Error("Canvas context is required to build faction card");
 
   const id = `temp-${Date.now()}`;
-
+  const hidden = false;
+  const isModified = false;
   const name = `${seeds.faction} of the ${seeds.adjective} ${seeds.noun}`;
   const fullname = `${seeds.faction} of the ${seeds.adjective} ${seeds.noun} (${seeds.race})`;
   const label = getFactionDisplayText(ctx, fullname, width);
@@ -257,7 +261,7 @@ export const buildTemporaryFactionCard = (
   const data = { name, color, race: seeds.race, description: "" };
   const coords = { x, y, width, height };
 
-  return { ...coords, data, id, label, position, isTemporary: true };
+  return { ...coords, data, id, label, position, hidden, isModified };
 };
 
 /**
@@ -344,3 +348,26 @@ export function getContrastTextColor(hex: string, minRatio = 4.5) {
   const shouldBeContrastWhite = contrastRatioHex(hex, "#FFF") >= minRatio;
   return shouldBeContrastWhite ? "#FFF" : "#000";
 }
+
+/**
+ * Maps a faction card to a faction object structure for API operations
+ * @param faction - The faction card to convert
+ * @returns Object containing faction data formatted for backend operations
+ */
+export const handleFactionMapping = (faction: FactionCard) => ({
+  name: faction.data.name,
+  race: faction.data.race,
+  description: faction.data.description,
+  color: faction.data.color,
+  descriptors: [
+    ...(faction.data.resources?.map((r) => r.id) || []),
+    ...(faction.data.goals?.map((g) => g.id) || []),
+  ],
+  coordinates: {
+    x: faction.x,
+    y: faction.y,
+    width: faction.width,
+    height: faction.height,
+    location: CoordinateLocationEnum.FACTION_BOARD,
+  },
+});

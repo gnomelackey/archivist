@@ -7,6 +7,16 @@ input FactionInput {
   descriptors: [String!]
 }
 
+input FactionUpdateInput {
+  name: String!
+  race: String!
+  color: String!
+  description: String
+  coordinates: CoordinatesInput
+  descriptors: [String!]
+  id: ID!
+}
+
 type Faction {
   id: String!
   name: String!

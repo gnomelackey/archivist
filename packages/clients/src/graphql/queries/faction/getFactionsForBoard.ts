@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-import { FACTION_RELATIONS_FRAGMENT } from "./fragments/faction.relations";
+import { FACTION_RELATIONS_FRAGMENT } from "../../fragments/faction";
 
 export const GET_FACTIONS_FOR_BOARD = gql`
   query GetFactionsWithCoordinates($campaign: ID!) {

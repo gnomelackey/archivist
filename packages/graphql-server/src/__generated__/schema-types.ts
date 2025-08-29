@@ -95,6 +95,16 @@ export type FactionInput = {
   race: Scalars['String']['input'];
 };
 
+export type FactionUpdateInput = {
+  color: Scalars['String']['input'];
+  coordinates?: InputMaybe<CoordinatesInput>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  descriptors?: InputMaybe<Array<Scalars['String']['input']>>;
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+  race: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']['output']>;
@@ -104,6 +114,8 @@ export type Mutation = {
   createSeed: Seed;
   removeFaction: Scalars['String']['output'];
   removeFactions: Array<Scalars['String']['output']>;
+  updateFaction: Faction;
+  updateFactions: Array<Faction>;
 };
 
 
@@ -140,6 +152,19 @@ export type MutationRemoveFactionArgs = {
 export type MutationRemoveFactionsArgs = {
   campaign: Scalars['ID']['input'];
   factions: Array<Scalars['ID']['input']>;
+};
+
+
+export type MutationUpdateFactionArgs = {
+  campaign: Scalars['ID']['input'];
+  data: FactionInput;
+  faction: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateFactionsArgs = {
+  campaign: Scalars['ID']['input'];
+  data: Array<FactionUpdateInput>;
 };
 
 export type Query = {

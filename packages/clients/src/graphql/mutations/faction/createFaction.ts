@@ -1,21 +1,13 @@
 import { gql } from "@apollo/client";
 
+import { FACTION_BASE_FRAGMENT } from "../../fragments";
+
 export const CREATE_FACTION_MUTATION = gql`
   mutation CreateFaction($campaign: ID!, $faction: FactionInput!) {
     createFaction(campaign: $campaign, faction: $faction) {
-      id
-      name
-      race
-      color
-      description
-      coordinates {
-        id
-        x
-        y
-        width
-        height
-        location
-      }
+      ...FactionBaseFragment
     }
   }
+
+  ${FACTION_BASE_FRAGMENT}
 `;

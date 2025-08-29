@@ -1,2 +1,2 @@
 export * from "./FactionRelationsTooltip";
-export type { FactionRelationsTooltipProp as FactionToolTipProps } from "./types";
+export type { FactionRelationsTooltipProps as FactionToolTipProps } from "./types";

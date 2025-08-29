@@ -4,7 +4,7 @@ import type { TooltipProps } from "./types";
 
 const TooltipComponent = (
   { x, y, offset = 8, children, className = "" }: TooltipProps,
-  ref: React.Ref<HTMLDivElement>
+  ref: React.Ref<HTMLElement>
 ) => {
   const internalRef = useRef<HTMLDivElement>(null);
 
@@ -41,6 +41,6 @@ const TooltipComponent = (
   );
 };
 
-export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
+export const Tooltip = forwardRef<HTMLElement, TooltipProps>(
   TooltipComponent
 );

@@ -1,6 +1,6 @@
 import { Button, Switch, TextArea, Tooltip, Typeahead } from "@repo/components";
 
-import type { FactionRelationsTooltipProp } from "./types";
+import type { FactionRelationsTooltipProps } from "./types";
 
 import styles from "./styles.module.css";
 import { useState } from "react";
@@ -8,10 +8,8 @@ import { useState } from "react";
 export const FactionRelationsTooltip = ({
   x,
   y,
-  factionA: idA,
-  factionB: idB,
-  onClick,
-}: FactionRelationsTooltipProp) => {
+  onCancel,
+}: FactionRelationsTooltipProps) => {
   const [, setChecked] = useState(false);
   const [type, setType] = useState<"conflict" | "alliance" | null>(null);
 
@@ -34,7 +32,12 @@ export const FactionRelationsTooltip = ({
     <Tooltip x={x} y={y} className={styles["faction-relations-tooltip"]}>
       {type !== null ? (
         <form className="flex flex-col gap-2 items-center w-full">
-          <TextArea className="resize-none" placeholder="Reason..." rows={4} fullWidth />
+          <TextArea
+            className="resize-none"
+            placeholder="Reason..."
+            rows={4}
+            fullWidth
+          />
           {type === "conflict" ? (
             <Typeahead placeholder="Resource" options={[]} />
           ) : null}
@@ -76,7 +79,7 @@ export const FactionRelationsTooltip = ({
               mode="error"
               type="button"
               variant="outline"
-              onClick={handleConflictClick}
+              onClick={onCancel}
               fullWidth
             >
               Cancel

@@ -16,24 +16,11 @@ export interface FactionCard {
   y: number;
   width: number;
   height: number;
-  isTemporary: boolean;
+  isModified: boolean;
+  hidden: boolean;
   position: number;
   data: FactionCardData;
 }
-
-export interface FactionBoardTooltip {
-  id: string;
-  factionA: string;
-  factionB: string;
-  x: number;
-  y: number;
-  onClick: (
-    factionA: string,
-    factionB: string,
-    relationship: "conflict" | "alliance"
-  ) => void;
-}
-
 export interface FactionBoardPoint {
   start?: { x: number; y: number } | null;
   x: number;

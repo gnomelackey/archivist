@@ -84,6 +84,7 @@ export type ResolversTypes = {
   FactionAlliance: ResolverTypeWrapper<FactionAlliance>;
   FactionConflict: ResolverTypeWrapper<FactionConflict>;
   FactionInput: Types.FactionInput;
+  FactionUpdateInput: Types.FactionUpdateInput;
   Float: ResolverTypeWrapper<Types.Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Types.Scalars['ID']['output']>;
   JSONObject: ResolverTypeWrapper<Types.Scalars['JSONObject']['output']>;
@@ -105,6 +106,7 @@ export type ResolversParentTypes = {
   FactionAlliance: FactionAlliance;
   FactionConflict: FactionConflict;
   FactionInput: Types.FactionInput;
+  FactionUpdateInput: Types.FactionUpdateInput;
   Float: Types.Scalars['Float']['output'];
   ID: Types.Scalars['ID']['output'];
   JSONObject: Types.Scalars['JSONObject']['output'];
@@ -193,6 +195,8 @@ export type MutationResolvers<ContextType = ArchivistGraphQLContext, ParentType 
   createSeed?: Resolver<ResolversTypes['Seed'], ParentType, ContextType, RequireFields<Types.MutationCreateSeedArgs, 'type' | 'value'>>;
   removeFaction?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<Types.MutationRemoveFactionArgs, 'campaign' | 'faction'>>;
   removeFactions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<Types.MutationRemoveFactionsArgs, 'campaign' | 'factions'>>;
+  updateFaction?: Resolver<ResolversTypes['Faction'], ParentType, ContextType, RequireFields<Types.MutationUpdateFactionArgs, 'campaign' | 'data' | 'faction'>>;
+  updateFactions?: Resolver<Array<ResolversTypes['Faction']>, ParentType, ContextType, RequireFields<Types.MutationUpdateFactionsArgs, 'campaign' | 'data'>>;
 };
 
 export type QueryResolvers<ContextType = ArchivistGraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
